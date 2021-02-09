@@ -15,12 +15,11 @@ import (
 var (
 	addr        = flag.String("addr", ":6060", "TCP address to listen to")
 	compress    = flag.Bool("compress", true, "Whether to enable transparent response compression")
-	postRequest = []byte("POST")
-	getRequest  = []byte("GET")
 	authToken   = []byte(readFile("token"))
 	pathRoot    = []byte("/")
 	pathStyle   = []byte("/style.css")
 	pathFavicon = []byte("/favicon.ico")
+	htmlFile    = readFile("index.html")
 )
 
 func main() {
@@ -55,14 +54,14 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 
 func handleRoot(ctx *fasthttp.RequestCtx) {
 	// Serve the HTML page if it is a GET request
-	if bytes.Equal(ctx.Method(), getRequest) {
+	if ctx.IsGet() {
 		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
 		fmt.Fprint(ctx, getHtml())
 		return
 	}
 
 	// We only want to allow POST requests if we're not serving a page
-	if !bytes.Equal(ctx.Method(), postRequest) {
+	if !ctx.IsPost() {
 		ctx.Response.SetStatusCode(fasthttp.StatusBadRequest)
 		fmt.Fprint(ctx, "400 Bad Request\n")
 		log.Printf("- Returned 400 to %s - tried to connect with '%s'", ctx.RemoteIP(), ctx.Method())
@@ -110,7 +109,7 @@ func handleFavicon(ctx *fasthttp.RequestCtx) {
 // Dynamic html is annoying so just replace a dummy value lol
 func getHtml() string {
 	lastBeat := readFile("last_beat")
-	return strings.Replace(readFile("index.html"), "LAST_BEAT", lastBeat, 1)
+	return strings.Replace(htmlFile, "LAST_BEAT", lastBeat, 1)
 }
 
 // Read file and log if it errored
