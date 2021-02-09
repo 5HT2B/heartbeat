@@ -9,6 +9,7 @@ LOGGING_FILE="$HOME/.local/share/heartbeat.log"
 
 if [[ -z "$(which xprintidle)" ]]; then
   echo "xprintidle not found, please install it!"
+  exit 1
 fi
 
 # Allow for 2 minutes per cronjob buffer
