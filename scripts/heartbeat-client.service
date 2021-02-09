@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs Living's Heatbeat Beat
+Wants=heartbeat-client.timer
+
+[Service]
+Type=oneshot
+ExecStart=/home/liv/heartbeat/ping.sh
+
+[Install]
+WantedBy=multi-user.target

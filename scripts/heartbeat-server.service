@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs Living's Heatbeat Beat
+Wants=heartbeat-server.timer
+
+[Service]
+Type=oneshot
+ExecStart=/home/heartbeat/heartbeat/start.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs Living's Heatbeat Server
+Requires=heartbeat-server.service
+
+[Timer]
+Unit=heartbeat-server.service
+OnCalendar=*-*-* *:*:00
+
+[Install]
+WantedBy=timers.target
