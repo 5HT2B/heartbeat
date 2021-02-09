@@ -84,7 +84,7 @@ export HEARTBEAT_HOSTNAME="localhost:8008" # Change your IP to your public IP.
 
 Then
 ```bash
-mkdir =p "$HOME/.local/share" # Create default logging folder. Edit `ping.sh` if you don't like this.
+mkdir -p "$HOME/.local/share" # Create default logging folder. Edit `ping.sh` if you don't like this.
 # Install xprintidle with your distro's package manager
 systemctl --user enable heartbeat-client.timer
 systemctl --user start heartbeat-client.timer
