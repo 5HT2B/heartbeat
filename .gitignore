@@ -1,4 +1,5 @@
 heartbeat
 last_beat
+last_beat_formatted
 token
 .idea/

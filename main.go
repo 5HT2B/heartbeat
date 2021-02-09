@@ -85,11 +85,13 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 	lastTime := time.Now()
 	lastBeat := lastTime.Unix()
 
-	formattedTime := []string{strconv.FormatInt(lastBeat, 10), lastTime.Format(time.RFC822)}
+	base10Time := strconv.FormatInt(lastBeat, 10)
 
-	fmt.Fprintf(ctx, "%v\n", formattedTime)
+	fmt.Fprintf(ctx, "%v\n", base10Time)
 	log.Printf("- Successful beat from %s", ctx.RemoteIP())
-	writeToFile("last_beat", strings.Join(formattedTime, " "))
+
+	writeToFile("last_beat", base10Time)
+	writeToFile("last_beat_formatted", lastTime.Format(time.RFC822))
 }
 
 func handleUnknown(ctx *fasthttp.RequestCtx) {
@@ -112,13 +114,23 @@ func handleFavicon(ctx *fasthttp.RequestCtx) {
 
 // Dynamic html is annoying so just replace a dummy value lol
 func getHtml() string {
-	lastBeat, err := readFile("last_beat")
+	lastBeat, err1 := readFile("last_beat")
+	lastBeatFormatted, err2 := readFile("last_beat_formatted")
 
-	if err != nil {
+	if err1 != nil {
 		lastBeat = "Error reading last_beat from server, this should not happen."
 	}
 
-	return strings.Replace(htmlFile, "LAST_BEAT", lastBeat, 1)
+	if err2 != nil {
+		lastBeatFormatted = "Error reading last_beat_formatted from server, this should not happen."
+	}
+
+	formattedTime := []string{lastBeat, lastBeatFormatted}
+
+	htmlWithBeat := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(formattedTime, " "), 1)
+	timeDifference := timeDifference(lastBeat, time.Now())
+
+	return strings.Replace(htmlWithBeat, "RELATIVE_TIME", timeDifference, 1)
 }
 
 func readFileUnsafe(file string) string {
@@ -143,4 +155,17 @@ func writeToFile(file string, content string) {
 	if err != nil {
 		log.Printf("- Failed to read '%s'", file)
 	}
+}
+
+func timeDifference(lastBeat string, t time.Time) string {
+	lastBeatInt, err := strconv.ParseInt(lastBeat, 10, 64)
+
+	if err != nil {
+		return fmt.Sprintf("Could not convert '%s' to int64", lastBeat)
+	}
+
+	newTime := time.Unix(lastBeatInt, 0)
+	st := t.Sub(newTime)
+
+	return st.String()
 }
