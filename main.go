@@ -86,6 +86,7 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 	formattedTime := []string{strconv.FormatInt(lastBeat, 10), lastTime.Format(time.RFC822)}
 
 	fmt.Fprintf(ctx, "%v\n", formattedTime)
+	log.Printf("- Successful beat from %s", ctx.RemoteIP())
 	writeToFile("last_beat", strings.Join(formattedTime, " "))
 }
 
