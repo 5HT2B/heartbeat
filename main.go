@@ -17,11 +17,11 @@ import (
 var (
 	addr        = flag.String("addr", ":6060", "TCP address to listen to")
 	compress    = flag.Bool("compress", true, "Whether to enable transparent response compression")
-	authToken   = []byte(readFile("token"))
+	authToken   = []byte(readFileUnsafe("token"))
 	pathRoot    = []byte("/")
 	pathStyle   = []byte("/style.css")
 	pathFavicon = []byte("/favicon.ico")
-	htmlFile    = readFile("index.html")
+	htmlFile    = readFileUnsafe("index.html")
 )
 
 func main() {
@@ -100,7 +100,7 @@ func handleUnknown(ctx *fasthttp.RequestCtx) {
 
 func handleStyle(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
-	fmt.Fprint(ctx, readFile("style.css"))
+	fmt.Fprint(ctx, readFileUnsafe("style.css"))
 }
 
 func handleFavicon(ctx *fasthttp.RequestCtx) {
@@ -112,19 +112,28 @@ func handleFavicon(ctx *fasthttp.RequestCtx) {
 
 // Dynamic html is annoying so just replace a dummy value lol
 func getHtml() string {
-	lastBeat := readFile("last_beat")
+	lastBeat, err := readFile("last_beat")
+
+	if err != nil {
+		lastBeat = "Error reading last_beat from server, this should not happen."
+	}
+
 	return strings.Replace(htmlFile, "LAST_BEAT", lastBeat, 1)
 }
 
-// Read file and log if it errored
-func readFile(file string) string {
-	dat, err := ioutil.ReadFile(file)
+func readFileUnsafe(file string) string {
+	content, err := readFile(file)
 
 	if err != nil {
 		log.Printf("- Failed to read '%s'", file)
 	}
 
-	return string(dat)
+	return content
+}
+
+func readFile(file string) (string, error) {
+	dat, err := ioutil.ReadFile(file)
+	return string(dat), err
 }
 
 func writeToFile(file string, content string) {
