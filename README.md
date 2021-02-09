@@ -8,8 +8,7 @@ This is my first time using Go and I'm terrible at CSS, so this might not be usi
 
 ## Contributing
 
-Contributions to fix my code are welcome.
-I also didn't bother googling how to implement a favicon, so we're just living without it.
+Contributions to fix my code are welcome, as well as any improvements.
 
 To build:
 ```bash

@@ -5,8 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/valyala/fasthttp"
+	"io"
 	"io/ioutil"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -101,10 +103,11 @@ func handleStyle(ctx *fasthttp.RequestCtx) {
 	fmt.Fprint(ctx, readFile("style.css"))
 }
 
-// TODO: Figure out how files work via htp
 func handleFavicon(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
-
+	ctx.Response.Header.Set(fasthttp.HeaderContentType, "image/x-icon")
+	f, _ := os.Open("favicon.ico")
+	defer f.Close()
+	io.Copy(ctx, f)
 }
 
 // Dynamic html is annoying so just replace a dummy value lol
