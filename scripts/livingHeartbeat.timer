@@ -1,0 +1,10 @@
+[Unit]
+Description=Run's Living's Heatbeat Service
+Requires=livingHeartbeat.service
+
+[Timer]
+Unit=livingHeartbeat.service
+OnCalendar=*-*-* *:*:00
+
+[Install]
+WantedBy=timers.target

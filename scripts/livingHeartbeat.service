@@ -1,0 +1,10 @@
+[Unit]
+Description=Runs Living's Heartbeat
+Wants=livingHeartbeat.timer
+
+[Service]
+Type=oneshot
+ExecStart=/home/mika/projects/heartbeat/scripts/ping.sh
+
+[Install]
+WantedBy=multi-user.target
