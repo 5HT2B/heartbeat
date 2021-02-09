@@ -167,5 +167,13 @@ func timeDifference(lastBeat string, t time.Time) string {
 	newTime := time.Unix(lastBeatInt, 0)
 	st := t.Sub(newTime)
 
-	return st.String()
+	return formattedTime(int(st.Seconds()))
+}
+
+func formattedTime(secondsIn int) string {
+	hours := secondsIn / 3600
+	minutes := (secondsIn / 60) - (60 * hours)
+	seconds := secondsIn % 60
+	str := fmt.Sprintf("%d hours, %d minutes, %d seconds", hours, minutes, seconds)
+	return str
 }
