@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Copy systemd service files to ~/.config/systemd/user/ and edit the ExecStart accordingly
-# Then systemctl --user enable livingHeartbeat.timer && systemctl --user start livingHeartbeat.timer
-
 source ~/.profile
 LOGGING_FILE="$HOME/.local/share/heartbeat.log"
 
