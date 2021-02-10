@@ -19,6 +19,7 @@ var (
 	useTls      = flag.Bool("tls", false, "Whether to enable TLS")
 	tlsCert     = flag.String("key", "", "Full certificate file path")
 	tlsKey      = flag.String("cert", "", "Full key file path")
+	unknown403  = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
 	authToken   = []byte(readFileUnsafe("token"))
 	pathRoot    = []byte("/")
 	pathStyle   = []byte("/style.css")
@@ -101,9 +102,11 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 }
 
 func handleUnknown(ctx *fasthttp.RequestCtx) {
-	ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
-	fmt.Fprint(ctx, "403 Forbidden\n")
-	log.Printf("- Returned 403 to %s - tried to connect with '%s' to '%s'", ctx.RemoteIP(), ctx.Request.Header.Peek("Auth"), ctx.Path())
+	if *unknown403 {
+		ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
+		fmt.Fprint(ctx, "403 Forbidden\n")
+		log.Printf("- Returned 403 to %s - tried to connect with '%s' to '%s'", ctx.RemoteIP(), ctx.Request.Header.Peek("Auth"), ctx.Path())
+	}
 }
 
 func handleStyle(ctx *fasthttp.RequestCtx) {
