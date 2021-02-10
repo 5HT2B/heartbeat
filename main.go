@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/valyala/fasthttp"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -22,6 +21,8 @@ var (
 	pathStyle   = []byte("/style.css")
 	pathFavicon = []byte("/favicon.ico")
 	htmlFile    = readFileUnsafe("index.html")
+	cssFile     = readFileUnsafe("style.css")
+	lastBeat    = readLastBeatSafe()
 )
 
 func main() {
@@ -75,23 +76,19 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 
 	// Make sure Auth key is correct
 	if !bytes.Equal(header, authToken) {
-		ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
-		fmt.Fprint(ctx, "403 Forbidden\n")
-		log.Printf("- Returned 403 to %s - tried to connect with '%s'", ctx.RemoteIP(), header)
+		handleUnknown(ctx)
 		return
 	}
 
 	// Now that we know it is a POST and the Auth key is correct, return the unix timestamp and write it to a file
-	lastTime := time.Now()
-	lastBeat := lastTime.Unix()
-
-	base10Time := strconv.FormatInt(lastBeat, 10)
+	newLastBeat := time.Now().Unix()
+	base10Time := strconv.FormatInt(newLastBeat, 10)
 
 	fmt.Fprintf(ctx, "%v\n", base10Time)
 	log.Printf("- Successful beat from %s", ctx.RemoteIP())
 
+	lastBeat = newLastBeat
 	writeToFile("last_beat", base10Time)
-	writeToFile("last_beat_formatted", lastTime.Format(time.RFC822))
 }
 
 func handleUnknown(ctx *fasthttp.RequestCtx) {
@@ -102,7 +99,7 @@ func handleUnknown(ctx *fasthttp.RequestCtx) {
 
 func handleStyle(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
-	fmt.Fprint(ctx, readFileUnsafe("style.css"))
+	fmt.Fprint(ctx, cssFile)
 }
 
 func handleFavicon(ctx *fasthttp.RequestCtx) {
@@ -114,66 +111,13 @@ func handleFavicon(ctx *fasthttp.RequestCtx) {
 
 // Dynamic html is annoying so just replace a dummy value lol
 func getHtml() string {
-	lastBeat, err1 := readFile("last_beat")
-	lastBeatFormatted, err2 := readFile("last_beat_formatted")
+	lastBeatFormatted := intToTime(lastBeat).Format(time.RFC822)
+	lastBeatStr := strconv.FormatInt(lastBeat, 10)
 
-	if err1 != nil {
-		lastBeat = "Error reading last_beat from server, this should not happen."
-	}
-
-	if err2 != nil {
-		lastBeatFormatted = "Error reading last_beat_formatted from server, this should not happen."
-	}
-
-	formattedTime := []string{lastBeat, lastBeatFormatted}
+	formattedTime := []string{lastBeatStr, lastBeatFormatted}
 
 	htmlWithBeat := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(formattedTime, " "), 1)
-	timeDifference := timeDifference(lastBeat, time.Now())
+	timeDifference := timeDifference(lastBeatStr, time.Now())
 
 	return strings.Replace(htmlWithBeat, "RELATIVE_TIME", timeDifference, 1)
-}
-
-func readFileUnsafe(file string) string {
-	content, err := readFile(file)
-
-	if err != nil {
-		log.Printf("- Failed to read '%s'", file)
-	}
-
-	return content
-}
-
-func readFile(file string) (string, error) {
-	dat, err := ioutil.ReadFile(file)
-	return string(dat), err
-}
-
-func writeToFile(file string, content string) {
-	data := []byte(content)
-	err := ioutil.WriteFile(file, data, 0644)
-
-	if err != nil {
-		log.Printf("- Failed to read '%s'", file)
-	}
-}
-
-func timeDifference(lastBeat string, t time.Time) string {
-	lastBeatInt, err := strconv.ParseInt(lastBeat, 10, 64)
-
-	if err != nil {
-		return fmt.Sprintf("Could not convert '%s' to int64", lastBeat)
-	}
-
-	newTime := time.Unix(lastBeatInt, 0)
-	st := t.Sub(newTime)
-
-	return formattedTime(int(st.Seconds()))
-}
-
-func formattedTime(secondsIn int) string {
-	hours := secondsIn / 3600
-	minutes := (secondsIn / 60) - (60 * hours)
-	seconds := secondsIn % 60
-	str := fmt.Sprintf("%d hours, %d minutes, %d seconds", hours, minutes, seconds)
-	return str
 }
