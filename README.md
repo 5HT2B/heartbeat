@@ -68,6 +68,8 @@ systemctl --user stop heartbeat-server.service
 # Automatically restarts with the new binary
 ```
 
+If you'd like to run Heartbeat on **ports 80 or 443**, please read [this](https://superuser.com/a/892391).
+
 ### Running client on Linux
 
 Copy systemd service (`-client`) files to `~/.config/systemd/user/` and edit the `ExecStart` accordingly.

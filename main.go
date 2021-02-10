@@ -16,6 +16,9 @@ import (
 var (
 	addr        = flag.String("addr", ":6060", "TCP address to listen to")
 	compress    = flag.Bool("compress", true, "Whether to enable transparent response compression")
+	useTls      = flag.Bool("tls", false, "Whether to enable TLS")
+	tlsCert     = flag.String("key", "", "Full certificate file path")
+	tlsKey      = flag.String("cert", "", "Full key file path")
 	authToken   = []byte(readFileUnsafe("token"))
 	pathRoot    = []byte("/")
 	pathStyle   = []byte("/style.css")
@@ -33,8 +36,14 @@ func main() {
 		h = fasthttp.CompressHandler(h)
 	}
 
-	if err := fasthttp.ListenAndServe(*addr, h); err != nil {
-		log.Fatalf("Error in ListenAndServe: %s", err)
+	if *useTls && len(*tlsCert) > 0 && len(*tlsKey) > 0 {
+		if err := fasthttp.ListenAndServeTLS(*addr, *tlsCert, *tlsKey, h); err != nil {
+			log.Fatalf("- Error in ListenAndServe: %s", err)
+		}
+	} else {
+		if err := fasthttp.ListenAndServe(*addr, h); err != nil {
+			log.Fatalf("- Error in ListenAndServe: %s", err)
+		}
 	}
 }
 
