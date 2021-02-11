@@ -29,6 +29,7 @@ var (
 	cssFile               = readFileUnsafe("style.css")
 	cssLargeFile          = readFileUnsafe("style.large.css")
 	lastBeat, missingBeat = readLastBeatSafe()
+	gitCommitHash         = "A Development Version"
 )
 
 func main() {
@@ -155,9 +156,11 @@ func getHtml() string {
 	timeDifference := timeDifference(lastBeat, currentTime)
 	formattedAbsence := formattedTime(int(missingBeat))
 
-	htmlWithBeat := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(lastBeatArr, " "), 1)
-	htmlWithRelative := strings.Replace(htmlWithBeat, "RELATIVE_TIME", timeDifference, 1)
-	htmlWithAbsence := strings.Replace(htmlWithRelative, "LONGEST_ABSENCE", formattedAbsence, 1)
+	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(lastBeatArr, " "), 1)
+	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
+	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
+	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
+	htmlTemp = strings.Replace(htmlTemp, "GIT_REPO", "https://github.com/l1ving/heartbeat", 2)
 
-	return htmlWithAbsence
+	return htmlTemp
 }
