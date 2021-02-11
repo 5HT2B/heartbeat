@@ -1,27 +1,27 @@
 @media (min-width: 900px) {
-	html, body {
-		text-align: center;
-		position: relative;
-	}
-	
-	.times {
-		display: flex;
-		margin: auto;
-		justify-content: center;
-		align-items: center;
-		margin-top: -25vh;
-	}
+    html, body {
+        text-align: center;
+        position: relative;
+    }
 
-	.times > p {
-		padding: 1em;
-	}
+    .times {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        margin-top: -25vh;
+    }
 
-	.preamble {
-		display: flex;
-		margin: auto;
-		justify-content: center;
-		align-items: center;
-		height: 60vh;
-	}
+    .times > p {
+        padding: 1em;
+    }
+
+    .preamble {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        height: 60vh;
+    }
 }
 
