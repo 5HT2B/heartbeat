@@ -2,18 +2,11 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 )
 
-func timeDifference(lastBeat string, t time.Time) string {
-	lastBeatInt, err := strconv.ParseInt(lastBeat, 10, 64)
-
-	if err != nil {
-		return fmt.Sprintf("Could not convert '%s' to int64", lastBeat)
-	}
-
-	st := t.Sub(intToTime(lastBeatInt))
+func timeDifference(lastBeat int64, t time.Time) string {
+	st := t.Sub(intToTime(lastBeat))
 
 	return formattedTime(int(st.Seconds()))
 }

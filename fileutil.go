@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"strconv"
+	"strings"
 )
 
 func readFileUnsafe(file string) string {
@@ -30,20 +31,37 @@ func writeToFile(file string, content string) {
 	}
 }
 
-func readLastBeatSafe() int64 {
+// Returns the last beat and the longest period without a beat
+func readLastBeatSafe() (int64, int64) {
 	lastBeatStr, err := readFile("last_beat")
 
 	if err != nil {
-		writeToFile("last_beat", "0")
-		return 0
+		return fixLastBeatFile()
 	}
 
-	lastBeatInt, err := strconv.ParseInt(lastBeatStr, 10, 64)
+	split := strings.Split(lastBeatStr, ":")
+
+	if len(split) != 2 {
+		log.Printf("- last_beat file was %v, resetting", len(split))
+		return fixLastBeatFile()
+	}
+
+	lastBeatInt, err := strconv.ParseInt(split[0], 10, 64)
 
 	if err != nil {
-		writeToFile("last_beat", "0")
-		return 0
+		return fixLastBeatFile()
 	}
 
-	return lastBeatInt
+	missingBeat, err := strconv.ParseInt(split[1], 10, 64)
+
+	if err != nil {
+		return fixLastBeatFile()
+	}
+
+	return lastBeatInt, missingBeat
+}
+
+func fixLastBeatFile() (int64, int64) {
+	writeToFile("last_beat", "0:0")
+	return 0, 0
 }

@@ -14,19 +14,19 @@ import (
 )
 
 var (
-	addr        = flag.String("addr", ":6060", "TCP address to listen to")
-	compress    = flag.Bool("compress", true, "Whether to enable transparent response compression")
-	useTls      = flag.Bool("tls", false, "Whether to enable TLS")
-	tlsCert     = flag.String("cert", "", "Full certificate file path")
-	tlsKey      = flag.String("key", "", "Full key file path")
-	unknown403  = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
-	authToken   = []byte(readFileUnsafe("token"))
-	pathRoot    = []byte("/")
-	pathStyle   = []byte("/style.css")
-	pathFavicon = []byte("/favicon.ico")
-	htmlFile    = readFileUnsafe("index.html")
-	cssFile     = readFileUnsafe("style.css")
-	lastBeat    = readLastBeatSafe()
+	addr                  = flag.String("addr", ":6060", "TCP address to listen to")
+	compress              = flag.Bool("compress", true, "Whether to enable transparent response compression")
+	useTls                = flag.Bool("tls", false, "Whether to enable TLS")
+	tlsCert               = flag.String("cert", "", "Full certificate file path")
+	tlsKey                = flag.String("key", "", "Full key file path")
+	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
+	authToken             = []byte(readFileUnsafe("token"))
+	pathRoot              = []byte("/")
+	pathStyle             = []byte("/style.css")
+	pathFavicon           = []byte("/favicon.ico")
+	htmlFile              = readFileUnsafe("index.html")
+	cssFile               = readFileUnsafe("style.css")
+	lastBeat, missingBeat = readLastBeatSafe()
 )
 
 func main() {
@@ -92,13 +92,21 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 
 	// Now that we know it is a POST and the Auth key is correct, return the unix timestamp and write it to a file
 	newLastBeat := time.Now().Unix()
-	base10Time := strconv.FormatInt(newLastBeat, 10)
+	currentBeatDifference := newLastBeat - lastBeat
 
-	fmt.Fprintf(ctx, "%v\n", base10Time)
+	if currentBeatDifference > missingBeat {
+		missingBeat = currentBeatDifference
+	}
+
+	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
+	missingBeatStr := strconv.FormatInt(missingBeat, 10)
+	formattedBeats := []string{lastBeatStr, missingBeatStr}
+
+	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
 	log.Printf("- Successful beat from %s", ctx.RemoteIP())
 
 	lastBeat = newLastBeat
-	writeToFile("last_beat", base10Time)
+	writeToFile("last_beat", strings.Join(formattedBeats, ":"))
 }
 
 func handleUnknown(ctx *fasthttp.RequestCtx) {
@@ -121,15 +129,26 @@ func handleFavicon(ctx *fasthttp.RequestCtx) {
 	io.Copy(ctx, f)
 }
 
-// Dynamic html is annoying so just replace a dummy value lol
+// Dynamic html is annoying so just replace a dummy value
 func getHtml() string {
 	lastBeatFormatted := intToTime(lastBeat).Format(time.RFC822)
 	lastBeatStr := strconv.FormatInt(lastBeat, 10)
 
-	formattedTime := []string{lastBeatStr, lastBeatFormatted}
+	currentTime := time.Now()
+	currentBeatDifference := currentTime.Unix() - lastBeat
 
-	htmlWithBeat := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(formattedTime, " "), 1)
-	timeDifference := timeDifference(lastBeatStr, time.Now())
+	// We also want to live update the current difference, instead of only when receiving a beat.
+	if currentBeatDifference > missingBeat {
+		missingBeat = currentBeatDifference
+	}
 
-	return strings.Replace(htmlWithBeat, "RELATIVE_TIME", timeDifference, 1)
+	lastBeatArr := []string{lastBeatStr, lastBeatFormatted}
+	timeDifference := timeDifference(lastBeat, currentTime)
+	formattedAbsence := formattedTime(int(missingBeat))
+
+	htmlWithBeat := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(lastBeatArr, " "), 1)
+	htmlWithRelative := strings.Replace(htmlWithBeat, "RELATIVE_TIME", timeDifference, 1)
+	htmlWithAbsence := strings.Replace(htmlWithRelative, "LONGEST_ABSENCE", formattedAbsence, 1)
+
+	return htmlWithAbsence
 }
