@@ -23,9 +23,11 @@ var (
 	authToken             = []byte(readFileUnsafe("token"))
 	pathRoot              = []byte("/")
 	pathStyle             = []byte("/style.css")
+	pathStyleLarge        = []byte("/style.large.css")
 	pathFavicon           = []byte("/favicon.ico")
 	htmlFile              = readFileUnsafe("index.html")
 	cssFile               = readFileUnsafe("style.css")
+	cssLargeFile          = readFileUnsafe("style.large.css")
 	lastBeat, missingBeat = readLastBeatSafe()
 )
 
@@ -57,6 +59,8 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 		handleRoot(ctx)
 	case bytes.Equal(path, pathStyle):
 		handleStyle(ctx)
+	case bytes.Equal(path, pathStyleLarge):
+		handleStyleLarge(ctx)
 	case bytes.Equal(path, pathFavicon):
 		handleFavicon(ctx)
 	default:
@@ -120,6 +124,11 @@ func handleUnknown(ctx *fasthttp.RequestCtx) {
 func handleStyle(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
 	fmt.Fprint(ctx, cssFile)
+}
+
+func handleStyleLarge(ctx *fasthttp.RequestCtx) {
+	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
+	fmt.Fprint(ctx, cssLargeFile)
 }
 
 func handleFavicon(ctx *fasthttp.RequestCtx) {

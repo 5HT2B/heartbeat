@@ -1,9 +1,10 @@
 body {
-  padding-top: 60px;
-  font-family: Sans-Serif, serif;
-  text-align: center;
+  font-family: sans-serif, serif;
+  padding: 2.5em;
+  background-color: #f6f6f6;
+  color: #1f1f1f;
 }
-p {
-  line-height: 7px;
-  text-align: center;
+
+.times {
+  padding-top: 2.5em;
 }

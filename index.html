@@ -3,13 +3,18 @@
     <head>
         <title>Living's Heartbeat</title>
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.large.css">
     </head>
     <body>
-        <p>Welcome to Living's Heartbeat. This page displays the last timestamp that Liv has used their computer or phone.</p>
-        <p>If I have been absent for more than 48 hours, something is probably wrong.</p>
-        <br>
-        <p>Last response time: LAST_BEAT</p>
-        <p>Relative time: RELATIVE_TIME ago</p>
-        <p>Longest recorded absence: LONGEST_ABSENCE</p>
+        <div class="preamble">
+            <p>Welcome to Living's Heartbeat. This page displays the last timestamp that Liv has used their computer or phone. <br> If I have been absent for more than 48 hours, something is probably wrong.</p>
+        </div>
+        <div class="container">
+            <div class="times">
+                <p>Last response time: <br> LAST_BEAT</p>
+                <p>Relative time: <br> RELATIVE_TIME ago</p>
+                <p>Longest recorded absence: <br> LONGEST_ABSENCE</p>
+            </div>
+        </div>
     </body>
 </html>
