@@ -1,9 +1,11 @@
 body {
-  padding-top: 60px;
-  font-family: Sans-Serif, serif;
+  font-family: sans-serif, serif;
+  padding: 2.5em;
+  background-color: #EEEEEE;
+  color: #333333;
   text-align: center;
 }
-p {
-  line-height: 7px;
-  text-align: center;
+
+.times {
+	padding-top: 2.5em;
 }
