@@ -80,7 +80,7 @@ Also add this to the end of your `~/.profile` to include the required env variab
 ```bash
 # Note: Please use your own token. This is simpily an example.
 export HEARTBEAT_AUTH='Cn$Sn61rt6knaSU06NEntzVTMrLnBN&c15UBbdkn6;vJzJ9D' # Single quotes to avoid escaping issues.
-export HEARTBEAT_HOSTNAME="localhost:8008" # Change your IP to your public IP.
+export HEARTBEAT_HOSTNAME="localhost:8008" # Change your IP to your www IP.
 ```
 
 Then
