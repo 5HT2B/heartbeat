@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Living's Heartbeat</title>
+
+        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.5/build/grids-responsive-min.css">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="style.large.css">
     </head>
     <body>
-        <div class="preamble">
-            <p>Welcome to Living's Heartbeat. This page displays the last timestamp that Liv has used their computer or phone. <br>
-                If they have been absent for more than 48 hours, something is probably wrong. <br>
-                This website is running on version <a href="GIT_REPO/tree/GIT_HASH"><code>GIT_HASH</code></a> of <a href="GIT_REPO">Heartbeat</a>.
-            </p>
+        <div class="spacer"></div>
+        <div class="pure-g preamble">
+            <div class="pure-g-u-0 pure-u-lg-1-3"></div>
+            <div class="pure-u-1 pure-u-lg-1-3">
+                <p>
+                    Welcome to Living's Heartbeat. This page displays the last timestamp that Liv has used their computer or phone. <br>
+                    If they have been absent for more than 48 hours, something is probably wrong. <br>
+                    This website is running on version <a href="GIT_REPO/tree/GIT_HASH"><code>GIT_HASH</code></a> of <a href="GIT_REPO">Heartbeat</a>.
+                </p>
+            </div>
+            <div class="pure-g-u-0 pure-u-lg-1-3"></div>
         </div>
-        <div class="container">
-            <div class="times">
+        <div class="pure-g times">
+            <div class="pure-u-0 pure-u-lg-1-5"></div>
+            <div class="pure-u-1 pure-u-lg-1-5">
                 <p>Last response time: <br> LAST_BEAT</p>
+            </div>
+            <div class="pure-u-1 pure-u-lg-1-5">
                 <p>Relative time: <br> RELATIVE_TIME ago</p>
+            </div>
+            <div class="pure-u-1 pure-u-lg-1-5">
                 <p>Longest recorded absence: <br> LONGEST_ABSENCE</p>
             </div>
+            <div class="pure-u-0 pure-u-lg-1-5"></div>
         </div>
+        <div class="spacer"></div>
     </body>
 </html>

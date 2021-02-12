@@ -1,10 +1,19 @@
 body {
-  font-family: sans-serif, serif;
-  padding: 2.5em;
-  background-color: #f6f6f6;
-  color: #1f1f1f;
+	font-family: sans-serif;
+	padding: 2.5em;
 }
 
-.times {
-  padding-top: 2.5em;
+body {
+	background-color: #eeeeeeee;
+}
+
+a {
+	color: lightseagreen;
+	transition: all 0.1s ease-in-out;
+	text-decoration: none;
+}
+
+a:hover {
+	color: lightslategray;
+	text-decoration: underline;
 }
