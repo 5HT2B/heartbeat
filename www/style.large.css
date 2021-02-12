@@ -1,8 +1,7 @@
 @media (min-width: 64em) and (min-height: 25em) {
-	.pure-u-lg-4-6,
-	.pure-u-lg-1-5 {
-		text-align: center;
-	}
+    .center {
+        text-align: center
+    }
     .spacer {
         height: 12vh
     }
