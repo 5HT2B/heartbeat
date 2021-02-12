@@ -22,12 +22,8 @@ var (
 	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
 	authToken             = []byte(readFileUnsafe("token"))
 	pathRoot              = []byte("/")
-	pathStyle             = []byte("/style.css")
-	pathStyleLarge        = []byte("/style.large.css")
 	pathFavicon           = []byte("/favicon.ico")
-	htmlFile              = readFileUnsafe("index.html")
-	cssFile               = readFileUnsafe("style.css")
-	cssLargeFile          = readFileUnsafe("style.large.css")
+	htmlFile              = readFileUnsafe("www/index.html")
 	lastBeat, missingBeat = readLastBeatSafe()
 	gitCommitHash         = "A Development Version"
 )
@@ -55,19 +51,39 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderServer, "Living's Heartbeat")
 
 	path := ctx.Path()
-	switch {
-	case bytes.Equal(path, pathRoot):
+	pathStr := string(path)
+
+	if bytes.Equal(path, pathRoot) {
 		handleRoot(ctx)
-	case bytes.Equal(path, pathStyle):
-		handleStyle(ctx)
-	case bytes.Equal(path, pathStyleLarge):
-		handleStyleLarge(ctx)
-	case bytes.Equal(path, pathFavicon):
-		handleFavicon(ctx)
-	default:
-		handleUnknown(ctx)
+		return
 	}
 
+	if !ctx.IsGet() { // Don't allow get on non-root
+		handleUnknown(ctx)
+		return
+	}
+
+	if bytes.Equal(path, pathFavicon) {
+		handleFavicon(ctx)
+		return
+	}
+
+	pathWww := []string{"www", pathStr}
+	joined := strings.Join(pathWww, "") // sep is not / because pathStr is prefixed with a /
+	content, err := readFile(joined)
+
+	if err == nil {
+		switch {
+		case strings.HasSuffix(pathStr, ".css"):
+			ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
+		case strings.HasSuffix(pathStr, ".html"):
+			ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
+		}
+
+		fmt.Fprint(ctx, content)
+	} else {
+		handleUnknown(ctx)
+	}
 }
 
 func handleRoot(ctx *fasthttp.RequestCtx) {
@@ -96,22 +112,7 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 	}
 
 	// Now that we know it is a POST and the Auth key is correct, return the unix timestamp and write it to a file
-	newLastBeat := time.Now().Unix()
-	currentBeatDifference := newLastBeat - lastBeat
-
-	if currentBeatDifference > missingBeat {
-		missingBeat = currentBeatDifference
-	}
-
-	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
-	missingBeatStr := strconv.FormatInt(missingBeat, 10)
-	formattedBeats := []string{lastBeatStr, missingBeatStr}
-
-	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
-	log.Printf("- Successful beat from %s", ctx.RemoteIP())
-
-	lastBeat = newLastBeat
-	writeToFile("last_beat", strings.Join(formattedBeats, ":"))
+	handleBeat(ctx)
 }
 
 func handleUnknown(ctx *fasthttp.RequestCtx) {
@@ -122,19 +123,9 @@ func handleUnknown(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-func handleStyle(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
-	fmt.Fprint(ctx, cssFile)
-}
-
-func handleStyleLarge(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
-	fmt.Fprint(ctx, cssLargeFile)
-}
-
 func handleFavicon(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderContentType, "image/x-icon")
-	f, _ := os.Open("favicon.ico")
+	f, _ := os.Open("www/favicon.ico")
 	defer f.Close()
 	io.Copy(ctx, f)
 }
@@ -163,4 +154,23 @@ func getHtml() string {
 	htmlTemp = strings.Replace(htmlTemp, "GIT_REPO", "https://github.com/l1ving/heartbeat", 2)
 
 	return htmlTemp
+}
+
+func handleBeat(ctx *fasthttp.RequestCtx) {
+	newLastBeat := time.Now().Unix()
+	currentBeatDifference := newLastBeat - lastBeat
+
+	if currentBeatDifference > missingBeat {
+		missingBeat = currentBeatDifference
+	}
+
+	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
+	missingBeatStr := strconv.FormatInt(missingBeat, 10)
+	formattedBeats := []string{lastBeatStr, missingBeatStr}
+
+	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
+	log.Printf("- Successful beat from %s", ctx.RemoteIP())
+
+	lastBeat = newLastBeat
+	writeToFile("last_beat", strings.Join(formattedBeats, ":"))
 }
