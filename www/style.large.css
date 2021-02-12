@@ -1,14 +1,26 @@
-@media (min-width: 64em) and (min-height: 25em) {
-	.spacer {
-		height: 12vh
-	}
-	.preamble {
-		height: 33vh;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	.times {
-		height: 33vh;
-	}
+@media (min-width: 900px) {
+    html, body {
+        text-align: center;
+        position: relative;
+    }
+
+    .times {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        margin-top: -25vh;
+    }
+
+    .times > p {
+        padding: 1em;
+    }
+
+    .preamble {
+        display: flex;
+        margin: auto;
+        justify-content: center;
+        align-items: center;
+        height: 60vh;
+    }
 }
