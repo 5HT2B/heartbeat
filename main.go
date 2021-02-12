@@ -165,7 +165,7 @@ func handleBeat(ctx *fasthttp.RequestCtx) {
 	}
 
 	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
-	missingBeatStr := strconv.FormatInt(missingBeat, 10mmm  )
+	missingBeatStr := strconv.FormatInt(missingBeat, 10)
 	formattedBeats := []string{lastBeatStr, missingBeatStr}
 
 	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
