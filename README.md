@@ -1,8 +1,8 @@
-# heartbeat
+# [heartbeat](https://hb.l1v.in)
 
 A webpage to see when I was last active. Works by pinging the server from my computer or laptop every minute, as long as they have been used in the last minute.
 
-For my laptop, this means if I have typed anything in the last minute, for my phone it means if the screen was on.
+For my laptop, this means if I have typed anything in the 2 minutes, for my phone it means if the screen was unlocked and on in the last 2 minutes.
 
 This is my first time using Go and I'm terrible at CSS, so this might not be using best practices. 
 
