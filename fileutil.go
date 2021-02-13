@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-func readFileUnsafe(file string) string {
-	content, err := readFile(file)
+func ReadFileUnsafe(file string) string {
+	content, err := ReadFile(file)
 
 	if err != nil {
 		log.Printf("- Failed to read '%s'", file)
@@ -17,12 +17,12 @@ func readFileUnsafe(file string) string {
 	return content
 }
 
-func readFile(file string) (string, error) {
+func ReadFile(file string) (string, error) {
 	dat, err := ioutil.ReadFile(file)
 	return string(dat), err
 }
 
-func writeToFile(file string, content string) {
+func WriteToFile(file string, content string) {
 	data := []byte(content)
 	err := ioutil.WriteFile(file, data, 0644)
 
@@ -32,36 +32,36 @@ func writeToFile(file string, content string) {
 }
 
 // Returns the last beat and the longest period without a beat
-func readLastBeatSafe() (int64, int64) {
-	lastBeatStr, err := readFile("last_beat")
+func ReadLastBeatSafe() (int64, int64) {
+	lastBeatStr, err := ReadFile("last_beat")
 
 	if err != nil {
-		return fixLastBeatFile()
+		return FixLastBeatFile()
 	}
 
 	split := strings.Split(lastBeatStr, ":")
 
 	if len(split) != 2 {
 		log.Printf("- last_beat file was %v, resetting", len(split))
-		return fixLastBeatFile()
+		return FixLastBeatFile()
 	}
 
 	lastBeatInt, err := strconv.ParseInt(split[0], 10, 64)
 
 	if err != nil {
-		return fixLastBeatFile()
+		return FixLastBeatFile()
 	}
 
 	missingBeat, err := strconv.ParseInt(split[1], 10, 64)
 
 	if err != nil {
-		return fixLastBeatFile()
+		return FixLastBeatFile()
 	}
 
 	return lastBeatInt, missingBeat
 }
 
-func fixLastBeatFile() (int64, int64) {
-	writeToFile("last_beat", "0:0")
+func FixLastBeatFile() (int64, int64) {
+	WriteToFile("last_beat", "0:0")
 	return 0, 0
 }

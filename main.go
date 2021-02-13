@@ -20,18 +20,18 @@ var (
 	tlsCert               = flag.String("cert", "", "Full certificate file path")
 	tlsKey                = flag.String("key", "", "Full key file path")
 	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
-	authToken             = []byte(readFileUnsafe("token"))
+	authToken             = []byte(ReadFileUnsafe("token"))
 	pathRoot              = []byte("/")
 	pathFavicon           = []byte("/favicon.ico")
-	htmlFile              = readFileUnsafe("www/index.html")
-	lastBeat, missingBeat = readLastBeatSafe()
+	htmlFile              = ReadFileUnsafe("www/index.html")
+	lastBeat, missingBeat = ReadLastBeatSafe()
 	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
 )
 
 func main() {
 	flag.Parse()
 
-	h := requestHandler
+	h := RequestHandler
 	if *compress {
 		h = fasthttp.CompressHandler(h)
 	}
@@ -47,43 +47,41 @@ func main() {
 	}
 }
 
-func requestHandler(ctx *fasthttp.RequestCtx) {
+func RequestHandler(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderServer, "Living's Heartbeat")
 
 	path := ctx.Path()
 	requestPath := string(path)
 
 	if bytes.Equal(path, pathRoot) {
-		handleRoot(ctx)
+		HandleRoot(ctx)
 		return
 	}
 
 	if !ctx.IsGet() { // Don't allow get on non-root
-		handleUnknown(ctx)
+		HandleUnknown(ctx)
 		return
 	}
 
 	if bytes.Equal(path, pathFavicon) {
-		handleFavicon(ctx)
+		HandleFavicon(ctx)
 		return
 	}
 
-	pathInFolder := []string{"www", requestPath}
-	pathFile := strings.Join(pathInFolder, "") // sep is not / because requestPath is prefixed with a /
+	pathFile := JoinStr("www", requestPath) // sep is not / because requestPath is prefixed with a /
 
-	err := serveFile(ctx, pathFile, false)
+	err := ServeFile(ctx, pathFile, false)
 
 	// Try to find corresponding file with the .html suffix added
 	if err != nil {
-		pathInFolder = []string{pathFile, ".html"}
-		pathFile = strings.Join(pathInFolder, "")
+		pathFile = JoinStr(pathFile, ".html")
 
-		_ = serveFile(ctx, pathFile, true)
+		_ = ServeFile(ctx, pathFile, true)
 	}
 }
 
-func serveFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
-	content, err := readFile(file)
+func ServeFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
+	content, err := ReadFile(file)
 
 	if err == nil {
 		switch {
@@ -95,16 +93,16 @@ func serveFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
 
 		fmt.Fprint(ctx, content)
 	} else if handleErr {
-		handleUnknown(ctx)
+		HandleUnknown(ctx)
 	}
 
 	return err
 }
-func handleRoot(ctx *fasthttp.RequestCtx) {
+func HandleRoot(ctx *fasthttp.RequestCtx) {
 	// Serve the HTML page if it is a GET request
 	if ctx.IsGet() {
 		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
-		fmt.Fprint(ctx, getHtml())
+		fmt.Fprint(ctx, GetHtml())
 		return
 	}
 
@@ -121,15 +119,15 @@ func handleRoot(ctx *fasthttp.RequestCtx) {
 
 	// Make sure Auth key is correct
 	if !bytes.Equal(header, authToken) {
-		handleUnknown(ctx)
+		HandleUnknown(ctx)
 		return
 	}
 
 	// Now that we know it is a POST and the Auth key is correct, return the unix timestamp and write it to a file
-	handleBeat(ctx)
+	HandleSuccessfulBeat(ctx)
 }
 
-func handleUnknown(ctx *fasthttp.RequestCtx) {
+func HandleUnknown(ctx *fasthttp.RequestCtx) {
 	if *unknown403 {
 		ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
 		fmt.Fprint(ctx, "403 Forbidden\n")
@@ -137,7 +135,7 @@ func handleUnknown(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-func handleFavicon(ctx *fasthttp.RequestCtx) {
+func HandleFavicon(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderContentType, "image/x-icon")
 	f, _ := os.Open("www/favicon.ico")
 	defer f.Close()
@@ -145,8 +143,8 @@ func handleFavicon(ctx *fasthttp.RequestCtx) {
 }
 
 // Dynamic html is annoying so just replace a dummy value
-func getHtml() string {
-	lastBeatFormatted := intToTime(lastBeat).Format(time.RFC822)
+func GetHtml() string {
+	lastBeatFormatted := IntToTime(lastBeat).Format(time.RFC822)
 	lastBeatStr := strconv.FormatInt(lastBeat, 10)
 
 	currentTime := time.Now()
@@ -157,11 +155,10 @@ func getHtml() string {
 		missingBeat = currentBeatDifference
 	}
 
-	lastBeatArr := []string{lastBeatStr, lastBeatFormatted}
-	timeDifference := timeDifference(lastBeat, currentTime)
-	formattedAbsence := formattedTime(int(missingBeat))
+	timeDifference := TimeDifference(lastBeat, currentTime)
+	formattedAbsence := FormattedTime(int(missingBeat))
 
-	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", strings.Join(lastBeatArr, " "), 1)
+	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", JoinStrSep(lastBeatStr, lastBeatFormatted, " "), 1)
 	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
 	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
@@ -170,7 +167,7 @@ func getHtml() string {
 	return htmlTemp
 }
 
-func handleBeat(ctx *fasthttp.RequestCtx) {
+func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	newLastBeat := time.Now().Unix()
 	currentBeatDifference := newLastBeat - lastBeat
 
@@ -180,11 +177,21 @@ func handleBeat(ctx *fasthttp.RequestCtx) {
 
 	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
 	missingBeatStr := strconv.FormatInt(missingBeat, 10)
-	formattedBeats := []string{lastBeatStr, missingBeatStr}
 
 	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
 	log.Printf("- Successful beat from %s", ctx.RemoteIP())
 
 	lastBeat = newLastBeat
-	writeToFile("last_beat", strings.Join(formattedBeats, ":"))
+	WriteToFile("last_beat", JoinStrSep(lastBeatStr, missingBeatStr, ":"))
+}
+
+// I got tired of declaring an array each time I needed this
+func JoinStr(str string, suffix string) string {
+	strArr := []string{str, suffix}
+	return strings.Join(strArr, "")
+}
+
+func JoinStrSep(str string, suffix string, sep string) string {
+	strArr := []string{str, suffix}
+	return strings.Join(strArr, sep)
 }
