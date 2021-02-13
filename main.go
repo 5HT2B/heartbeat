@@ -25,7 +25,7 @@ var (
 	pathFavicon           = []byte("/favicon.ico")
 	htmlFile              = readFileUnsafe("www/index.html")
 	lastBeat, missingBeat = readLastBeatSafe()
-	gitCommitHash         = "A Development Version"
+	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
 )
 
 func main() {
@@ -51,7 +51,7 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderServer, "Living's Heartbeat")
 
 	path := ctx.Path()
-	pathStr := string(path)
+	requestPath := string(path)
 
 	if bytes.Equal(path, pathRoot) {
 		handleRoot(ctx)
@@ -68,24 +68,38 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	pathWww := []string{"www", pathStr}
-	joined := strings.Join(pathWww, "") // sep is not / because pathStr is prefixed with a /
-	content, err := readFile(joined)
+	pathInFolder := []string{"www", requestPath}
+	pathFile := strings.Join(pathInFolder, "") // sep is not / because requestPath is prefixed with a /
+
+	err := serveFile(ctx, pathFile, false)
+
+	// Try to find corresponding file with the .html suffix added
+	if err != nil {
+		pathInFolder = []string{pathFile, ".html"}
+		pathFile = strings.Join(pathInFolder, "")
+
+		_ = serveFile(ctx, pathFile, true)
+	}
+}
+
+func serveFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
+	content, err := readFile(file)
 
 	if err == nil {
 		switch {
-		case strings.HasSuffix(pathStr, ".css"):
+		case strings.HasSuffix(file, ".css"):
 			ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
-		case strings.HasSuffix(pathStr, ".html"):
+		case strings.HasSuffix(file, ".html"):
 			ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
 		}
 
 		fmt.Fprint(ctx, content)
-	} else {
+	} else if handleErr {
 		handleUnknown(ctx)
 	}
-}
 
+	return err
+}
 func handleRoot(ctx *fasthttp.RequestCtx) {
 	// Serve the HTML page if it is a GET request
 	if ctx.IsGet() {

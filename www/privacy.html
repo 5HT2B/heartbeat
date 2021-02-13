@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Heartbeat Privacy Information</title>
+        <!--
+            This project relies on purecss: https://purecss.io/
+            A copy of the license for this is here: https://github.com/pure-css/pure/blob/master/LICENSE
+            The source code is here: https://github.com/pure-css/pure
+         -->
+        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.5/build/grids-responsive-min.css">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.large.css">
+    </head>
+    <body>
+        <div class="spacer"></div>
+        <div class="pure-g preamble">
+            <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+            <div class="pure-u-1 pure-u-lg-4-6">
+                <p class="center">
+                    Heartbeat Privacy Information<br><br>
+                    Heartbeat only keeps logs to stdout (terminal output). <br>
+                    The only logged information is: <br>
+                </p>
+                <p>
+                    - IPs from any POST requests. <br>
+                    - IPs to non-GET requests on anything except the main page. <br>
+                    - IPs to GET requests on non-existent pages. <br>
+                    - Browser locale to GET requests on existent pages.
+                </p>
+                <p class="center">
+                    <b>Your IP address will not be logged for normal requests.</b> <br>
+                    None of aforementioned information is shared with anybody.
+                </p>
+            </div>
+            <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+        </div>
+        <div class="spacer"></div>
+    </body>
+</html>

@@ -3,7 +3,7 @@
         text-align: center
     }
     .spacer {
-        height: 12vh
+        height: 6vh
     }
     .preamble {
         height: 33vh;
@@ -13,5 +13,10 @@
     }
     .times {
         height: 33vh;
+    }
+    .privacy {
+        height: 0;
+        display: flex;
+        justify-content: center;
     }
 }
