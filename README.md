@@ -20,9 +20,9 @@ make
 To run:
 ```bash
 # I recommend using genpasswd https://gist.github.com/l1ving/30f98284e9f92e1b47b4df6e05a063fc
-AUTH="some secure token"
+AUTH='some secure token'
 # We do not want to use echo because it appends a newline.
-printf '$AUTH' > token
+printf "$AUTH" > token
 
 # Change the port to whatever you'd like. 
 # Change localhost to your public IP if you'd like.
