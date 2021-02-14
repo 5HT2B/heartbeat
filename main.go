@@ -39,7 +39,7 @@ func main() {
 
 	if *useTls && len(*tlsCert) > 0 && len(*tlsKey) > 0 {
 		if err := fasthttp.ListenAndServeTLS(*addr, *tlsCert, *tlsKey, h); err != nil {
-			log.Fatalf("- Error in ListenAndServe: %s", err)
+			log.Fatalf("- Error in ListenAndServeTLS: %s", err)
 		}
 	} else {
 		if err := fasthttp.ListenAndServe(*addr, h); err != nil {
