@@ -61,7 +61,34 @@ func ReadLastBeatSafe() (int64, int64) {
 	return lastBeatInt, missingBeat
 }
 
+func ReadGetRequestsSafe() int64 {
+	totalVisitsStr, err := ReadFile("www/get_requests")
+
+	if err != nil {
+		return WriteGetRequestsFile(0)
+	}
+
+	split := strings.Split(totalVisitsStr, "\n")
+
+	if len(split) != 2 {
+		return WriteGetRequestsFile(0)
+	}
+
+	totalVisitsNew, err1 := strconv.ParseInt(split[1], 10, 64)
+
+	if err1 != nil {
+		return WriteGetRequestsFile(0)
+	}
+
+	return totalVisitsNew
+}
+
 func FixLastBeatFile() (int64, int64) {
 	WriteToFile("last_beat", "0:0")
 	return 0, 0
+}
+
+func WriteGetRequestsFile(int int64) int64 {
+	WriteToFile("www/get_requests", JoinStrSep("This page is only updated during a successful beat, so it may not always be up to date", strconv.FormatInt(int, 10), "\n"))
+	return int
 }

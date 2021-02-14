@@ -26,6 +26,7 @@ var (
 	htmlFile              = ReadFileUnsafe("www/index.html")
 	lastBeat, missingBeat = ReadLastBeatSafe()
 	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
+	totalVisits           = ReadGetRequestsSafe()
 )
 
 func main() {
@@ -76,8 +77,14 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 	if err != nil {
 		pathFile = JoinStr(pathFile, ".html")
 
-		_ = ServeFile(ctx, pathFile, true)
+		err = ServeFile(ctx, pathFile, true)
+
+		if err != nil {
+			return
+		}
 	}
+
+	totalVisits++
 }
 
 func ServeFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
@@ -103,6 +110,7 @@ func HandleRoot(ctx *fasthttp.RequestCtx) {
 	if ctx.IsGet() {
 		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
 		fmt.Fprint(ctx, GetHtml())
+		totalVisits++
 		return
 	}
 
@@ -183,6 +191,7 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 
 	lastBeat = newLastBeat
 	WriteToFile("last_beat", JoinStrSep(lastBeatStr, missingBeatStr, ":"))
+	WriteGetRequestsFile(totalVisits)
 }
 
 // I got tired of declaring an array each time I needed this
