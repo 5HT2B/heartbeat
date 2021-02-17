@@ -1,4 +1,4 @@
-# [heartbeat](https://hb.l1v.in)
+# [heartbeat](https://hb.l1v.in) [![CodeFactor](https://www.codefactor.io/repository/github/l1ving/heartbeat/badge)](https://www.codefactor.io/repository/github/l1ving/heartbeat)
 
 A webpage to see when I was last active. Works by pinging the server from my computer or laptop every minute, as long as they have been used in the last minute.
 
