@@ -169,7 +169,7 @@ func GetHtml() string {
 	formattedAbsence := FormattedTime(int(missingBeat))
 
 	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", JoinStrSep(lastBeatStr, lastBeatFormatted, " "), 1)
-	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 2)
+	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
 	htmlTemp = strings.Replace(htmlTemp, "LAST_SEEN", IntToTime(lastBeat).Format(timeFormat), 1)
 	htmlTemp = strings.Replace(htmlTemp, "CURRENT_TIME", time.Now().Format(timeFormat), 1)
 	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
