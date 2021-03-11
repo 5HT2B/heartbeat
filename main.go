@@ -23,9 +23,11 @@ var (
 	authToken             = []byte(ReadFileUnsafe("token"))
 	pathRoot              = []byte("/")
 	pathFavicon           = []byte("/favicon.ico")
+	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
+	timeFormat            = "Jan 01 15:04:05 MST"
+	timeFormatYear        = "(Jan 01 2006 15:04:05 MST)"
 	htmlFile              = ReadFileUnsafe("www/index.html")
 	lastBeat, missingBeat = ReadLastBeatSafe()
-	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
 	totalVisits           = ReadGetRequestsSafe()
 )
 
@@ -152,7 +154,7 @@ func HandleFavicon(ctx *fasthttp.RequestCtx) {
 
 // Dynamic html is annoying so just replace a dummy value
 func GetHtml() string {
-	lastBeatFormatted := IntToTime(lastBeat).Format(time.RFC822)
+	lastBeatFormatted := IntToTime(lastBeat).Format(timeFormatYear)
 	lastBeatStr := strconv.FormatInt(lastBeat, 10)
 
 	currentTime := time.Now()
@@ -167,7 +169,8 @@ func GetHtml() string {
 	formattedAbsence := FormattedTime(int(missingBeat))
 
 	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", JoinStrSep(lastBeatStr, lastBeatFormatted, " "), 1)
-	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
+	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 2)
+	htmlTemp = strings.Replace(htmlTemp, "CURRENT_TIME", time.Now().Format(timeFormat), 1)
 	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_REPO", "https://github.com/l1ving/heartbeat", 2)
