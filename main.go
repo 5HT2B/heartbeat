@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"github.com/Ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 	"io"
 	"log"
@@ -120,7 +121,7 @@ func HandleRoot(ctx *fasthttp.RequestCtx) {
 	if !ctx.IsPost() {
 		ctx.Response.SetStatusCode(fasthttp.StatusBadRequest)
 		fmt.Fprint(ctx, "400 Bad Request\n")
-		log.Printf("- Returned 400 to %s - tried to connect with '%s'", ctx.RemoteIP(), ctx.Method())
+		log.Printf("- Returned 400 to %s - tried to connect with '%s'", realip.FromRequest(ctx), ctx.Method())
 		return
 	}
 
@@ -141,7 +142,7 @@ func HandleUnknown(ctx *fasthttp.RequestCtx) {
 	if *unknown403 {
 		ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
 		fmt.Fprint(ctx, "403 Forbidden\n")
-		log.Printf("- Returned 403 to %s - tried to connect with '%s' to '%s'", ctx.RemoteIP(), ctx.Request.Header.Peek("Auth"), ctx.Path())
+		log.Printf("- Returned 403 to %s - tried to connect with '%s' to '%s'", realip.FromRequest(ctx), ctx.Request.Header.Peek("Auth"), ctx.Path())
 	}
 }
 
@@ -191,7 +192,7 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	missingBeatStr := strconv.FormatInt(missingBeat, 10)
 
 	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
-	log.Printf("- Successful beat from %s", ctx.RemoteIP())
+	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
 
 	lastBeat = newLastBeat
 	WriteToFile("last_beat", JoinStrSep(lastBeatStr, missingBeatStr, ":"))
