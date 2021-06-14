@@ -25,8 +25,8 @@ var (
 	pathRoot              = []byte("/")
 	pathFavicon           = []byte("/favicon.ico")
 	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
-	timeFormat            = "Jan 01 15:04:05 MST"
-	timeFormatYear        = "(Jan 01 2006 15:04:05 MST)"
+	timeFormat            = "Jan 02 15:04:05 MST"
+	timeFormatYear        = "(Jan 02 2006 15:04:05 MST)"
 	htmlFile              = ReadFileUnsafe("www/index.html")
 	lastBeat, missingBeat = ReadLastBeatSafe()
 	totalVisits           = ReadGetRequestsSafe()
