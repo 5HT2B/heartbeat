@@ -4,7 +4,7 @@ Wants=heartbeat-client.timer
 
 [Service]
 Type=oneshot
-ExecStart=/home/liv/heartbeat/ping.sh
+ExecStart=/home/heartbeat/heartbeat/ping.sh
 
 [Install]
 WantedBy=multi-user.target
