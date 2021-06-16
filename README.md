@@ -93,7 +93,7 @@ systemctl --user start heartbeat-client.timer
 
 ### Running client on Android (tasker)
 
-You *should* be able to import it from [this](https://taskernet.com/shares/?user=AS35m8nEM1zYe7Hwhnr%2FmqY6FLKRigBn5KsRZjpRBVQ5kVsRat6L8dgyXksiNLNHQ5ycPrAdpiCS860%3D&id=Profile%3ADisplay+Unlocked) link on your Android.
+You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/l1ving/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token before importing**.
 
 Make sure to allow running in background, and all of the other optimizations tasker recommends to be sure that it runs. If there is any issue importing it, please [make an issue](https://github.com/l1ving/heartbeat/issues/new) in this repo.
 
