@@ -21,6 +21,7 @@ var (
 	tlsCert               = flag.String("cert", "", "Full certificate file path")
 	tlsKey                = flag.String("key", "", "Full key file path")
 	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
+	serverName            = flag.String("name", "Liv's Heartbeat", "The name of the server to use (default Liv's Heartbeat)")
 	authToken             = []byte(ReadFileUnsafe("token"))
 	pathRoot              = []byte("/")
 	pathFavicon           = []byte("/favicon.ico")
@@ -59,7 +60,7 @@ func main() {
 }
 
 func RequestHandler(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set(fasthttp.HeaderServer, "Living's Heartbeat")
+	ctx.Response.Header.Set(fasthttp.HeaderServer, *serverName)
 
 	path := ctx.Path()
 	requestPath := string(path)
@@ -183,6 +184,7 @@ func GetHtml() string {
 	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_REPO", "https://github.com/l1ving/heartbeat", 2)
+	htmlTemp = strings.Replace(htmlTemp, "SERVER_NAME", *serverName, 3)
 
 	return htmlTemp
 }
