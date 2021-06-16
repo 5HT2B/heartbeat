@@ -21,7 +21,7 @@ var (
 	tlsCert               = flag.String("cert", "", "Full certificate file path")
 	tlsKey                = flag.String("key", "", "Full key file path")
 	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
-	serverName            = flag.String("name", "Liv's Heartbeat", "The name of the server to use (default Liv's Heartbeat)")
+	serverName            = flag.String("name", "Liv's Heartbeat", "The name of the server to use")
 	authToken             = []byte(ReadFileUnsafe("token"))
 	pathRoot              = []byte("/")
 	pathFavicon           = []byte("/favicon.ico")
