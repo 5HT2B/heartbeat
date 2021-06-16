@@ -1,5 +1,5 @@
 [Unit]
-Description=Runs Living's Heatbeat Server
+Description=Runs Heatbeat Server
 Requires=heartbeat-server.service
 
 [Timer]

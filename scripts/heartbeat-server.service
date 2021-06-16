@@ -1,5 +1,5 @@
 [Unit]
-Description=Runs Living's Heatbeat Beat
+Description=Runs Heatbeat Beat
 Wants=heartbeat-server.timer
 
 [Service]
