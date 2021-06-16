@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func ReadFileUnsafe(file string) string {
@@ -31,7 +32,7 @@ func WriteToFile(file string, content string) {
 	}
 }
 
-// Returns the last beat and the longest period without a beat
+// ReadLastBeatSafe returns the last beat and the longest period without a beat
 func ReadLastBeatSafe() (int64, int64) {
 	lastBeatStr, err := ReadFile("last_beat")
 
@@ -84,8 +85,9 @@ func ReadGetRequestsSafe() int64 {
 }
 
 func FixLastBeatFile() (int64, int64) {
-	WriteToFile("last_beat", "0:0")
-	return 0, 0
+	epoch := time.Now().Unix()
+	WriteToFile("last_beat", strconv.FormatInt(epoch, 10)+":0")
+	return epoch, 0
 }
 
 func WriteGetRequestsFile(int int64) int64 {
