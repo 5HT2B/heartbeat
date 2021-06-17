@@ -41,7 +41,7 @@ func main() {
 		protocol += "s"
 	}
 
-	log.Printf("- Running heartbeat on " + protocol + "://" + *addr)
+	log.Printf("- Running heartbeat on " + protocol + "://" + *addr + " with token \"" + ReadFileUnsafe("token") + "\"")
 
 	h := RequestHandler
 	if *compress {
