@@ -80,13 +80,13 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	pathFile := JoinStr("www", requestPath) // sep is not / because requestPath is prefixed with a /
+	pathFile := "www" + requestPath // sep is not / because requestPath is prefixed with a /
 
 	err := ServeFile(ctx, pathFile, false)
 
 	// Try to find corresponding file with the .html suffix added
 	if err != nil {
-		pathFile = JoinStr(pathFile, ".html")
+		pathFile = pathFile + ".html"
 
 		err = ServeFile(ctx, pathFile, true)
 
@@ -163,7 +163,7 @@ func HandleFavicon(ctx *fasthttp.RequestCtx) {
 
 // Dynamic html is annoying so just replace a dummy value
 func GetHtml() string {
-	lastBeatFormatted := IntToTime(lastBeat).Format(timeFormatYear)
+	lastBeatFormatted := time.Unix(lastBeat, 0).Format(timeFormatYear)
 	lastBeatStr := strconv.FormatInt(lastBeat, 10)
 
 	currentTime := time.Now()
@@ -177,9 +177,9 @@ func GetHtml() string {
 	timeDifference := TimeDifference(lastBeat, currentTime)
 	formattedAbsence := FormattedTime(int(missingBeat))
 
-	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", JoinStrSep(lastBeatStr, lastBeatFormatted, " "), 1)
+	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", lastBeatStr+" "+lastBeatFormatted, 1)
 	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
-	htmlTemp = strings.Replace(htmlTemp, "LAST_SEEN", IntToTime(lastBeat).Format(timeFormat), 1)
+	htmlTemp = strings.Replace(htmlTemp, "LAST_SEEN", time.Unix(lastBeat, 0).Format(timeFormat), 1)
 	htmlTemp = strings.Replace(htmlTemp, "CURRENT_TIME", time.Now().Format(timeFormat), 1)
 	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
@@ -204,17 +204,6 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
 
 	lastBeat = newLastBeat
-	WriteToFile("last_beat", JoinStrSep(lastBeatStr, missingBeatStr, ":"))
+	WriteToFile("last_beat", lastBeatStr+":"+missingBeatStr)
 	WriteGetRequestsFile(totalVisits)
-}
-
-// I got tired of declaring an array each time I needed this
-func JoinStr(str string, suffix string) string {
-	strArr := []string{str, suffix}
-	return strings.Join(strArr, "")
-}
-
-func JoinStrSep(str string, suffix string, sep string) string {
-	strArr := []string{str, suffix}
-	return strings.Join(strArr, sep)
 }

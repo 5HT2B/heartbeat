@@ -6,12 +6,8 @@ import (
 )
 
 func TimeDifference(lastBeat int64, t time.Time) string {
-	st := t.Sub(IntToTime(lastBeat))
+	st := t.Sub(time.Unix(lastBeat, 0))
 	return FormattedTime(int(st.Seconds()))
-}
-
-func IntToTime(int int64) time.Time {
-	return time.Unix(int, 0)
 }
 
 func FormattedTime(secondsIn int) string {

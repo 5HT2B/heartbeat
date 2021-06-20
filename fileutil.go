@@ -91,6 +91,6 @@ func FixLastBeatFile() (int64, int64) {
 }
 
 func WriteGetRequestsFile(int int64) int64 {
-	WriteToFile("www/get_requests", JoinStrSep("This page is only updated during a successful beat, so it may not always be up to date", strconv.FormatInt(int, 10), "\n"))
+	WriteToFile("www/get_requests", "This page is only updated during a successful beat, so it may not always be up to date"+"\n"+strconv.FormatInt(int, 10))
 	return int
 }
