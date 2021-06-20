@@ -116,6 +116,7 @@ func ServeFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
 
 	return err
 }
+
 func HandleRoot(ctx *fasthttp.RequestCtx) {
 	// Serve the HTML page if it is a GET request
 	if ctx.IsGet() {
