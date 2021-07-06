@@ -43,32 +43,21 @@ If you are having issues with a 403 even though you set it to POST and set your 
 
 ### Running server in production
 
-Follow the above instructions, just skip the testing section.
-
-Copy systemd service (`-server`) files to `~/.config/systemd/user/` and edit the `ExecStart` accordingly. 
-Make sure the path matches the *full* path to your `start.sh`.
-
-Also edit your `start.sh` to match the path to your `heartbeat` binary.
-
-Then 
-```bash
-systemctl --user enable heartbeat-server.timer
-systemctl --user start heartbeat-server.timer
+I recommend using Caddy for automatic renewal + as a reverse proxy.
+```
+# Caddyfile example
+hb.l1v.in {
+  header Server Caddy "Heartbeat"
+  reverse_proxy localhost:6060
+}
 ```
 
-This will run the service automatically, and restart it if it dies.
-
-You can update Heartbeat on the server by simpily 
-
+There is also a docker image available with the following command, or checkout the
+[`update.sh`](https://github.com/l1ving/heartbeat/blob/master/scripts/update.sh) script for automatically
+updating a live docker image.
 ```bash
-cd ~/path/to/heartbeat
-git pull
-make
-systemctl --user stop heartbeat-server.service
-# Automatically restarts with the new binary
+docker pull l1ving/heartbeat:latest
 ```
-
-If you'd like to run Heartbeat on **ports 80 or 443**, please read [this](https://superuser.com/a/892391).
 
 ### Running client on Linux
 
