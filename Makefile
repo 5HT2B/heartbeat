@@ -1,5 +1,5 @@
 NAME   := l1ving/heartbeat
-TAG    := $(shell git log -1 --pretty=%h)
+TAG    := $(shell git rev-parse --short HEAD)
 IMG    := ${NAME}:${TAG}
 LATEST := ${NAME}:latest
 
@@ -13,7 +13,7 @@ clean:
 	rm -f heartbeat
 
 build:
-	@docker build -t ${IMG} .
+	@docker build --build-arg COMMIT=${TAG} -t ${IMG} .
 	@docker tag ${IMG} ${LATEST}
 
 push:
