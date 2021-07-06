@@ -6,9 +6,6 @@ RUN mkdir /heartbeat-files
 ADD . /heartbeat
 WORKDIR /heartbeat
 
-COPY ./www/. /heartbeat-files/www/
-VOLUME /heartbeat-files
-
 RUN go build -ldflags "-X main.gitCommitHash=${COMMIT}" -o heartbeat .
 
 ENV ADDRESS "localhost:6060"
