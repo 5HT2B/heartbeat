@@ -1,10 +1,14 @@
-# [heartbeat](https://hb.l1v.in) [![CodeFactor](https://www.codefactor.io/repository/github/l1ving/heartbeat/badge)](https://www.codefactor.io/repository/github/l1ving/heartbeat)
+# [heartbeat](https://hb.l1v.in) 
+[![time tracker](https://wakatime.com/badge/github/l1ving/heartbeat.svg)](https://wakatime.com/badge/github/l1ving/heartbeat)
+[![Docker Pulls](https://img.shields.io/docker/pulls/l1ving/heartbeat?logo=docker&logoColor=white)](https://hub.docker.com/r/l1ving/heartbeat)
+[![Docker Build](https://img.shields.io/github/workflow/status/l1ving/heartbeat/docker-build?logo=docker&logoColor=white)](https://github.com/l1ving/heartbeat/actions/workflows/docker-build.yml)
+[![CodeFactor](https://img.shields.io/codefactor/grade/github/l1ving/heartbeat?logo=codefactor&logoColor=white)](https://www.codefactor.io/repository/github/l1ving/heartbeat)
 
 A webpage to see when I was last active. Works by pinging the server from my computer or laptop every minute, as long as they have been used in the last minute.
 
 For my laptop, this means if I have typed anything in the 2 minutes, for my phone it means if the screen was unlocked and on in the last 2 minutes.
 
-This is my first time using Go and I'm terrible at CSS, so this might not be using best practices. 
+This is my first time using Go, and I'm terrible at CSS, so this might not be using best practices. 
 
 ## Contributing
 
