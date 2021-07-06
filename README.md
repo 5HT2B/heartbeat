@@ -103,3 +103,7 @@ I **highly** recommend checking the last time an input device such as a keyboard
 ```bash
 curl -s -X POST -H "Auth: $HEARTBEAT_AUTH" $HEARTBEAT_HOSTNAME
 ```
+
+## TODO
+
+- [ ] Fix Dockerfile inclusion of www/
