@@ -80,7 +80,12 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	pathFile := "www" + requestPath // sep is not / because requestPath is prefixed with a /
+	pathFile := ""
+	if requestPath == "/stats" {
+		pathFile = "config/get_requests"
+	} else {
+		pathFile = "www" + requestPath // sep is not / because requestPath is prefixed with a /
+	}
 
 	err := ServeFile(ctx, pathFile, false)
 
