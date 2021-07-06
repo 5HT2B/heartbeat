@@ -10,4 +10,4 @@ RUN go build -o heartbeat .
 ENV ADDRESS "localhost:6060"
 
 WORKDIR /heartbeat-files
-CMD /heartbeat/heartbeat-addr $ADDRESS
+CMD /heartbeat/heartbeat -addr $ADDRESS
