@@ -6,8 +6,8 @@ RUN mkdir /heartbeat-files
 ADD . /heartbeat
 WORKDIR /heartbeat
 
-RUN rm -rf /heartbeat-files/www
 COPY ./www/. /heartbeat-files/www/
+VOLUME /heartbeat-files
 
 RUN go build -ldflags "-X main.gitCommitHash=${COMMIT}" -o heartbeat .
 
