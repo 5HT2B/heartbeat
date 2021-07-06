@@ -8,7 +8,7 @@ if [[ "$1" != "FIRST_RUN" ]]; then
   docker stop "$CONTAINER_ID"
   docker rm "$CONTAINER_ID"
 else
-  echo "MAKE SURE TO CREATE 'token' inside \''$HOME'/heartbeat\'"
+  echo "MAKE SURE TO CREATE 'token' inside '$HOME/heartbeat'"
 fi
 
 docker run --name heartbeat \
