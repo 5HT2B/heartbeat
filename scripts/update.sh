@@ -18,6 +18,7 @@ cd "$HOME" || {
   exit 1
 }
 
-git clone https://github.com/l1ving/heartbeat heartbeat-tmp
+rm -rf heartbeat-tmp
+git clone --depth 1 https://github.com/l1ving/heartbeat heartbeat-tmp
 rm -rf heartbeat/www
 cp -r heartbeat-tmp/www heartbeat/www
