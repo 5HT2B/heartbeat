@@ -34,7 +34,7 @@ func WriteToFile(file string, content string) {
 
 // ReadLastBeatSafe returns the last beat and the longest period without a beat
 func ReadLastBeatSafe() (int64, int64) {
-	lastBeatStr, err := ReadFile("last_beat")
+	lastBeatStr, err := ReadFile("config/last_beat")
 
 	if err != nil {
 		return FixLastBeatFile()
@@ -43,7 +43,7 @@ func ReadLastBeatSafe() (int64, int64) {
 	split := strings.Split(lastBeatStr, ":")
 
 	if len(split) != 2 {
-		log.Printf("- last_beat file was %v, resetting", len(split))
+		log.Printf("- config/last_beat file was %v, resetting", len(split))
 		return FixLastBeatFile()
 	}
 
@@ -63,7 +63,7 @@ func ReadLastBeatSafe() (int64, int64) {
 }
 
 func ReadGetRequestsSafe() int64 {
-	totalVisitsStr, err := ReadFile("get_requests")
+	totalVisitsStr, err := ReadFile("config/get_requests")
 
 	if err != nil {
 		return WriteGetRequestsFile(0)
@@ -86,11 +86,11 @@ func ReadGetRequestsSafe() int64 {
 
 func FixLastBeatFile() (int64, int64) {
 	epoch := time.Now().Unix()
-	WriteToFile("last_beat", strconv.FormatInt(epoch, 10)+":0")
+	WriteToFile("config/last_beat", strconv.FormatInt(epoch, 10)+":0")
 	return epoch, 0
 }
 
 func WriteGetRequestsFile(int int64) int64 {
-	WriteToFile("get_requests", "This page is only updated during a successful beat, so it may not always be up to date"+"\n"+strconv.FormatInt(int, 10))
+	WriteToFile("config/get_requests", "This page is only updated during a successful beat, so it may not always be up to date"+"\n"+strconv.FormatInt(int, 10))
 	return int
 }

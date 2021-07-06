@@ -26,7 +26,8 @@ To run:
 # I recommend using genpasswd https://gist.github.com/l1ving/30f98284e9f92e1b47b4df6e05a063fc
 AUTH='some secure token'
 # We do not want to use echo because it appends a newline.
-printf "$AUTH" > token
+mkdir config
+printf "$AUTH" > config/token
 
 # Change the port to whatever you'd like. 
 # Change localhost to your public IP if you'd like.
@@ -43,7 +44,7 @@ curl -X POST -H "Auth: $AUTH" localhost:8008
 
 or open localhost:8008 in a browser.
 
-If you are having issues with a 403 even though you set it to POST and set your Auth header, PLEASE please make sure your `token` file does not have a trailing newline.
+If you are having issues with a 403 even though you set it to POST and set your Auth header, PLEASE please make sure your `config/token` file does not have a trailing newline.
 
 ### Running server in production
 

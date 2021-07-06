@@ -1,6 +1,5 @@
 heartbeat
-last_beat
-token
+config/last_beat
+config/token
+config/get_requests
 .idea/
-www/get_requests
-get_requests

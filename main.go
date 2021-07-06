@@ -22,7 +22,7 @@ var (
 	tlsKey                = flag.String("key", "", "Full key file path")
 	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
 	serverName            = flag.String("name", "Liv's Heartbeat", "The name of the server to use")
-	authToken             = []byte(ReadFileUnsafe("token"))
+	authToken             = []byte(ReadFileUnsafe("config/token"))
 	pathRoot              = []byte("/")
 	pathFavicon           = []byte("/favicon.ico")
 	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
@@ -205,6 +205,6 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
 
 	lastBeat = newLastBeat
-	WriteToFile("last_beat", lastBeatStr+":"+missingBeatStr)
+	WriteToFile("config/last_beat", lastBeatStr+":"+missingBeatStr)
 	WriteGetRequestsFile(totalVisits)
 }
