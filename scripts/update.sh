@@ -9,8 +9,8 @@ fi
 docker pull l1ving/heartbeat:latest
 
 if [[ "$1" != "FIRST_RUN" ]]; then
-  docker stop heartbeat
-  docker rm heartbeat
+  docker stop heartbeat || echo "Could not stop missing container heartbeat"
+  docker rm heartbeat || echo "Could not remove missing container heartbeat"
 else
   echo "MAKE SURE TO CREATE 'token' inside '$FOH_PATH'"
 fi
