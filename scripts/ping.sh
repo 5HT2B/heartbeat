@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source ~/.env
+# shellcheck disable=SC1091
+source "$HOME/.env"
 LOGGING_FILE="$HOME/.local/share/heartbeat.log"
 
 if [[ -z "$(which xprintidle)" ]]; then
