@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$HOME/.profile"
+source "$HOME/.env"
 if [[ -z "$HB_PATH" ]]; then
   echo "HB_PATH not set!"
   exit 1
