@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ~/.profile
+source ~/.env
 LOGGING_FILE="$HOME/.local/share/heartbeat.log"
 
 if [[ -z "$(which xprintidle)" ]]; then

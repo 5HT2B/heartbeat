@@ -69,7 +69,7 @@ docker pull l1ving/heartbeat:latest
 Copy systemd service (`-client`) files to `~/.config/systemd/user/` and edit the `ExecStart` accordingly.
 Make sure the path matches the *full* path to your `ping.sh`.
 
-Also add this to the end of your `~/.profile` to include the required env variables.
+Also add this to the end of your `~/.env` to include the required env variables.
 
 ```bash
 # Note: Please use your own token. This is simpily an example.
