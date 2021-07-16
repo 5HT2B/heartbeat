@@ -1,8 +1,8 @@
 FROM golang:1.16.5
 ARG COMMIT="latest"
 
-RUN mkdir /heartbeat
-RUN mkdir /heartbeat/config
+RUN mkdir /heartbeat \
+ && mkdir /heartbeat/config
 ADD . /heartbeat
 WORKDIR /heartbeat
 
