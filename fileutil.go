@@ -33,7 +33,7 @@ func WriteToFile(file string, content string) {
 }
 
 // ReadLastBeatSafe returns the last beat and the longest period without a beat
-func ReadLastBeatSafe() (int64, int64) {
+func ReadLastBeatSafe() (int64, int64, int64) {
 	lastBeatStr, err := ReadFile("config/last_beat")
 
 	if err != nil {
@@ -42,8 +42,8 @@ func ReadLastBeatSafe() (int64, int64) {
 
 	split := strings.Split(lastBeatStr, ":")
 
-	if len(split) != 2 {
-		log.Printf("- config/last_beat file was %v, resetting", len(split))
+	if len(split) != 3 {
+		log.Printf("- config/last_beat file was \"%s\", resetting", lastBeatStr)
 		return FixLastBeatFile()
 	}
 
@@ -59,7 +59,13 @@ func ReadLastBeatSafe() (int64, int64) {
 		return FixLastBeatFile()
 	}
 
-	return lastBeatInt, missingBeat
+	totalBeats, err := strconv.ParseInt(split[2], 10, 64)
+
+	if err != nil {
+		return FixLastBeatFile()
+	}
+
+	return lastBeatInt, missingBeat, totalBeats
 }
 
 func ReadGetRequestsSafe() int64 {
@@ -84,10 +90,10 @@ func ReadGetRequestsSafe() int64 {
 	return totalVisitsNew
 }
 
-func FixLastBeatFile() (int64, int64) {
+func FixLastBeatFile() (int64, int64, int64) {
 	epoch := time.Now().Unix()
 	WriteToFile("config/last_beat", strconv.FormatInt(epoch, 10)+":0")
-	return epoch, 0
+	return epoch, 0, 0
 }
 
 func WriteGetRequestsFile(int int64) int64 {

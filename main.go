@@ -15,22 +15,21 @@ import (
 )
 
 var (
-	addr                  = flag.String("addr", "localhost:6060", "TCP address to listen to")
-	compress              = flag.Bool("compress", true, "Whether to enable transparent response compression")
-	useTls                = flag.Bool("tls", false, "Whether to enable TLS")
-	tlsCert               = flag.String("cert", "", "Full certificate file path")
-	tlsKey                = flag.String("key", "", "Full key file path")
-	unknown403            = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
-	serverName            = flag.String("name", "Liv's Heartbeat", "The name of the server to use")
-	authToken             = []byte(ReadFileUnsafe("config/token"))
-	pathRoot              = []byte("/")
-	pathFavicon           = []byte("/favicon.ico")
-	gitCommitHash         = "A Development Version" // This is changed with compile flags in Makefile
-	timeFormat            = "Jan 02 15:04:05 MST"
-	timeFormatYear        = "(Jan 02 2006 15:04:05 MST)"
-	htmlFile              = ReadFileUnsafe("www/index.html")
-	lastBeat, missingBeat = ReadLastBeatSafe()
-	totalVisits           = ReadGetRequestsSafe()
+	addr                              = flag.String("addr", "localhost:6060", "TCP address to listen to")
+	compress                          = flag.Bool("compress", true, "Whether to enable transparent response compression")
+	useTls                            = flag.Bool("tls", false, "Whether to enable TLS")
+	tlsCert                           = flag.String("cert", "", "Full certificate file path")
+	tlsKey                            = flag.String("key", "", "Full key file path")
+	unknown403                        = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
+	serverName                        = flag.String("name", "Liv's Heartbeat", "The name of the server to use")
+	authToken                         = []byte(ReadFileUnsafe("config/token"))
+	pathRoot                          = []byte("/")
+	pathFavicon                       = []byte("/favicon.ico")
+	gitCommitHash                     = "A Development Version" // This is changed with compile flags in Makefile
+	timeFormat                        = "Jan 02 2006 15:04:05 MST"
+	htmlFile                          = ReadFileUnsafe("www/index.html")
+	lastBeat, missingBeat, totalBeats = ReadLastBeatSafe()
+	totalVisits                       = ReadGetRequestsSafe()
 )
 
 func main() {
@@ -167,11 +166,7 @@ func HandleFavicon(ctx *fasthttp.RequestCtx) {
 	io.Copy(ctx, f)
 }
 
-// Dynamic html is annoying so just replace a dummy value
 func GetHtml() string {
-	lastBeatFormatted := time.Unix(lastBeat, 0).Format(timeFormatYear)
-	lastBeatStr := strconv.FormatInt(lastBeat, 10)
-
 	currentTime := time.Now()
 	currentBeatDifference := currentTime.Unix() - lastBeat
 
@@ -180,14 +175,18 @@ func GetHtml() string {
 		missingBeat = currentBeatDifference
 	}
 
+	lastSeen := time.Unix(lastBeat, 0).Format(timeFormat)
 	timeDifference := TimeDifference(lastBeat, currentTime)
-	formattedAbsence := FormattedTime(int(missingBeat))
+	missingBeatFmt := FormattedTime(missingBeat)
+	totalBeatsFmt := FormattedNum(totalBeats)
+	currentTimeStr := currentTime.Format(timeFormat)
 
-	htmlTemp := strings.Replace(htmlFile, "LAST_BEAT", lastBeatStr+" "+lastBeatFormatted, 1)
+	htmlTemp := htmlFile
+	htmlTemp = strings.Replace(htmlTemp, "LAST_SEEN", lastSeen, 2)
 	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
-	htmlTemp = strings.Replace(htmlTemp, "LAST_SEEN", time.Unix(lastBeat, 0).Format(timeFormat), 1)
-	htmlTemp = strings.Replace(htmlTemp, "CURRENT_TIME", time.Now().Format(timeFormat), 1)
-	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", formattedAbsence, 1)
+	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", missingBeatFmt, 1)
+	htmlTemp = strings.Replace(htmlTemp, "TOTAL_BEATS", totalBeatsFmt, 1)
+	htmlTemp = strings.Replace(htmlTemp, "CURRENT_TIME", currentTimeStr, 1)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
 	htmlTemp = strings.Replace(htmlTemp, "GIT_REPO", "https://github.com/l1ving/heartbeat", 2)
 	htmlTemp = strings.Replace(htmlTemp, "SERVER_NAME", *serverName, 3)
@@ -196,6 +195,7 @@ func GetHtml() string {
 }
 
 func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
+	totalBeats += 1
 	newLastBeat := time.Now().Unix()
 	currentBeatDifference := newLastBeat - lastBeat
 
@@ -205,11 +205,12 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 
 	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
 	missingBeatStr := strconv.FormatInt(missingBeat, 10)
+	totalBeatsStr := strconv.FormatInt(totalBeats, 10)
 
 	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
 	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
 
 	lastBeat = newLastBeat
-	WriteToFile("config/last_beat", lastBeatStr+":"+missingBeatStr)
+	WriteToFile("config/last_beat", lastBeatStr+":"+missingBeatStr+":"+totalBeatsStr)
 	WriteGetRequestsFile(totalVisits)
 }
