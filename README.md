@@ -87,11 +87,11 @@ systemctl --user start heartbeat-client.timer
 
 ### Running client on Android (tasker)
 
-You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/l1ving/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token before importing**.
+You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/l1ving/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token inside `Ping.tsk.xml` before importing**.
 
 Make sure to allow running in background, and all of the other optimizations tasker recommends to be sure that it runs. If there is any issue importing it, please [make an issue](https://github.com/l1ving/heartbeat/issues/new) in this repo.
 
-Also make sure to edit the auth header in the `ping` task.
+You will also need to create your own profile that runs every 2 minutes, to run the "ping task", and make sure the Display Off and Display Unlocked profiles are enabled.
 
 ### Running client on anything else
 
