@@ -9,8 +9,11 @@ if [[ -z "$(which xprintidle)" ]]; then
   exit 1
 fi
 
-# Allow for 2 minutes per cronjob buffer
-if [[ "$(xprintidle)" -lt 120000 ]]; then
+# Check if kscreenlocker is running. Only works on KDE
+SCREEN_LOCKED="$(pgrep kscreenlocker)"
+
+# Allow for 2 minutes per cronjob buffer, and make sure screen is unlocked
+if [[ "$(xprintidle)" -lt 120000 && -z "$SCREEN_LOCKED" ]]; then
   {
     echo "$(date +"%Y/%m/%d %T") - Running Heartbeat"
     curl -s -X POST -H "Auth: $HEARTBEAT_AUTH" "$HEARTBEAT_HOSTNAME"
