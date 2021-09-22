@@ -11,9 +11,12 @@ fi
 
 # Check if kscreenlocker is running. Only works on KDE
 SCREEN_LOCKED="$(pgrep kscreenlocker)"
+# Check when the last keyboard or mouse event was sent
+LAST_INPUT_MS="$(xprintidle)"
 
-# Allow for 2 minutes per cronjob buffer, and make sure screen is unlocked
-if [[ "$(xprintidle)" -lt 120000 && -z "$SCREEN_LOCKED" ]]; then
+# Make sure the device was used in the last 2 minutes
+# and make sure screen is unlocked
+if [[ "$LAST_INPUT_MS" -lt 120000 && -z "$SCREEN_LOCKED" ]]; then
   {
     echo "$(date +"%Y/%m/%d %T") - Running Heartbeat"
     curl -s -X POST -H "Auth: $HEARTBEAT_AUTH" "$HEARTBEAT_HOSTNAME"
