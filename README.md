@@ -1,6 +1,6 @@
 # [heartbeat](https://hb.l1v.in) 
-[![time tracker](https://wakatime.com/badge/github/technically-functional/heartbeat.svg)](https://wakatime.com/badge/github/technically-functional/heartbeat)
-[![Docker Pulls](https://img.shields.io/docker/pulls/technically-functional/heartbeat?logo=docker&logoColor=white)](https://hub.docker.com/r/technically-functional/heartbeat)
+[![time tracker](https://wakatime.com/badge/github/l1ving/heartbeat.svg)](https://wakatime.com/badge/github/l1ving/heartbeat)
+[![Docker Pulls](https://img.shields.io/docker/pulls/l1ving/heartbeat?logo=docker&logoColor=white)](https://hub.docker.com/r/l1ving/heartbeat)
 [![Docker Build](https://img.shields.io/github/workflow/status/technically-functional/heartbeat/docker-build?logo=docker&logoColor=white)](https://github.com/technically-functional/heartbeat/actions/workflows/docker-build.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/technically-functional/heartbeat?logo=codefactor&logoColor=white)](https://www.codefactor.io/repository/github/technically-functional/heartbeat)
 
