@@ -73,4 +73,4 @@ You will also need to create your own profile that runs every 2 minutes, to run 
 
 ### Running client on anything else
 
-Please see [`heartbeat-linux`](https://github.com/technically-functional/heartbeat-linux) for a (mostly universal) example that will run on almost any \*NIX system.
+Please see [`heartbeat-unix`](https://github.com/technically-functional/heartbeat-unix) for a (mostly universal) example that will run on almost any \*NIX system.
