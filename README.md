@@ -4,51 +4,48 @@
 [![Docker Build](https://img.shields.io/github/workflow/status/technically-functional/heartbeat/docker-build?logo=docker&logoColor=white)](https://github.com/technically-functional/heartbeat/actions/workflows/docker-build.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/technically-functional/heartbeat?logo=codefactor&logoColor=white)](https://www.codefactor.io/repository/github/technically-functional/heartbeat)
 
-A webpage to see when I was last active. Works by pinging the server from my computer or laptop every minute, as long as they have been used in the last minute.
-
-For my laptop, this means if I have typed anything in the 2 minutes, for my phone it means if the screen was unlocked and on in the last 2 minutes.
-
-This is my first time using Go, and I'm terrible at CSS, so this might not be using best practices. 
+A service to see when a device was last active. Works by pinging the server every minute, from any device, as long as said device is unlocked and being used (ie, you typed or used the mouse in the last two minutes).
 
 ## Contributing
 
-Contributions to fix my code are welcome, as well as any improvements.
+Contributions to fix code are welcome, as are any improvements.
 
 To build:
 ```bash
-git clone git@github.com:l1ving/heartbeat.git
+git clone git@github.com:technically-functional/heartbeat.git
 cd heartbeat
 make
 ```
 
 To run:
 ```bash
-# I recommend using genpasswd https://gist.github.com/l1ving/30f98284e9f92e1b47b4df6e05a063fc
+# Use genpasswd to create a token, or another random password generator
+# https://gist.github.com/l1ving/30f98284e9f92e1b47b4df6e05a063fc
 AUTH='some secure token'
 # We do not want to use echo because it appends a newline.
 mkdir config
 printf "$AUTH" > config/token
 
 # Change the port to whatever you'd like. 
-# Change localhost to your public IP if you'd like.
-# Compression is optional, but enabled if not explicitly set.
-./heartbeat -addr=localhost:8008 -compress=true
+# Changing localhost to a public IP isn't recommended without setting up https
+# Ideally, you could also use a reverse proxy on localhost + certbot
+./heartbeat -addr=localhost:8008
 ```
 
-To test:
+To test a ping locally:
 
 ```bash
-# Optionally add the -i flag before -X if you'd like more information.
+# Optionally add the -i flag if you'd like more information.
 curl -X POST -H "Auth: $AUTH" localhost:8008
 ```
 
-or open localhost:8008 in a browser.
+or open localhost:8008 in a browser to view the webpage.
 
 If you are having issues with a 403 even though you set it to POST and set your Auth header, PLEASE please make sure your `config/token` file does not have a trailing newline.
 
 ### Running server in production
 
-I recommend using Caddy for automatic renewal + as a reverse proxy.
+I recommend using Caddy or Nginx + Certbot for automatic renewal and reverse proxying.
 ```
 # Caddyfile example
 hb.l1v.in {
@@ -58,10 +55,12 @@ hb.l1v.in {
 ```
 
 There is also a docker image available with the following command, or checkout the
-[`update.sh`](https://github.com/l1ving/heartbeat/blob/master/scripts/update.sh) script for automatically
-updating a live docker image.
+[`update.sh`](https://github.com/technically-functional/heartbeat/blob/master/scripts/update.sh) script for automatically updating a live docker image.
 ```bash
+# Simply pull the image
 docker pull l1ving/heartbeat:latest
+# Run the service under docker. Do not use FIRST_RUN if you have run it before.
+./update.sh FIRST_RUN
 ```
 
 ### Running client on Android (tasker)
