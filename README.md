@@ -64,27 +64,6 @@ updating a live docker image.
 docker pull l1ving/heartbeat:latest
 ```
 
-### Running client on Linux
-
-Copy systemd service (`-client`) files to `~/.config/systemd/user/` and edit the `ExecStart` accordingly.
-Make sure the path matches the *full* path to your `ping.sh`.
-
-Also add this to the end of your `$HOME/.env` to include the required env variables.
-
-```bash
-# Note: Please use your own token. This is simpily an example.
-export HEARTBEAT_AUTH='Cn$Sn61rt6knaSU06NEntzVTMrLnBN&c15UBbdkn6;vJzJ9D' # Single quotes to avoid escaping issues.
-export HEARTBEAT_HOSTNAME="localhost:8008" # Change your IP to your www IP.
-```
-
-Then
-```bash
-mkdir -p "$HOME/.local/share" # Create default logging folder. Edit `ping.sh` if you don't like this.
-# Install xprintidle with your distro's package manager
-systemctl --user enable heartbeat-client.timer
-systemctl --user start heartbeat-client.timer
-```
-
 ### Running client on Android (tasker)
 
 You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/l1ving/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token inside `Ping.tsk.xml` before importing**.
