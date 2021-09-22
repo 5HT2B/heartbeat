@@ -74,12 +74,4 @@ You will also need to create your own profile that runs every 2 minutes, to run 
 
 ### Running client on anything else
 
-I wanted something as simple to interface with as possible, which is why it's relatively easy to get it working on Android as well.
-
-Anything that can run curl can update the last beat. 
-
-I **highly** recommend checking the last time an input device such as a keyboard or mouse was used, much like `ping.sh` does.
-
-```bash
-curl -s -X POST -H "Auth: $HEARTBEAT_AUTH" $HEARTBEAT_HOSTNAME
-```
+Please see [`heartbeat-linux`](https://github.com/technically-functional/heartbeat-linux) for a (mostly universal) example that will run on almost any \*NIX system.
