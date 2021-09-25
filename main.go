@@ -111,6 +111,7 @@ func statsPageHandler(ctx *fasthttp.RequestCtx) {
 	p := &templates.StatsPage{
 		TotalBeats:   FormattedNum(totalBeats),
 		TotalDevices: strconv.Itoa(2), // TODO: Add support for this
+		TotalVisits:  totalVisits,
 		ServerName:   *serverName,
 	}
 	templates.WritePageTemplate(ctx, p)

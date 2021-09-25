@@ -21,51 +21,52 @@ var (
 type StatsPage struct {
 	TotalBeats   string
 	TotalDevices string
+	TotalVisits  int64
 	ServerName   string
 }
 
-//line templates/statspage.qtpl:9
+//line templates/statspage.qtpl:10
 func (p *StatsPage) StreamTitle(qw422016 *qt422016.Writer) {
-//line templates/statspage.qtpl:9
+//line templates/statspage.qtpl:10
 	qw422016.N().S(`
     Stats - `)
-//line templates/statspage.qtpl:10
+//line templates/statspage.qtpl:11
 	qw422016.E().S(p.ServerName)
-//line templates/statspage.qtpl:10
+//line templates/statspage.qtpl:11
 	qw422016.N().S(`
 `)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 }
 
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 func (p *StatsPage) WriteTitle(qq422016 qtio422016.Writer) {
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	p.StreamTitle(qw422016)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	qt422016.ReleaseWriter(qw422016)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 }
 
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 func (p *StatsPage) Title() string {
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	p.WriteTitle(qb422016)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	qs422016 := string(qb422016.B)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 	return qs422016
-//line templates/statspage.qtpl:11
+//line templates/statspage.qtpl:12
 }
 
-//line templates/statspage.qtpl:13
+//line templates/statspage.qtpl:14
 func (p *StatsPage) StreamBody(qw422016 *qt422016.Writer) {
-//line templates/statspage.qtpl:13
+//line templates/statspage.qtpl:14
 	qw422016.N().S(`
     <div class="spacer"></div>
     <div class="pure-g preamble">
@@ -73,9 +74,9 @@ func (p *StatsPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-u-1 pure-u-lg-4-6">
             <p class="center">
                 Statistics for `)
-//line templates/statspage.qtpl:19
+//line templates/statspage.qtpl:20
 	qw422016.E().S(p.ServerName)
-//line templates/statspage.qtpl:19
+//line templates/statspage.qtpl:20
 	qw422016.N().S(`
             </p>
         </div>
@@ -83,22 +84,30 @@ func (p *StatsPage) StreamBody(qw422016 *qt422016.Writer) {
     </div>
     <div class="pure-g times">
         <div class="pure-u-0 pure-u-lg-1-6"></div>
-        <div class="pure-u-1 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Total visits:<br>`)
+//line templates/statspage.qtpl:28
+	qw422016.N().DL(p.TotalVisits)
+//line templates/statspage.qtpl:28
+	qw422016.N().S(`</p>
+        </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center">Total devices sending beats:<br>`)
-//line templates/statspage.qtpl:28
+//line templates/statspage.qtpl:31
 	qw422016.E().S(p.TotalDevices)
-//line templates/statspage.qtpl:28
+//line templates/statspage.qtpl:31
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center">Total beats received:<br>`)
-//line templates/statspage.qtpl:31
+//line templates/statspage.qtpl:34
 	qw422016.E().S(p.TotalBeats)
-//line templates/statspage.qtpl:31
+//line templates/statspage.qtpl:34
 	qw422016.N().S(`</p>
         </div>
-        <div class="pure-u-1 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Total uptime:<br>TODO</p>
+        </div>
         <div class="pure-u-0 pure-u-lg-1-6"></div>
     </div>
     <div class="spacer"></div>
@@ -112,31 +121,31 @@ func (p *StatsPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-g-u-0 pure-u-lg-1-6"></div>
     </div>
 `)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 }
 
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 func (p *StatsPage) WriteBody(qq422016 qtio422016.Writer) {
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	p.StreamBody(qw422016)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	qt422016.ReleaseWriter(qw422016)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 }
 
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 func (p *StatsPage) Body() string {
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	p.WriteBody(qb422016)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	qs422016 := string(qb422016.B)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 	return qs422016
-//line templates/statspage.qtpl:46
+//line templates/statspage.qtpl:51
 }

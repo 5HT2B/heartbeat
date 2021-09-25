@@ -2,6 +2,7 @@
 type StatsPage struct {
     TotalBeats   string
     TotalDevices string
+    TotalVisits  int64
     ServerName   string
 }
 %}
@@ -23,14 +24,18 @@ type StatsPage struct {
     </div>
     <div class="pure-g times">
         <div class="pure-u-0 pure-u-lg-1-6"></div>
-        <div class="pure-u-1 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Total visits:<br>{%dl p.TotalVisits %}</p>
+        </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center">Total devices sending beats:<br>{%s p.TotalDevices %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center">Total beats received:<br>{%s p.TotalBeats %}</p>
         </div>
-        <div class="pure-u-1 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Total uptime:<br>TODO</p>
+        </div>
         <div class="pure-u-0 pure-u-lg-1-6"></div>
     </div>
     <div class="spacer"></div>
