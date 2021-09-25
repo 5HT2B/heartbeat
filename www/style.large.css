@@ -15,6 +15,12 @@
         height: 33vh;
     }
     .privacy {
+        height: 66vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .links {
         height: 0;
         display: flex;
         justify-content: center;

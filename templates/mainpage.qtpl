@@ -1,31 +1,58 @@
-// Main page template. Implements BasePage methods.
-
-{% import "github.com/valyala/fasthttp" %}
-
 {% code
 type MainPage struct {
-	CTX *fasthttp.RequestCtx
+    LastSeen       string
+    TimeDifference string
+    MissingBeat    string
+    TotalBeats     string
+    CurrentTime    string
+    GitHash        string
+    GitRepo        string
+    ServerName     string
 }
 %}
 
-
 {% func (p *MainPage) Title() %}
-	This is the main page
+    {%s p.ServerName %}
 {% endfunc %}
 
-
 {% func (p *MainPage) Body() %}
-	<h1>Main page</h1>
-	<div>
-		Click links below:
-		<ul>
-			<li><a href="/table?rowsCount=42">Table page</a></li>
-			<li><a href="/unknown-page">Error page</a></li>
-		</ul>
-	</div>
-	<div>
-		Some info about you:<br/>
-		IP: <b>{%s p.CTX.RemoteIP().String() %}</b><br/>
-		User-Agent: <b>{%z p.CTX.UserAgent() %}</b><br/>
-	</div>
+    <div class="spacer"></div>
+    <div class="pure-g preamble">
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-4-6">
+            <p class="center">
+                Welcome to {%s p.ServerName %}. <br>
+                This page displays the last timestamp that I have unlocked and used any of my devices. <br>
+                If they have been absent for more than 48 hours, something is probably wrong. <br>
+                This website is running on version <a href="{%s p.GitRepo %}/tree/{%s p.GitHash %}"><code>{%s p.GitHash %}</code></a> of <a href="{%s p.GitRepo %}">Heartbeat</a>.
+            </p>
+        </div>
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+    </div>
+    <div class="pure-g times">
+        <div class="pure-u-0 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Last response time:<br>{%s p.LastSeen %}</p>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Relative time:<br>{%s p.TimeDifference %} ago</p>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Longest recorded absence:<br>{%s p.MissingBeat %}</p>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center">Total successful beats:<br>{%s p.TotalBeats %}</p>
+        </div>
+        <div class="pure-u-0 pure-u-lg-1-6"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="pure-g links">
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-4-6">
+            <p class="center">
+                <a href="/stats">Stats</a> - <a href="/privacy">Privacy Policy</a>
+            </p>
+        </div>
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+    </div>
 {% endfunc %}

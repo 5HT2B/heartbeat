@@ -2,27 +2,29 @@ This is a base page template. All the other template pages implement this interf
 
 {% interface
 Page {
-	Title()
-	Body()
+    Title()
+    Body()
 }
 %}
 
-
 Page prints a page implementing Page interface.
 {% func PageTemplate(p Page) %}
-<html>
-	<head>
-		<title>{%= p.Title() %}</title>
-	</head>
-	<body>
-		<div>
-			<a href="/">return to main page</a>
-		</div>
-		{%= p.Body() %}
-	</body>
+<html lang="en">
+    <head>
+        <title>{%= p.Title() %}</title>
+        <meta property="og:image" content="/favicon.png">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+
+        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css">
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/style.large.css">
+    </head>
+    <body>
+        {%= p.Body() %}
+    </body>
 </html>
 {% endfunc %}
-
 
 Base page implementation. Other pages may inherit from it if they need
 overriding only certain Page methods

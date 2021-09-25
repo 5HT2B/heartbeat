@@ -8,16 +8,18 @@ heartbeat: clean update build
 clean:
 	rm -f heartbeat
 
+generate:
+	go generate
+
+build: generate
+	go build -ldflags "-X main.gitCommitHash=$(TAG)" -o heartbeat .
+
 update:
 	go install github.com/valyala/quicktemplate/qtc
 	go get -u github.com/valyala/fasthttp
 	go get -u github.com/Ferluci/fast-realip
 	go get -u golang.org/x/text/language
 	go get -u golang.org/x/text/message
-
-build:
-	go generate
-	go build -ldflags "-X main.gitCommitHash=$(TAG)" -o heartbeat .
 
 docker-build:
 	@docker build --build-arg COMMIT=${TAG} -t ${IMG} .

@@ -6,12 +6,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Ferluci/fast-realip"
+	"github.com/technically-functional/heartbeat/templates"
 	"github.com/valyala/fasthttp"
-	"io"
 	"log"
-	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -19,13 +17,17 @@ var (
 	addr                              = flag.String("addr", "localhost:6060", "TCP address to listen to")
 	serverName                        = flag.String("name", "Liv's Heartbeat", "The name of the server to use")
 	authToken                         = []byte(ReadFileUnsafe("config/token"))
-	pathRoot                          = []byte("/")
-	pathFavicon                       = []byte("/favicon.ico")
+	apiPrefix                         = []byte("/api/")
+	cssPrefix                         = []byte("/css/")
+	icoSuffix                         = []byte(".ico")
+	pngSuffix                         = []byte(".png")
 	gitCommitHash                     = "A Development Version" // This is changed with compile flags in Makefile
 	timeFormat                        = "Jan 02 2006 15:04:05 MST"
-	htmlFile                          = ReadFileUnsafe("www/index.html")
 	lastBeat, missingBeat, totalBeats = ReadLastBeatSafe()
 	totalVisits                       = ReadGetRequestsSafe()
+	gitRepo                           = "https://github.com/technically-functional/heartbeat"
+	imgHandler                        = fasthttp.FSHandler("www", 0)
+	cssHandler                        = fasthttp.FSHandler("www", 1)
 )
 
 //goland:noinspection HttpUrlsUsage
@@ -45,79 +47,35 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderServer, *serverName)
 
 	path := ctx.Path()
-	requestPath := string(path)
+	pathStr := string(path)
 
-	if bytes.Equal(path, pathRoot) {
-		HandleRoot(ctx)
-		return
-	}
-
-	if !ctx.IsGet() { // Don't allow get on non-root
-		HandleUnknown(ctx)
-		return
-	}
-
-	if bytes.Equal(path, pathFavicon) {
-		HandleFavicon(ctx)
-		return
-	}
-
-	pathFile := ""
-	if requestPath == "/stats" {
-		pathFile = "config/get_requests"
-	} else {
-		pathFile = "www" + requestPath // sep is not / because requestPath is prefixed with a /
-	}
-
-	err := ServeFile(ctx, pathFile, false)
-
-	// Try to find corresponding file with the .html suffix added
-	if err != nil {
-		pathFile = pathFile + ".html"
-
-		err = ServeFile(ctx, pathFile, true)
-
-		if err != nil {
-			return
-		}
-	}
-
-	totalVisits++
-}
-
-func ServeFile(ctx *fasthttp.RequestCtx, file string, handleErr bool) error {
-	content, err := ReadFile(file)
-
-	if err == nil {
-		switch {
-		case strings.HasSuffix(file, ".css"):
-			ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/css; charset=utf-8")
-		case strings.HasSuffix(file, ".html"):
-			ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
-		}
-
-		fmt.Fprint(ctx, content)
-	} else if handleErr {
-		HandleUnknown(ctx)
-	}
-
-	return err
-}
-
-func HandleRoot(ctx *fasthttp.RequestCtx) {
-	// Serve the HTML page if it is a GET request
-	if ctx.IsGet() {
-		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
-		fmt.Fprint(ctx, GetHtml())
+	switch {
+	case bytes.HasPrefix(path, apiPrefix):
+		apiHandler(ctx, pathStr)
+	case bytes.HasPrefix(path, cssPrefix):
+		cssHandler(ctx)
+	case bytes.HasSuffix(path, icoSuffix), bytes.HasSuffix(path, pngSuffix):
+		imgHandler(ctx)
+	default:
 		totalVisits++
-		return
-	}
+		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
 
-	// We only want to allow POST requests if we're not serving a page
+		switch pathStr {
+		case "/":
+			mainPageHandler(ctx)
+		case "/privacy":
+			privacyPolicyPageHandler(ctx)
+		case "/stats":
+			statsPageHandler(ctx)
+		default:
+			errorPageHandler(ctx, fasthttp.StatusNotFound, "404 Not Found")
+		}
+	}
+}
+
+func apiHandler(ctx *fasthttp.RequestCtx, path string) {
 	if !ctx.IsPost() {
-		ctx.Response.SetStatusCode(fasthttp.StatusBadRequest)
-		fmt.Fprint(ctx, "400 Bad Request\n")
-		log.Printf("- Returned 400 to %s - tried to connect with '%s'", realip.FromRequest(ctx), ctx.Method())
+		errorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
 		return
 	}
 
@@ -126,28 +84,50 @@ func HandleRoot(ctx *fasthttp.RequestCtx) {
 
 	// Make sure Auth key is correct
 	if !bytes.Equal(header, authToken) {
-		HandleUnknown(ctx)
+		errorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden")
 		return
 	}
 
-	// Now that we know it is a POST and the Auth key is correct, return the unix timestamp and write it to a file
-	HandleSuccessfulBeat(ctx)
+	switch path {
+	case "/api/beat":
+		handleSuccessfulBeat(ctx)
+	default:
+		errorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
+	}
 }
 
-func HandleUnknown(ctx *fasthttp.RequestCtx) {
-	ctx.Response.SetStatusCode(fasthttp.StatusNotFound)
-	fmt.Fprint(ctx, "404 Not Found\n")
-	log.Printf("- Returned 404 to %s - tried to connect with '%s' to '%s'", realip.FromRequest(ctx), ctx.Request.Header.Peek("Auth"), ctx.Path())
+func mainPageHandler(ctx *fasthttp.RequestCtx) {
+	p := getMainPage()
+	templates.WritePageTemplate(ctx, p)
+}
+func privacyPolicyPageHandler(ctx *fasthttp.RequestCtx) {
+	p := &templates.PrivacyPolicyPage{
+		ServerName: *serverName,
+	}
+	templates.WritePageTemplate(ctx, p)
 }
 
-func HandleFavicon(ctx *fasthttp.RequestCtx) {
-	ctx.Response.Header.Set(fasthttp.HeaderContentType, "image/x-icon")
-	f, _ := os.Open("www/favicon.ico")
-	defer f.Close()
-	io.Copy(ctx, f)
+func statsPageHandler(ctx *fasthttp.RequestCtx) {
+	p := &templates.StatsPage{
+		TotalBeats:   FormattedNum(totalBeats),
+		TotalDevices: strconv.Itoa(2), // TODO: Add support for this
+		ServerName:   *serverName,
+	}
+	templates.WritePageTemplate(ctx, p)
 }
 
-func GetHtml() string {
+func errorPageHandler(ctx *fasthttp.RequestCtx, code int, message string) {
+	p := &templates.ErrorPage{
+		Message: message,
+		Path:    ctx.Path(),
+		Method:  ctx.Method(),
+	}
+	templates.WritePageTemplate(ctx, p)
+	ctx.SetStatusCode(code)
+	log.Printf("- Returned %v to %s - tried to connect with '%s'", code, realip.FromRequest(ctx), ctx.Method())
+}
+
+func getMainPage() *templates.MainPage {
 	currentTime := time.Now()
 	currentBeatDifference := currentTime.Unix() - lastBeat
 
@@ -162,20 +142,21 @@ func GetHtml() string {
 	totalBeatsFmt := FormattedNum(totalBeats)
 	currentTimeStr := currentTime.Format(timeFormat)
 
-	htmlTemp := htmlFile
-	htmlTemp = strings.Replace(htmlTemp, "LAST_SEEN", lastSeen, 2)
-	htmlTemp = strings.Replace(htmlTemp, "RELATIVE_TIME", timeDifference, 1)
-	htmlTemp = strings.Replace(htmlTemp, "LONGEST_ABSENCE", missingBeatFmt, 1)
-	htmlTemp = strings.Replace(htmlTemp, "TOTAL_BEATS", totalBeatsFmt, 1)
-	htmlTemp = strings.Replace(htmlTemp, "CURRENT_TIME", currentTimeStr, 1)
-	htmlTemp = strings.Replace(htmlTemp, "GIT_HASH", gitCommitHash, 2)
-	htmlTemp = strings.Replace(htmlTemp, "GIT_REPO", "https://github.com/l1ving/heartbeat", 2)
-	htmlTemp = strings.Replace(htmlTemp, "SERVER_NAME", *serverName, 3)
+	page := &templates.MainPage{
+		LastSeen:       lastSeen,
+		TimeDifference: timeDifference,
+		MissingBeat:    missingBeatFmt,
+		TotalBeats:     totalBeatsFmt,
+		CurrentTime:    currentTimeStr,
+		GitHash:        gitCommitHash,
+		GitRepo:        gitRepo,
+		ServerName:     *serverName,
+	}
 
-	return htmlTemp
+	return page
 }
 
-func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
+func handleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	totalBeats += 1
 	newLastBeat := time.Now().Unix()
 	currentBeatDifference := newLastBeat - lastBeat

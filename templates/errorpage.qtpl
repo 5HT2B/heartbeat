@@ -1,20 +1,35 @@
-// Error page template. Implements BasePage methods.
-
 {% code
 type ErrorPage struct {
-	// inherit from base page, so its' title is used in error page.
-	BasePage
-
-	// error path
-	Path []byte
+    Message    string
+    Path       []byte
+    Method     []byte
+    ServerName string
 }
 %}
 
+{% func (p *ErrorPage) Title() %}
+    {%s p.Message %} - {%s p.ServerName %}
+{% endfunc %}
 
 {% func (p *ErrorPage) Body() %}
-	<h1>Error page</h1>
-	</div>
-		Unsupported path <b>{%z p.Path %}</b>.
-	</div>
-	Base page body: {%= p.BasePage.Body() %}
+    <div class="spacer"></div>
+    <div class="pure-g privacy">
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-4-6">
+            <p class="center">
+                {%s p.Message %}: {%z p.Method %} on <b>{%z p.Path %}</b>
+            </p>
+        </div>
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="pure-g links">
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-4-6">
+            <p class="center">
+                <a href="/">Main Page</a>
+            </p>
+        </div>
+        <div class="pure-g-u-0 pure-u-lg-1-6"></div>
+    </div>
 {% endfunc %}
