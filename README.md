@@ -36,7 +36,7 @@ To test a ping locally:
 
 ```bash
 # Optionally add the -i flag if you'd like more information.
-curl -X POST -H "Auth: $AUTH" localhost:8008
+curl -X POST -H "Auth: $AUTH" localhost:8008/api/beat
 ```
 
 or open localhost:8008 in a browser to view the webpage.
