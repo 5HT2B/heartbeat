@@ -110,8 +110,8 @@ func privacyPolicyPageHandler(ctx *fasthttp.RequestCtx) {
 func statsPageHandler(ctx *fasthttp.RequestCtx) {
 	p := &templates.StatsPage{
 		TotalBeats:   FormattedNum(totalBeats),
-		TotalDevices: strconv.Itoa(2), // TODO: Add support for this
-		TotalVisits:  totalVisits,
+		TotalDevices: FormattedNum(2), // TODO: Add support for this
+		TotalVisits:  FormattedNum(totalVisits),
 		ServerName:   *serverName,
 	}
 	templates.WritePageTemplate(ctx, p)

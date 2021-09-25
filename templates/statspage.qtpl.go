@@ -21,7 +21,7 @@ var (
 type StatsPage struct {
 	TotalBeats   string
 	TotalDevices string
-	TotalVisits  int64
+	TotalVisits  string
 	ServerName   string
 }
 
@@ -87,7 +87,7 @@ func (p *StatsPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center">Total visits:<br>`)
 //line templates/statspage.qtpl:28
-	qw422016.N().DL(p.TotalVisits)
+	qw422016.E().S(p.TotalVisits)
 //line templates/statspage.qtpl:28
 	qw422016.N().S(`</p>
         </div>
