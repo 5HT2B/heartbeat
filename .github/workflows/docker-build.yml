@@ -19,4 +19,4 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
       - name: Run Docker build and push
-        run: make build push
+        run: make docker-build docker-push
