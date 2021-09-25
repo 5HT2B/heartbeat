@@ -1,3 +1,4 @@
+//go:generate qtc -dir=templates
 package main
 
 import (
@@ -16,11 +17,6 @@ import (
 
 var (
 	addr                              = flag.String("addr", "localhost:6060", "TCP address to listen to")
-	compress                          = flag.Bool("compress", true, "Whether to enable transparent response compression")
-	useTls                            = flag.Bool("tls", false, "Whether to enable TLS")
-	tlsCert                           = flag.String("cert", "", "Full certificate file path")
-	tlsKey                            = flag.String("key", "", "Full key file path")
-	unknown403                        = flag.Bool("unknown403", true, "Return 403 on unknown paths.")
 	serverName                        = flag.String("name", "Liv's Heartbeat", "The name of the server to use")
 	authToken                         = []byte(ReadFileUnsafe("config/token"))
 	pathRoot                          = []byte("/")
@@ -32,33 +28,20 @@ var (
 	totalVisits                       = ReadGetRequestsSafe()
 )
 
+//goland:noinspection HttpUrlsUsage
 func main() {
 	flag.Parse()
+	log.Printf("- Running heartbeat on http://" + *addr)
 
-	protocol := "http"
-	if *useTls {
-		protocol += "s"
-	}
+	h := requestHandler
+	h = fasthttp.CompressHandler(h)
 
-	log.Printf("- Running heartbeat on " + protocol + "://" + *addr)
-
-	h := RequestHandler
-	if *compress {
-		h = fasthttp.CompressHandler(h)
-	}
-
-	if *useTls && len(*tlsCert) > 0 && len(*tlsKey) > 0 {
-		if err := fasthttp.ListenAndServeTLS(*addr, *tlsCert, *tlsKey, h); err != nil {
-			log.Fatalf("- Error in ListenAndServeTLS: %s", err)
-		}
-	} else {
-		if err := fasthttp.ListenAndServe(*addr, h); err != nil {
-			log.Fatalf("- Error in ListenAndServe: %s", err)
-		}
+	if err := fasthttp.ListenAndServe(*addr, h); err != nil {
+		log.Fatalf("- Error in ListenAndServe: %s", err)
 	}
 }
 
-func RequestHandler(ctx *fasthttp.RequestCtx) {
+func requestHandler(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set(fasthttp.HeaderServer, *serverName)
 
 	path := ctx.Path()
@@ -152,11 +135,9 @@ func HandleRoot(ctx *fasthttp.RequestCtx) {
 }
 
 func HandleUnknown(ctx *fasthttp.RequestCtx) {
-	if *unknown403 {
-		ctx.Response.SetStatusCode(fasthttp.StatusForbidden)
-		fmt.Fprint(ctx, "403 Forbidden\n")
-		log.Printf("- Returned 403 to %s - tried to connect with '%s' to '%s'", realip.FromRequest(ctx), ctx.Request.Header.Peek("Auth"), ctx.Path())
-	}
+	ctx.Response.SetStatusCode(fasthttp.StatusNotFound)
+	fmt.Fprint(ctx, "404 Not Found\n")
+	log.Printf("- Returned 404 to %s - tried to connect with '%s' to '%s'", realip.FromRequest(ctx), ctx.Request.Header.Peek("Auth"), ctx.Path())
 }
 
 func HandleFavicon(ctx *fasthttp.RequestCtx) {
