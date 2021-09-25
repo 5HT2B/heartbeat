@@ -29,7 +29,7 @@ The size of the response in bytes&lt;/_array_net.dinglisch.android.tasker.RELEVA
 			<Int sr="arg10" val="0"/>
 			<Int sr="arg11" val="0"/>
 			<Int sr="arg12" val="1"/>
-			<Str sr="arg2" ve="3">https://hb.l1v.in</Str>
+			<Str sr="arg2" ve="3">https://hb.l1v.in/api/beat</Str>
 			<Str sr="arg3" ve="3">Auth:YOUR_AUTH_TOKEN_HERE</Str>
 			<Str sr="arg4" ve="3"/>
 			<Str sr="arg5" ve="3"/>
