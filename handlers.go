@@ -62,7 +62,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 	header := ctx.Request.Header.Peek("Auth")
 
 	// Make sure Auth key is correct
-	if !bytes.Equal(header, authToken) {
+	if string(header) != authToken {
 		ErrorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden")
 		return
 	}

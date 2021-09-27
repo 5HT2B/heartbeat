@@ -13,8 +13,8 @@ var (
 	protocol                          = "http://"             // set in .env
 	addr                              = "localhost:6060"      // set in .env
 	serverName                        = "A Development Build" // set in .env
-	authToken                         = []byte(ReadFileUnsafe("config/token"))
-	gitCommitHash                     = "<unknown>" // This is changed with compile flags in Makefile
+	authToken                         = ""                    // set in .env // TODO: Add support for multi tokens
+	gitCommitHash                     = "<unknown>"           // This is changed with compile flags in Makefile
 	timeFormat                        = "Jan 02 2006 15:04:05 MST"
 	lastBeat, missingBeat, totalBeats = ReadLastBeatSafe()
 	totalVisits                       = ReadGetRequestsSafe()
@@ -37,6 +37,13 @@ func setupEnv() {
 	if err != nil {
 		log.Fatalf("Fatal error: %v", err)
 		return
+	}
+
+	if ev := os.Getenv("HB_TOKEN"); len(ev) == 0 {
+		log.Fatalf("HB_TOKEN not set in config/.env")
+		return
+	} else {
+		protocol = ev
 	}
 
 	if ev := os.Getenv("HB_PROTOCOL"); len(ev) > 0 {
