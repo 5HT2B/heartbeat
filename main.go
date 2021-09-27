@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/joho/godotenv"
 	"github.com/valyala/fasthttp"
 	"log"
@@ -10,6 +11,8 @@ import (
 
 //goland:noinspection HttpUrlsUsage
 var (
+	debug                             = flag.Bool("debug", false, "Whether to print debug output")
+	authTokenFlag                     = flag.String("token", "", "An alternative token to be used when debugging")
 	protocol                          = "http://"             // set in .env
 	addr                              = "localhost:6060"      // set in .env
 	serverName                        = "A Development Build" // set in .env
@@ -21,6 +24,7 @@ var (
 )
 
 func main() {
+	flag.Parse()
 	setupEnv()
 	log.Printf("- Running heartbeat on " + protocol + addr)
 
@@ -39,11 +43,15 @@ func setupEnv() {
 		return
 	}
 
-	if ev := os.Getenv("HB_TOKEN"); len(ev) == 0 {
-		log.Fatalf("HB_TOKEN not set in config/.env")
-		return
+	if !*debug && len(*authTokenFlag) > 0 {
+		authToken = *authTokenFlag
 	} else {
-		protocol = ev
+		if ev := os.Getenv("HB_TOKEN"); len(ev) == 0 {
+			log.Fatalf("HB_TOKEN not set in config/.env")
+			return
+		} else {
+			authToken = ev
+		}
 	}
 
 	if ev := os.Getenv("HB_PROTOCOL"); len(ev) > 0 {
