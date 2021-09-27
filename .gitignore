@@ -1,3 +1,8 @@
+# Heartbeat binary and .idea/ conf
 heartbeat
-config/
 .idea/
+
+# Ignore everything inside config except redis.conf and .env
+config/*
+!config/redis.conf
+!config/.env
