@@ -21,15 +21,15 @@ To run:
 ```bash
 # Use genpasswd to create a token, or another random password generator
 # https://gist.github.com/l1ving/30f98284e9f92e1b47b4df6e05a063fc
-AUTH='some secure token'
-# We do not want to use echo because it appends a newline.
-mkdir config
-printf "$AUTH" > config/token
 
-# Change the port to whatever you'd like. 
+edit config/.env
+# And set HB_TOKEN to a secure token
+# Change the port to whatever you'd like
 # Changing localhost to a public IP isn't recommended without setting up https
 # Ideally, you could also use a reverse proxy on localhost + certbot
-./heartbeat -addr=localhost:8008
+
+# Run heartbeat now that your config/.env is setup
+./heartbeat
 ```
 
 To test a ping locally:
@@ -39,9 +39,7 @@ To test a ping locally:
 curl -X POST -H "Auth: $AUTH" localhost:8008/api/beat
 ```
 
-or open localhost:8008 in a browser to view the webpage.
-
-If you are having issues with a 403 even though you set it to POST and set your Auth header, PLEASE please make sure your `config/token` file does not have a trailing newline.
+or open localhost:6060 in a browser to view the webpage.
 
 ### Running server in production
 
