@@ -17,5 +17,5 @@ For the most part, functions will be commented.
 │   └── <HeartbeatDevice>      # {"device_name": "phone", "total_beats": 1952, "longest_missing_beat", 3219}
 │
 ├── last_beat <HeartbeatBeat>  # {"device_name": "laptop", "timestamp": 1632748096}
-└── stats <HeartbeatStats>     # {"total_visits": 45012, "total_beats": 14855, "longest_missing_beat", 3219}
+└── stats <HeartbeatStats>     # {"total_visits": 45012, "total_uptime": 892340, "total_beats": 14855, "longest_missing_beat", 3219}
 ```

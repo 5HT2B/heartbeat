@@ -7,7 +7,7 @@ import "fmt"
 //
 
 var (
-	defaultHeartbeatStats = HeartbeatStats{0, 0, 0}
+	defaultHeartbeatStats = HeartbeatStats{0, 0, 0, 0}
 )
 
 // HeartbeatBeat is the current last beat
@@ -26,6 +26,7 @@ type HeartbeatDevice struct {
 // HeartbeatStats are the global stats for a heartbeat server
 type HeartbeatStats struct {
 	TotalVisits        int64 `json:"total_visits"`
+	TotalUptime        int64 `json:"total_uptime"`
 	TotalBeats         int64 `json:"total_beats"`
 	LongestMissingBeat int64 `json:"longest_missing_beat"`
 }
