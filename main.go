@@ -7,33 +7,41 @@ import (
 	"github.com/valyala/fasthttp"
 	"log"
 	"os"
+	"time"
 )
 
 //goland:noinspection HttpUrlsUsage
 var (
-	debug                             = flag.Bool("debug", false, "Whether to print debug output")
-	authTokenFlag                     = flag.String("token", "", "An alternative token to be used when debugging")
-	protocol                          = "http://"             // set in .env
-	addr                              = "localhost:6060"      // set in .env
-	serverName                        = "A Development Build" // set in .env
-	authToken                         = ""                    // set in .env // TODO: Add support for multi tokens
-	gitCommitHash                     = "<unknown>"           // This is changed with compile flags in Makefile
-	timeFormat                        = "Jan 02 2006 15:04:05 MST"
-	lastBeat, missingBeat, totalBeats = ReadLastBeatSafe()
-	totalVisits                       = ReadGetRequestsSafe()
+	debug         = flag.Bool("debug", false, "Whether to print debug output")
+	authTokenFlag = flag.String("token", "", "An alternative token to be used when debugging")
+	protocol      = "http://"             // set in .env
+	addr          = "localhost:6060"      // set in .env
+	serverName    = "A Development Build" // set in .env
+	authToken     = ""                    // set in .env // TODO: Add support for multi tokens
+	gitCommitHash = "<unknown>"           // This is changed with compile flags in Makefile
+	timeFormat    = "Jan 02 2006 15:04:05 MST"
 )
 
 func main() {
 	flag.Parse()
 	setupEnv()
+	rdb, rjh = SetupDatabase()
+	setupDatabaseValues()
 	log.Printf("- Running heartbeat on " + protocol + addr)
 
+	GetLastBeat()
 	h := RequestHandler
 	h = fasthttp.CompressHandler(h)
 
 	if err := fasthttp.ListenAndServe(addr, h); err != nil {
 		log.Fatalf("- Error in ListenAndServe: %s", err)
 	}
+
+	defer func() {
+		if err := rdb.Close(); err != nil {
+			log.Fatalf("goredis - failed to communicate to redis-server: %v", err)
+		}
+	}()
 }
 
 func setupEnv() {
@@ -66,4 +74,18 @@ func setupEnv() {
 	if ev := os.Getenv("HB_GITHUB_LINK"); len(ev) > 0 {
 		gitRepo = ev
 	}
+	if ev := os.Getenv("REDIS_ADDR"); len(ev) > 0 {
+		redisAddr = ev
+	}
+	if ev := os.Getenv("REDIS_PASS"); len(ev) > 0 {
+		redisPass = ev
+	}
+}
+
+// TODO: these should be reading from db
+func setupDatabaseValues() {
+	lastBeat = time.Now().Unix() //GetInt64Value("last_beat", time.Now().Unix())
+	missingBeat = 0              // GetInt64Value("missing_beat", 0)
+	totalBeats = 0               // GetInt64Value("total_beats", 0)
+	totalVisits = 0              // GetInt64Value("total_visits", 0)
 }
