@@ -25,7 +25,7 @@ docker pull l1ving/heartbeat:latest
 
 ### Running client on Android (tasker)
 
-You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/l1ving/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token inside `Ping.tsk.xml` before importing**.
+You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/technically-functional/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token inside `Ping.tsk.xml` before importing**.
 
 Make sure to allow running in background, as well as the other optimizations which Tasker recommends, in order to be sure that it runs.
 If there is any issue importing it, please [make an issue](https://github.com/technically-functional/heartbeat/issues/new) in this repo.
