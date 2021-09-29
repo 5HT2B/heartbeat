@@ -166,11 +166,11 @@ func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Relative time:<br>`)
+            <p class="center">Time since last response:<br>`)
 //line templates/mainpage.qtpl:46
 	qw422016.E().S(p.TimeDifference)
 //line templates/mainpage.qtpl:46
-	qw422016.N().S(` ago</p>
+	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center">Longest recorded absence:<br>`)
