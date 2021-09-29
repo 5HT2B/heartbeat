@@ -47,16 +47,6 @@ func appendOrCreateArr(key string, path string, obj interface{}, objArr interfac
 	return nil
 }
 
-func CurrentMissingBeat() int64 {
-	lastBeatTmp := GetLastBeat() // todo: rename
-	diff := time.Now().Unix() - lastBeatTmp.Timestamp
-
-	if diff > heartbeatStats.LongestMissingBeat {
-		return diff
-	}
-	return heartbeatStats.LongestMissingBeat
-}
-
 func UpdateTotalVisits() {
 	// TODO: unfinished
 	//if totalVisits == -1 || heartbeatStats == nil {
@@ -76,8 +66,31 @@ func UpdateTotalVisits() {
 	//}
 }
 
-// updateUptime will update the uptime statistics
-func updateUptime() {
+// LastSeen will return the formatted date of the last timestamp received from a beat
+func LastSeen() string {
+	lastBeat := GetLastBeat()
+	return time.Unix(lastBeat.Timestamp, 0).Format(timeFormat)
+}
+
+// SaveLocalInDatabase will save local copies of small database stats and devices to the database every 5 minutes
+func SaveLocalInDatabase() {
+	// This is also called when viewing the stats page, but we want to run it here to avoid missing time
+	// if nobody looks at the stats page
+	UpdateUptime()
+
+	log.Printf("- Autosaving database, uptime is %v\n", heartbeatStats.TotalUptime)
+
+	if _, err := rjh.JSONSet("stats", ".", heartbeatStats); err != nil {
+		log.Fatalf("Error saving stats: %v", err)
+	}
+
+	if _, err := rjh.JSONSet("devices", ".", heartbeatDevices); err != nil {
+		log.Fatalf("Error saving devices: %v", err)
+	}
+}
+
+// UpdateUptime will update the uptime statistics
+func UpdateUptime() {
 	now := time.Now().Unix()
 	diff := now - uptimeTimer
 
@@ -85,8 +98,8 @@ func updateUptime() {
 	heartbeatStats.TotalUptime += diff
 }
 
-// updateDevice will update the LastBeat of a device
-func updateDevice(beat HeartbeatBeat) {
+// UpdateDevice will update the LastBeat of a device
+func UpdateDevice(beat HeartbeatBeat) {
 	for n, device := range *heartbeatDevices {
 		if device.DeviceName == beat.DeviceName {
 			diff := time.Now().Unix() - device.LastBeat.Timestamp
@@ -110,7 +123,7 @@ func updateDevice(beat HeartbeatBeat) {
 // UpdateLastBeat will save the last beat and insert a new HeartbeatBeat into beats
 func UpdateLastBeat(deviceName string, timestamp int64) error {
 	lastBeat := HeartbeatBeat{deviceName, timestamp}
-	updateDevice(lastBeat)
+	UpdateDevice(lastBeat)
 
 	if _, err := rjh.JSONSet("last_beat", ".", lastBeat); err != nil {
 		return err

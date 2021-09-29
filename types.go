@@ -22,10 +22,10 @@ type HeartbeatDevice struct {
 
 // HeartbeatStats are the global stats for a heartbeat server
 type HeartbeatStats struct {
-	TotalVisits        int64 `json:"total_visits"`         // handled by handleSuccessfulBeat
-	TotalUptime        int64 `json:"total_uptime"`         // handled by updateUptime
-	TotalBeats         int64 `json:"total_beats"`          // handled by updateDevice
-	LongestMissingBeat int64 `json:"longest_missing_beat"` // handled by updateDevice
+	TotalVisits        int64 `json:"total_visits"`         // handled by HandleSuccessfulBeat
+	TotalUptime        int64 `json:"total_uptime"`         // handled by UpdateUptime
+	TotalBeats         int64 `json:"total_beats"`          // handled by UpdateDevice
+	LongestMissingBeat int64 `json:"longest_missing_beat"` // handled by UpdateDevice
 }
 
 func (lb HeartbeatBeat) String() string {

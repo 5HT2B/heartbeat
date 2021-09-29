@@ -69,7 +69,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 
 	switch path {
 	case "/api/beat":
-		handleSuccessfulBeat(ctx)
+		HandleSuccessfulBeat(ctx)
 	default:
 		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
 	}
@@ -88,9 +88,10 @@ func PrivacyPolicyPageHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func StatsPageHandler(ctx *fasthttp.RequestCtx) {
+	UpdateUptime()
 	p := &templates.StatsPage{
 		TotalBeats:   FormattedNum(heartbeatStats.TotalBeats),
-		TotalDevices: FormattedNum(2), // TODO: Add support for this
+		TotalDevices: FormattedNum(int64(len(*heartbeatDevices))),
 		TotalVisits:  FormattedNum(heartbeatStats.TotalVisits),
 		TotalUptime:  FormattedTime(heartbeatStats.TotalUptime),
 		ServerName:   serverName,
@@ -113,11 +114,8 @@ func getMainPage() *templates.MainPage {
 	lastBeat := GetLastBeat()
 	currentTime := time.Now()
 
-	// I don't know why this is written this way and don't want to break it
-	lastSeen := time.Unix(lastBeat.Timestamp, 0).Format(timeFormat)
-
 	page := &templates.MainPage{
-		LastSeen:       lastSeen,                                         // date last seen
+		LastSeen:       LastSeen(),                                       // date last seen
 		TimeDifference: TimeDifference(lastBeat.Timestamp, currentTime),  // relative time to last seen
 		MissingBeat:    FormattedTime(heartbeatStats.LongestMissingBeat), // longest absence
 		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
@@ -130,7 +128,7 @@ func getMainPage() *templates.MainPage {
 	return page
 }
 
-func handleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
+func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	timestamp := time.Now().Unix()
 	timestampStr := strconv.FormatInt(timestamp, 10)
 
