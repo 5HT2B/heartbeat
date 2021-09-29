@@ -124,23 +124,36 @@ func UpdateUptime() {
 
 // UpdateDevice will update the LastBeat of a device
 func UpdateDevice(beat HeartbeatBeat) {
-	for n, device := range *heartbeatDevices {
-		if device.DeviceName == beat.DeviceName {
-			diff := time.Now().Unix() - device.LastBeat.Timestamp
-			if diff > device.LongestMissingBeat {
-				device.LongestMissingBeat = diff
-			}
-			if device.LongestMissingBeat > heartbeatStats.LongestMissingBeat {
-				heartbeatStats.LongestMissingBeat = device.LongestMissingBeat
-			}
-
-			device.LastBeat = beat
-			device.TotalBeats += 1
-
-			(*heartbeatDevices)[n] = device
-			heartbeatStats.TotalBeats += 1
+	var device HeartbeatDevice
+	n := -1
+	for index, tmpDevice := range *heartbeatDevices {
+		if tmpDevice.DeviceName == beat.DeviceName {
+			device = tmpDevice
+			n = index
 			break // name should only ever be matching once
 		}
+	}
+
+	if n == -1 { // couldn't find an existing device with the name
+		device = HeartbeatDevice{beat.DeviceName, beat, 0, 0}
+	}
+
+	diff := time.Now().Unix() - device.LastBeat.Timestamp
+	if diff > device.LongestMissingBeat {
+		device.LongestMissingBeat = diff
+	}
+	if device.LongestMissingBeat > heartbeatStats.LongestMissingBeat {
+		heartbeatStats.LongestMissingBeat = device.LongestMissingBeat
+	}
+
+	device.LastBeat = beat
+	device.TotalBeats += 1
+	heartbeatStats.TotalBeats += 1
+
+	if n == -1 { // if device doesn't exist, append it, else replace it
+		*heartbeatDevices = append(*heartbeatDevices, device)
+	} else {
+		(*heartbeatDevices)[n] = device
 	}
 }
 
