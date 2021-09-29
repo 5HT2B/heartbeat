@@ -36,7 +36,7 @@ To test a ping locally:
 
 ```bash
 # Optionally add the -i flag if you'd like more information.
-curl -X POST -H "Auth: $AUTH" localhost:6060/api/beat
+curl -X POST -H "Auth: $AUTH" -H "Device: laptop" localhost:6060/api/beat
 
 # Optionally, you can set the token with an auth flag instead of .env for debugging
 ./heartbeat -debug -token some_token_here
