@@ -2,12 +2,8 @@ package main
 
 import (
 	"bytes"
-	"fmt"
-	"github.com/Ferluci/fast-realip"
 	"github.com/technically-functional/heartbeat/templates"
 	"github.com/valyala/fasthttp"
-	"log"
-	"strconv"
 	"time"
 )
 
@@ -47,38 +43,8 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 		case "/stats":
 			StatsPageHandler(ctx)
 		default:
-			ErrorPageHandler(ctx, fasthttp.StatusNotFound, "404 Not Found", false)
+			ErrorNotFound(ctx)
 		}
-	}
-}
-
-func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
-	if !ctx.IsPost() {
-		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
-		return
-	}
-
-	// The authentication key provided with said Auth header
-	header := ctx.Request.Header.Peek("Auth")
-	device := ctx.Request.Header.Peek("Device")
-
-	// Make sure Auth key is correct
-	if string(header) != authToken {
-		ErrorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden", true)
-		return
-	}
-
-	// Make sure a device is set
-	if len(device) == 0 {
-		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
-		return
-	}
-
-	switch path {
-	case "/api/beat":
-		HandleSuccessfulBeat(ctx, string(device))
-	default:
-		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
 	}
 }
 
@@ -106,24 +72,6 @@ func StatsPageHandler(ctx *fasthttp.RequestCtx) {
 	templates.WritePageTemplate(ctx, p)
 }
 
-func ErrorPageHandler(ctx *fasthttp.RequestCtx, code int, message string, plaintext bool) {
-	ctx.SetStatusCode(code)
-	log.Printf("- Returned %v to %s - tried to connect with %s to %s",
-		code, realip.FromRequest(ctx), ctx.Method(), ctx.Path())
-
-	if plaintext {
-		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/plain; charset=utf-8")
-		_, _ = fmt.Fprintf(ctx, "%s\n", message)
-	} else {
-		p := &templates.ErrorPage{
-			Message: message,
-			Path:    ctx.Path(),
-			Method:  ctx.Method(),
-		}
-		templates.WritePageTemplate(ctx, p)
-	}
-}
-
 func getMainPage() *templates.MainPage {
 	currentTime := time.Now()
 	lastBeat := GetLastBeat()
@@ -144,18 +92,4 @@ func getMainPage() *templates.MainPage {
 	}
 
 	return page
-}
-
-func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx, device string) {
-	timestamp := time.Now().Unix()
-	timestampStr := strconv.FormatInt(timestamp, 10)
-
-	err := UpdateLastBeat(device, timestamp)
-	if err != nil {
-		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, "500 "+err.Error(), true)
-		return
-	}
-
-	_, _ = fmt.Fprintf(ctx, "%v\n", timestampStr)
-	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
 }
