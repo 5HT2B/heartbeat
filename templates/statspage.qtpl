@@ -3,6 +3,7 @@ type StatsPage struct {
     TotalBeats   string
     TotalDevices string
     TotalVisits  string
+    TotalUptime  string
     ServerName   string
 }
 %}
@@ -34,7 +35,7 @@ type StatsPage struct {
             <p class="center">Total beats received:<br>{%s p.TotalBeats %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total uptime:<br>TODO</p>
+            <p class="center">Total uptime:<br>{%s p.TotalUptime %}</p>
         </div>
         <div class="pure-u-0 pure-u-lg-1-6"></div>
     </div>
