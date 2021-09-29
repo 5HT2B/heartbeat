@@ -113,7 +113,7 @@ func ErrorPageHandler(ctx *fasthttp.RequestCtx, code int, message string, plaint
 
 	if plaintext {
 		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/plain; charset=utf-8")
-		_, _ = fmt.Fprintf(ctx, "%v %s\n", code, message)
+		_, _ = fmt.Fprintf(ctx, "%s\n", message)
 	} else {
 		p := &templates.ErrorPage{
 			Message: message,
@@ -152,7 +152,7 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx, device string) {
 
 	err := UpdateLastBeat(device, timestamp)
 	if err != nil {
-		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, err.Error(), true)
+		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, "500 "+err.Error(), true)
 		return
 	}
 
