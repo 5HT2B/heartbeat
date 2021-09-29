@@ -149,6 +149,6 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx, device string) {
 		return
 	}
 
-	fmt.Fprintf(ctx, "%v\n", timestampStr)
+	_, _ = fmt.Fprintf(ctx, "%v\n", timestampStr)
 	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
 }
