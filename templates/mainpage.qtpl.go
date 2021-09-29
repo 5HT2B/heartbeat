@@ -180,7 +180,7 @@ func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total successful beats:<br>`)
+            <p class="center">Total beats received:<br>`)
 //line templates/mainpage.qtpl:52
 	qw422016.E().S(p.TotalBeats)
 //line templates/mainpage.qtpl:52
