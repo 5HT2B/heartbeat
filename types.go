@@ -6,10 +6,6 @@ import "fmt"
 // Redis JSONPath structure is documented in DOCS.md
 //
 
-var (
-	defaultHeartbeatStats = HeartbeatStats{0, 0, 0, 0}
-)
-
 // HeartbeatBeat is the current last beat
 type HeartbeatBeat struct {
 	DeviceName string `json:"device_name"`
@@ -26,8 +22,8 @@ type HeartbeatDevice struct {
 
 // HeartbeatStats are the global stats for a heartbeat server
 type HeartbeatStats struct {
-	TotalVisits        int64 `json:"total_visits"`
-	TotalUptime        int64 `json:"total_uptime"`
+	TotalVisits        int64 `json:"total_visits"`         // handled by handleSuccessfulBeat
+	TotalUptime        int64 `json:"total_uptime"`         // handled by updateUptime
 	TotalBeats         int64 `json:"total_beats"`          // handled by updateDevice
 	LongestMissingBeat int64 `json:"longest_missing_beat"` // handled by updateDevice
 }
@@ -41,5 +37,5 @@ func (s HeartbeatDevice) String() string {
 }
 
 func (s HeartbeatStats) String() string {
-	return fmt.Sprintf("HeartbeatStats<%v, %v, %v>", s.TotalVisits, s.TotalBeats, s.LongestMissingBeat)
+	return fmt.Sprintf("HeartbeatStats<%v, %v, %v, %v>", s.TotalVisits, s.TotalUptime, s.TotalBeats, s.LongestMissingBeat)
 }

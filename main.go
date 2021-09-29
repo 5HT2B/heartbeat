@@ -20,6 +20,7 @@ var (
 	authToken     = ""                    // set in .env // TODO: Add support for multi tokens
 	gitCommitHash = "<unknown>"           // This is changed with compile flags in Makefile
 	timeFormat    = "Jan 02 2006 15:04:05 MST"
+	uptimeTimer   = time.Now().Unix()
 )
 
 func main() {
@@ -29,7 +30,6 @@ func main() {
 	setupDatabaseValues()
 	log.Printf("- Running heartbeat on " + protocol + addr)
 
-	GetLastBeat()
 	h := RequestHandler
 	h = fasthttp.CompressHandler(h)
 

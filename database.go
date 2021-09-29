@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/go-redis/redis/v8"
 	"github.com/nitishm/go-rejson/v4"
@@ -10,7 +9,6 @@ import (
 )
 
 var (
-	ctx = context.Background()
 	rdb *redis.Client   // set in main()
 	rjh *rejson.Handler // set in main()
 
@@ -82,6 +80,15 @@ func UpdateTotalVisits() {
 	//}
 }
 
+// updateUptime will update the uptime statistics
+func updateUptime() {
+	now := time.Now().Unix()
+	diff := now - uptimeTimer
+
+	uptimeTimer = now - 1
+	heartbeatStats.TotalUptime += diff
+}
+
 // updateDevice will update the LastBeat of a device
 func updateDevice(beat HeartbeatBeat) {
 	for n, device := range *heartbeatDevices {
@@ -132,37 +139,4 @@ func GetLastBeat() *HeartbeatBeat {
 		panic(err)
 	}
 	return &lastBeat
-}
-
-// GetAllBeats will return all the beats received
-func GetAllBeats() []HeartbeatBeat {
-	res, err := rjh.JSONGet("beats", ".")
-	if err != nil {
-		log.Printf("- Failed to get all beats: %v", err)
-		return nil
-	}
-
-	var allBeats []HeartbeatBeat
-	if err = json.Unmarshal(res.([]byte), &allBeats); err != nil {
-		panic(err)
-	}
-	return allBeats
-}
-
-func getDeviceMissingBeat(deviceName string) int64 {
-	allBeats := GetAllBeats()
-	if allBeats == nil {
-		// todo
-	}
-
-	for n := range allBeats {
-		// iterate through slice in reverse
-		beat := allBeats[len(allBeats)-1-n]
-		if beat.DeviceName == deviceName {
-			diff := time.Now().Unix() - beat.Timestamp
-			return diff
-		}
-	}
-
-	return -1
 }
