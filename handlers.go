@@ -47,14 +47,14 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 		case "/stats":
 			StatsPageHandler(ctx)
 		default:
-			ErrorPageHandler(ctx, fasthttp.StatusNotFound, "404 Not Found")
+			ErrorPageHandler(ctx, fasthttp.StatusNotFound, "404 Not Found", false)
 		}
 	}
 }
 
 func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 	if !ctx.IsPost() {
-		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
+		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
 		return
 	}
 
@@ -64,13 +64,13 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 
 	// Make sure Auth key is correct
 	if string(header) != authToken {
-		ErrorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden")
+		ErrorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden", true)
 		return
 	}
 
 	// Make sure a device is set
 	if len(device) == 0 {
-		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
+		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
 		return
 	}
 
@@ -78,7 +78,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 	case "/api/beat":
 		HandleSuccessfulBeat(ctx, string(device))
 	default:
-		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
+		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
 	}
 }
 
@@ -106,15 +106,22 @@ func StatsPageHandler(ctx *fasthttp.RequestCtx) {
 	templates.WritePageTemplate(ctx, p)
 }
 
-func ErrorPageHandler(ctx *fasthttp.RequestCtx, code int, message string) {
-	p := &templates.ErrorPage{
-		Message: message,
-		Path:    ctx.Path(),
-		Method:  ctx.Method(),
-	}
-	templates.WritePageTemplate(ctx, p)
+func ErrorPageHandler(ctx *fasthttp.RequestCtx, code int, message string, plaintext bool) {
 	ctx.SetStatusCode(code)
-	log.Printf("- Returned %v to %s - tried to connect with '%s'", code, realip.FromRequest(ctx), ctx.Method())
+	log.Printf("- Returned %v to %s - tried to connect with %s to %s",
+		code, realip.FromRequest(ctx), ctx.Method(), ctx.Path())
+
+	if plaintext {
+		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/plain; charset=utf-8")
+		_, _ = fmt.Fprintf(ctx, "%v %s\n", code, message)
+	} else {
+		p := &templates.ErrorPage{
+			Message: message,
+			Path:    ctx.Path(),
+			Method:  ctx.Method(),
+		}
+		templates.WritePageTemplate(ctx, p)
+	}
 }
 
 func getMainPage() *templates.MainPage {
@@ -145,7 +152,7 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx, device string) {
 
 	err := UpdateLastBeat(device, timestamp)
 	if err != nil {
-		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, err.Error())
+		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, err.Error(), true)
 		return
 	}
 
