@@ -43,7 +43,7 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 		case "/stats":
 			StatsPageHandler(ctx)
 		default:
-			ErrorNotFound(ctx)
+			ErrorNotFound(ctx, false)
 		}
 	}
 }

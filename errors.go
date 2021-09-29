@@ -26,18 +26,26 @@ func errorPageHandler(ctx *fasthttp.RequestCtx, code int, message string, plaint
 	}
 }
 
-func ErrorBadRequest(ctx *fasthttp.RequestCtx) {
-	errorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", true)
+func ErrorBadRequest(ctx *fasthttp.RequestCtx, plaintext bool) {
+	errorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request", plaintext)
 }
 
-func ErrorForbidden(ctx *fasthttp.RequestCtx) {
-	errorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden", true)
+func ErrorForbidden(ctx *fasthttp.RequestCtx, plaintext bool) {
+	errorPageHandler(ctx, fasthttp.StatusForbidden, "403 Forbidden", plaintext)
 }
 
-func ErrorNotFound(ctx *fasthttp.RequestCtx) {
-	errorPageHandler(ctx, fasthttp.StatusNotFound, "404 Not Found", false)
+func ErrorNotFound(ctx *fasthttp.RequestCtx, plaintext bool) {
+	errorPageHandler(ctx, fasthttp.StatusNotFound, "404 Not Found", plaintext)
 }
 
 func HandleInternalErr(ctx *fasthttp.RequestCtx, message string, err error) {
 	errorPageHandler(ctx, fasthttp.StatusInternalServerError, "500 "+message+": "+err.Error(), true)
+}
+
+func HandleClientErr(ctx *fasthttp.RequestCtx, message string, err error) {
+	errorPageHandler(ctx, fasthttp.StatusBadRequest, "400 "+message+": "+err.Error(), true)
+}
+
+func HandleSuccess(ctx *fasthttp.RequestCtx) {
+	errorPageHandler(ctx, fasthttp.StatusOK, "200 OK", true)
 }

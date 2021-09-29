@@ -11,17 +11,19 @@ import (
 )
 
 var (
-	apiBeatPath    = "/api/beat"
-	apiStatsPath   = "/api/stats"
-	apiDevicesPath = "/api/devices"
-	jsonMime       = "application/json"
+	apiBeatPath          = "/api/beat"
+	apiUpdateStatsPath   = "/api/update/stats"
+	apiUpdateDevicesPath = "/api/update/devices"
+	apiStatsPath         = "/api/stats"
+	apiDevicesPath       = "/api/devices"
+	jsonMime             = "application/json"
 )
 
 func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 	switch path {
-	case apiBeatPath:
+	case apiBeatPath, apiUpdateStatsPath, apiUpdateDevicesPath:
 		if !ctx.IsPost() {
-			ErrorBadRequest(ctx)
+			ErrorBadRequest(ctx, true)
 			return
 		}
 
@@ -30,13 +32,13 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 
 		// Make sure Auth key is correct
 		if string(header) != authToken {
-			ErrorForbidden(ctx)
+			ErrorForbidden(ctx, true)
 			return
 		}
 	case apiStatsPath, apiDevicesPath:
 		heartbeatStats.TotalVisits += 1
 		if !ctx.IsGet() {
-			ErrorBadRequest(ctx)
+			ErrorBadRequest(ctx, true)
 			return
 		}
 	}
@@ -44,14 +46,44 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 	switch path {
 	case apiBeatPath:
 		HandleSuccessfulBeat(ctx)
+	case apiUpdateStatsPath:
+		handleUpdateStats(ctx)
+	case apiUpdateDevicesPath:
+		handleUpdateDevices(ctx)
 	case apiStatsPath:
 		UpdateUptime()
 		handleJsonObject(ctx, heartbeatStats)
 	case apiDevicesPath:
 		handleJsonObject(ctx, heartbeatDevices)
 	default:
-		ErrorBadRequest(ctx)
+		ErrorBadRequest(ctx, true)
 	}
+}
+
+// handleUpdateStats will allow authenticated users to replace the current stats
+func handleUpdateStats(ctx *fasthttp.RequestCtx) {
+	var stats HeartbeatStats
+	err := json2.Unmarshal(ctx.PostBody(), &stats)
+	if err != nil {
+		HandleClientErr(ctx, "Error unmarshalling json", err)
+		return
+	}
+
+	heartbeatStats = &stats
+	HandleSuccess(ctx)
+}
+
+// handleUpdateDevices will allow authenticated users to replace the current devices
+func handleUpdateDevices(ctx *fasthttp.RequestCtx) {
+	var devices []HeartbeatDevice
+	err := json2.Unmarshal(ctx.PostBody(), &devices)
+	if err != nil {
+		HandleClientErr(ctx, "Error unmarshalling json", err)
+		return
+	}
+
+	heartbeatDevices = &devices
+	HandleSuccess(ctx)
 }
 
 // handleJsonObject will print the raw json of v
@@ -71,7 +103,7 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	device := ctx.Request.Header.Peek("Device")
 	// Make sure a device is set
 	if len(device) == 0 {
-		ErrorBadRequest(ctx)
+		ErrorBadRequest(ctx, true)
 		return
 	}
 
