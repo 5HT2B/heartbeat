@@ -11,6 +11,9 @@ type ErrorPage struct {
     {%s p.Message %} - {%s p.ServerName %}
 {% endfunc %}
 
+{% func (p *ErrorPage) Head() %}
+{% endfunc %}
+
 {% func (p *ErrorPage) Body() %}
     <div class="spacer"></div>
     <div class="pure-g privacy">

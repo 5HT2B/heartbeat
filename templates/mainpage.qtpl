@@ -15,6 +15,14 @@ type MainPage struct {
     {%s p.ServerName %}
 {% endfunc %}
 
+{% func (p *MainPage) Head() %}
+<meta property="og:site_name" content="{%s p.ServerName %}">
+<meta property="og:description" content="Last seen at: {%s p.LastSeen %}.
+This embed was generated at {%s p.CurrentTime %}.
+Due to caching, you will have to check the website if the embed generation time is old."/>
+<meta name="theme-color" content="#6495ED">
+{% endfunc %}
+
 {% func (p *MainPage) Body() %}
     <div class="spacer"></div>
     <div class="pure-g preamble">

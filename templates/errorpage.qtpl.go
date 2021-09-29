@@ -69,8 +69,42 @@ func (p *ErrorPage) Title() string {
 }
 
 //line templates/errorpage.qtpl:14
-func (p *ErrorPage) StreamBody(qw422016 *qt422016.Writer) {
+func (p *ErrorPage) StreamHead(qw422016 *qt422016.Writer) {
 //line templates/errorpage.qtpl:14
+	qw422016.N().S(`
+`)
+//line templates/errorpage.qtpl:15
+}
+
+//line templates/errorpage.qtpl:15
+func (p *ErrorPage) WriteHead(qq422016 qtio422016.Writer) {
+//line templates/errorpage.qtpl:15
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/errorpage.qtpl:15
+	p.StreamHead(qw422016)
+//line templates/errorpage.qtpl:15
+	qt422016.ReleaseWriter(qw422016)
+//line templates/errorpage.qtpl:15
+}
+
+//line templates/errorpage.qtpl:15
+func (p *ErrorPage) Head() string {
+//line templates/errorpage.qtpl:15
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/errorpage.qtpl:15
+	p.WriteHead(qb422016)
+//line templates/errorpage.qtpl:15
+	qs422016 := string(qb422016.B)
+//line templates/errorpage.qtpl:15
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/errorpage.qtpl:15
+	return qs422016
+//line templates/errorpage.qtpl:15
+}
+
+//line templates/errorpage.qtpl:17
+func (p *ErrorPage) StreamBody(qw422016 *qt422016.Writer) {
+//line templates/errorpage.qtpl:17
 	qw422016.N().S(`
     <div class="spacer"></div>
     <div class="pure-g privacy">
@@ -78,17 +112,17 @@ func (p *ErrorPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-u-1 pure-u-lg-4-6">
             <p class="center">
                 `)
-//line templates/errorpage.qtpl:20
+//line templates/errorpage.qtpl:23
 	qw422016.E().S(p.Message)
-//line templates/errorpage.qtpl:20
+//line templates/errorpage.qtpl:23
 	qw422016.N().S(`: `)
-//line templates/errorpage.qtpl:20
+//line templates/errorpage.qtpl:23
 	qw422016.E().Z(p.Method)
-//line templates/errorpage.qtpl:20
+//line templates/errorpage.qtpl:23
 	qw422016.N().S(` on <b>`)
-//line templates/errorpage.qtpl:20
+//line templates/errorpage.qtpl:23
 	qw422016.E().Z(p.Path)
-//line templates/errorpage.qtpl:20
+//line templates/errorpage.qtpl:23
 	qw422016.N().S(`</b>
             </p>
         </div>
@@ -105,31 +139,31 @@ func (p *ErrorPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-g-u-0 pure-u-lg-1-6"></div>
     </div>
 `)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 }
 
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 func (p *ErrorPage) WriteBody(qq422016 qtio422016.Writer) {
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	p.StreamBody(qw422016)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	qt422016.ReleaseWriter(qw422016)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 }
 
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 func (p *ErrorPage) Body() string {
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	p.WriteBody(qb422016)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	qs422016 := string(qb422016.B)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 	return qs422016
-//line templates/errorpage.qtpl:35
+//line templates/errorpage.qtpl:38
 }

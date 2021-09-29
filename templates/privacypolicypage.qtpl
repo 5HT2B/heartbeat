@@ -8,6 +8,9 @@ type PrivacyPolicyPage struct {
     Privacy Policy - {%s p.ServerName %}
 {% endfunc %}
 
+{% func (p *PrivacyPolicyPage) Head() %}
+{% endfunc %}
+
 {% func (p *PrivacyPolicyPage) Body() %}
     <div class="spacer"></div>
     <div class="pure-g privacy">

@@ -12,6 +12,9 @@ type StatsPage struct {
     Stats - {%s p.ServerName %}
 {% endfunc %}
 
+{% func (p *StatsPage) Head() %}
+{% endfunc %}
+
 {% func (p *StatsPage) Body() %}
     <div class="spacer"></div>
     <div class="pure-g preamble">

@@ -3,6 +3,7 @@ This is a base page template. All the other template pages implement this interf
 {% interface
 Page {
     Title()
+    Head()
     Body()
 }
 %}
@@ -12,6 +13,7 @@ Page prints a page implementing Page interface.
 <html lang="en">
     <head>
         <title>{%= p.Title() %}</title>
+        {%= p.Head() %}
         <meta property="og:image" content="/favicon.png">
         <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
@@ -29,5 +31,6 @@ Page prints a page implementing Page interface.
 Base page implementation. Other pages may inherit from it if they need
 overriding only certain Page methods
 {% code type BasePage struct {} %}
-{% func (p *BasePage) Title() %}This is a base title{% endfunc %}
-{% func (p *BasePage) Body() %}This is a base body{% endfunc %}
+{% func (p *BasePage) Title() %}Default title{% endfunc %}
+{% func (p *BasePage) Head() %}{% endfunc %}
+{% func (p *BasePage) Body() %}{% endfunc %}

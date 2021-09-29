@@ -62,8 +62,42 @@ func (p *PrivacyPolicyPage) Title() string {
 }
 
 //line templates/privacypolicypage.qtpl:11
-func (p *PrivacyPolicyPage) StreamBody(qw422016 *qt422016.Writer) {
+func (p *PrivacyPolicyPage) StreamHead(qw422016 *qt422016.Writer) {
 //line templates/privacypolicypage.qtpl:11
+	qw422016.N().S(`
+`)
+//line templates/privacypolicypage.qtpl:12
+}
+
+//line templates/privacypolicypage.qtpl:12
+func (p *PrivacyPolicyPage) WriteHead(qq422016 qtio422016.Writer) {
+//line templates/privacypolicypage.qtpl:12
+	qw422016 := qt422016.AcquireWriter(qq422016)
+//line templates/privacypolicypage.qtpl:12
+	p.StreamHead(qw422016)
+//line templates/privacypolicypage.qtpl:12
+	qt422016.ReleaseWriter(qw422016)
+//line templates/privacypolicypage.qtpl:12
+}
+
+//line templates/privacypolicypage.qtpl:12
+func (p *PrivacyPolicyPage) Head() string {
+//line templates/privacypolicypage.qtpl:12
+	qb422016 := qt422016.AcquireByteBuffer()
+//line templates/privacypolicypage.qtpl:12
+	p.WriteHead(qb422016)
+//line templates/privacypolicypage.qtpl:12
+	qs422016 := string(qb422016.B)
+//line templates/privacypolicypage.qtpl:12
+	qt422016.ReleaseByteBuffer(qb422016)
+//line templates/privacypolicypage.qtpl:12
+	return qs422016
+//line templates/privacypolicypage.qtpl:12
+}
+
+//line templates/privacypolicypage.qtpl:14
+func (p *PrivacyPolicyPage) StreamBody(qw422016 *qt422016.Writer) {
+//line templates/privacypolicypage.qtpl:14
 	qw422016.N().S(`
     <div class="spacer"></div>
     <div class="pure-g privacy">
@@ -97,31 +131,31 @@ func (p *PrivacyPolicyPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-g-u-0 pure-u-lg-1-6"></div>
     </div>
 `)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 }
 
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 func (p *PrivacyPolicyPage) WriteBody(qq422016 qtio422016.Writer) {
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	p.StreamBody(qw422016)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	qt422016.ReleaseWriter(qw422016)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 }
 
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 func (p *PrivacyPolicyPage) Body() string {
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	p.WriteBody(qb422016)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	qs422016 := string(qb422016.B)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 	return qs422016
-//line templates/privacypolicypage.qtpl:43
+//line templates/privacypolicypage.qtpl:46
 }
