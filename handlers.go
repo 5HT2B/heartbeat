@@ -138,22 +138,16 @@ func getMainPage() *templates.MainPage {
 }
 
 func handleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
-	totalBeats += 1
-	newLastBeat := time.Now().Unix()
-	currentBeatDifference := newLastBeat - lastBeat
+	heartbeatStats.TotalVisits += 1
+	timestamp := time.Now().Unix()
+	timestampStr := strconv.FormatInt(timestamp, 10)
 
-	if currentBeatDifference > missingBeat {
-		missingBeat = currentBeatDifference
+	err := UpdateLastBeat("TODO", timestamp) // TODO: Add device name from here
+	if err != nil {
+		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, err.Error())
+		return
 	}
 
-	lastBeatStr := strconv.FormatInt(newLastBeat, 10)
-	missingBeatStr := strconv.FormatInt(missingBeat, 10)
-	totalBeatsStr := strconv.FormatInt(totalBeats, 10)
-
-	fmt.Fprintf(ctx, "%v\n", lastBeatStr)
+	fmt.Fprintf(ctx, "%v\n", timestampStr)
 	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
-
-	lastBeat = newLastBeat
-	WriteToFile("config/last_beat", lastBeatStr+":"+missingBeatStr+":"+totalBeatsStr)
-	WriteGetRequestsFile(totalVisits)
 }

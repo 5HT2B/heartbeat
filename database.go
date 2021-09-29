@@ -54,7 +54,6 @@ func appendOrCreateArr(key string, path string, obj interface{}, objArr interfac
 }
 
 func CurrentMissingBeat() int64 {
-	// todo: this needs to work for multiple devices
 	lastBeatTmp := GetLastBeat() // todo: rename
 	diff := time.Now().Unix() - lastBeatTmp.Timestamp
 
@@ -66,35 +65,50 @@ func CurrentMissingBeat() int64 {
 
 func UpdateTotalVisits() {
 	// TODO: unfinished
-	if totalVisits == -1 || heartbeatStats == nil {
-		if res, err := rjh.JSONGet("stats", "."); err != nil {
-			if _, err := rjh.JSONSet("stats", ".", defaultHeartbeatStats); err != nil {
-				panic(err)
+	//if totalVisits == -1 || heartbeatStats == nil {
+	//	if res, err := rjh.JSONGet("stats", "."); err != nil {
+	//		if _, err := rjh.JSONSet("stats", ".", defaultHeartbeatStats); err != nil {
+	//			panic(err)
+	//		}
+	//	} else {
+	//		var stats HeartbeatStats
+	//		if err = json.Unmarshal(res.([]byte), &stats); err != nil {
+	//			panic(err)
+	//		}
+	//
+	//		stats.TotalVisits += 1
+	//
+	//	}
+	//}
+}
+
+// updateDevice will update the LastBeat of a device
+func updateDevice(beat HeartbeatBeat) {
+	for n, device := range *heartbeatDevices {
+		if device.DeviceName == beat.DeviceName {
+			diff := time.Now().Unix() - device.LastBeat.Timestamp
+			if diff > device.LongestMissingBeat {
+				device.LongestMissingBeat = diff
 			}
-		} else {
-			var stats HeartbeatStats
-			if err = json.Unmarshal(res.([]byte), &stats); err != nil {
-				panic(err)
+			if device.LongestMissingBeat > heartbeatStats.LongestMissingBeat {
+				heartbeatStats.LongestMissingBeat = device.LongestMissingBeat
 			}
 
-			stats.TotalVisits += 1
+			device.LastBeat = beat
+			device.TotalBeats += 1
 
+			(*heartbeatDevices)[n] = device
+			heartbeatStats.TotalBeats += 1
+			break // name should only ever be matching once
 		}
 	}
 }
 
-func UpdateDevices(lastBeat *HeartbeatBeat, increment bool) {
-	//for _, device := range *heartbeatDevices {
-	//
-	//}
-	// TODO do this
-}
-
-// SetLastBeat will save the last beat and insert a new HeartbeatBeat into beats
-func SetLastBeat(deviceName string, timestamp int64) error {
-	heartbeatStats.TotalBeats += 1
-
+// UpdateLastBeat will save the last beat and insert a new HeartbeatBeat into beats
+func UpdateLastBeat(deviceName string, timestamp int64) error {
 	lastBeat := HeartbeatBeat{deviceName, timestamp}
+	updateDevice(lastBeat)
+
 	if _, err := rjh.JSONSet("last_beat", ".", lastBeat); err != nil {
 		return err
 	}
@@ -107,11 +121,6 @@ func SetLastBeat(deviceName string, timestamp int64) error {
 
 // GetLastBeat will get the last beat, and return nilLastBeat if there was an error retrieving it (likely no beat)
 func GetLastBeat() *HeartbeatBeat {
-	if rjh == nil {
-		time.Sleep(1 * time.Second)
-		return GetLastBeat()
-	}
-
 	res, err := rjh.JSONGet("last_beat", ".")
 	if err != nil {
 		log.Printf("- Failed to get last beat: %v", err)
@@ -123,4 +132,37 @@ func GetLastBeat() *HeartbeatBeat {
 		panic(err)
 	}
 	return &lastBeat
+}
+
+// GetAllBeats will return all the beats received
+func GetAllBeats() []HeartbeatBeat {
+	res, err := rjh.JSONGet("beats", ".")
+	if err != nil {
+		log.Printf("- Failed to get all beats: %v", err)
+		return nil
+	}
+
+	var allBeats []HeartbeatBeat
+	if err = json.Unmarshal(res.([]byte), &allBeats); err != nil {
+		panic(err)
+	}
+	return allBeats
+}
+
+func getDeviceMissingBeat(deviceName string) int64 {
+	allBeats := GetAllBeats()
+	if allBeats == nil {
+		// todo
+	}
+
+	for n := range allBeats {
+		// iterate through slice in reverse
+		beat := allBeats[len(allBeats)-1-n]
+		if beat.DeviceName == deviceName {
+			diff := time.Now().Unix() - beat.Timestamp
+			return diff
+		}
+	}
+
+	return -1
 }

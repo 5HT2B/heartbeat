@@ -18,17 +18,18 @@ type HeartbeatBeat struct {
 
 // HeartbeatDevice is used in an array of recognized devices
 type HeartbeatDevice struct {
-	DeviceName         string `json:"device_name"`
-	TotalBeats         int64  `json:"total_beats"`
-	LongestMissingBeat int64  `json:"longest_missing_beat"`
+	DeviceName         string        `json:"device_name"`
+	LastBeat           HeartbeatBeat `json:"last_beat"`
+	TotalBeats         int64         `json:"total_beats"`
+	LongestMissingBeat int64         `json:"longest_missing_beat"`
 }
 
 // HeartbeatStats are the global stats for a heartbeat server
 type HeartbeatStats struct {
 	TotalVisits        int64 `json:"total_visits"`
 	TotalUptime        int64 `json:"total_uptime"`
-	TotalBeats         int64 `json:"total_beats"`
-	LongestMissingBeat int64 `json:"longest_missing_beat"`
+	TotalBeats         int64 `json:"total_beats"`          // handled by updateDevice
+	LongestMissingBeat int64 `json:"longest_missing_beat"` // handled by updateDevice
 }
 
 func (lb HeartbeatBeat) String() string {
