@@ -60,6 +60,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 
 	// The authentication key provided with said Auth header
 	header := ctx.Request.Header.Peek("Auth")
+	device := ctx.Request.Header.Peek("Device")
 
 	// Make sure Auth key is correct
 	if string(header) != authToken {
@@ -67,9 +68,15 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		return
 	}
 
+	// Make sure a device is set
+	if len(device) == 0 {
+		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
+		return
+	}
+
 	switch path {
 	case "/api/beat":
-		HandleSuccessfulBeat(ctx)
+		HandleSuccessfulBeat(ctx, string(device))
 	default:
 		ErrorPageHandler(ctx, fasthttp.StatusBadRequest, "400 Bad Request")
 	}
@@ -132,11 +139,11 @@ func getMainPage() *templates.MainPage {
 	return page
 }
 
-func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
+func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx, device string) {
 	timestamp := time.Now().Unix()
 	timestampStr := strconv.FormatInt(timestamp, 10)
 
-	err := UpdateLastBeat("TODO", timestamp) // TODO: Add device name from here
+	err := UpdateLastBeat(device, timestamp)
 	if err != nil {
 		ErrorPageHandler(ctx, fasthttp.StatusInternalServerError, err.Error())
 		return
