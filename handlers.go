@@ -111,13 +111,17 @@ func ErrorPageHandler(ctx *fasthttp.RequestCtx, code int, message string) {
 }
 
 func getMainPage() *templates.MainPage {
-	lastBeat := GetLastBeat()
 	currentTime := time.Now()
+	lastBeat := GetLastBeat()
+	timeDifference := "Never"
+	if lastBeat != nil {
+		timeDifference = TimeDifference(lastBeat.Timestamp, currentTime)
+	}
 
 	page := &templates.MainPage{
-		LastSeen:       LastSeen(),                                       // date last seen
-		TimeDifference: TimeDifference(lastBeat.Timestamp, currentTime),  // relative time to last seen
-		MissingBeat:    FormattedTime(heartbeatStats.LongestMissingBeat), // longest absence
+		LastSeen:       LastSeen(),       // date last seen
+		TimeDifference: timeDifference,   // relative time to last seen
+		MissingBeat:    LongestAbsence(), // longest absence
 		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
 		CurrentTime:    currentTime.Format(timeFormat),
 		GitHash:        gitCommitHash,

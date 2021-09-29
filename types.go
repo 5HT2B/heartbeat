@@ -6,6 +6,11 @@ import "fmt"
 // Redis JSONPath structure is documented in DOCS.md
 //
 
+var (
+	defaultHeartbeatStats   = &HeartbeatStats{0, 0, 0, 0}
+	defaultHeartbeatDevices = &[]HeartbeatDevice{{}}
+)
+
 // HeartbeatBeat is the current last beat
 type HeartbeatBeat struct {
 	DeviceName string `json:"device_name"`

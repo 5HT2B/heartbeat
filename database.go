@@ -19,6 +19,7 @@ var (
 	heartbeatDevices *[]HeartbeatDevice = nil
 )
 
+// SetupDatabase creates the ReJSON handler and Redis client
 func SetupDatabase() (*redis.Client, *rejson.Handler) {
 	rh := rejson.NewReJSONHandler()
 	client := redis.NewClient(&redis.Options{
@@ -28,6 +29,29 @@ func SetupDatabase() (*redis.Client, *rejson.Handler) {
 
 	rh.SetGoRedisClient(client)
 	return client, rh
+}
+
+// SetupLocalValues will look for existing stats and devices in the database, and read them to local values
+func SetupLocalValues() {
+	if res, err := rjh.JSONGet("stats", "."); err != nil {
+		heartbeatStats = defaultHeartbeatStats
+	} else {
+		var stats HeartbeatStats
+		if err = json.Unmarshal(res.([]byte), &stats); err != nil {
+			panic(err)
+		}
+		heartbeatStats = &stats
+	}
+
+	if res, err := rjh.JSONGet("devices", "."); err != nil {
+		heartbeatDevices = defaultHeartbeatDevices
+	} else {
+		var devices []HeartbeatDevice
+		if err = json.Unmarshal(res.([]byte), &devices); err != nil {
+			panic(err)
+		}
+		heartbeatDevices = &devices
+	}
 }
 
 // appendOrCreateArr will append an obj to key in path, or create objArr in key in path if it doesn't exist
@@ -47,29 +71,29 @@ func appendOrCreateArr(key string, path string, obj interface{}, objArr interfac
 	return nil
 }
 
-func UpdateTotalVisits() {
-	// TODO: unfinished
-	//if totalVisits == -1 || heartbeatStats == nil {
-	//	if res, err := rjh.JSONGet("stats", "."); err != nil {
-	//		if _, err := rjh.JSONSet("stats", ".", defaultHeartbeatStats); err != nil {
-	//			panic(err)
-	//		}
-	//	} else {
-	//		var stats HeartbeatStats
-	//		if err = json.Unmarshal(res.([]byte), &stats); err != nil {
-	//			panic(err)
-	//		}
-	//
-	//		stats.TotalVisits += 1
-	//
-	//	}
-	//}
-}
-
 // LastSeen will return the formatted date of the last timestamp received from a beat
 func LastSeen() string {
 	lastBeat := GetLastBeat()
+	if lastBeat == nil {
+		return "Never"
+	}
 	return time.Unix(lastBeat.Timestamp, 0).Format(timeFormat)
+}
+
+// LongestAbsence will return HeartbeatStats.LongestMissingBeat unless the current missing beat is longer
+func LongestAbsence() string {
+	lastBeat := GetLastBeat()
+	if lastBeat == nil {
+		return "Never"
+	}
+
+	diff := time.Now().Unix() - lastBeat.Timestamp
+	// If current absence is bigger than record absence, return current absence
+	if diff > heartbeatStats.LongestMissingBeat {
+		return FormattedTime(diff)
+	} else {
+		return FormattedTime(heartbeatStats.LongestMissingBeat)
+	}
 }
 
 // SaveLocalInDatabase will save local copies of small database stats and devices to the database every 5 minutes
