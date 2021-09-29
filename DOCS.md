@@ -42,7 +42,7 @@ Available endpoints:
 - `/api/beat` (POST)
   - Requires the Auth and Device headers to be set
 - `/api/stats` (GET)
-- `/api/devices`
+- `/api/devices` (GET)
 
 ## Redis JSONPath structure example
 
