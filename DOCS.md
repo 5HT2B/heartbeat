@@ -3,6 +3,47 @@
 A few technical aspects are kept documented here for future reference.
 For the most part, functions will be commented.
 
+## Running server in production
+
+Using Caddy or Nginx + Certbot for automatic renewal and reverse proxying is recommended.
+```
+# Caddyfile example
+hb.l1v.in {
+  header Server Caddy "Heartbeat"
+  reverse_proxy localhost:6060
+}
+```
+
+There is also a docker image available with the following command, or checkout the
+[`update.sh`](https://github.com/technically-functional/heartbeat/blob/master/scripts/update.sh) script for automatically updating a live docker image.
+```bash
+# Simply pull the image
+docker pull l1ving/heartbeat:latest
+# Run the service under docker. Do not use FIRST_RUN if you have run it before.
+./update.sh FIRST_RUN
+```
+
+### Running client on Android (tasker)
+
+You should be able to import each of these tasker profiles from the [tasker folder](https://github.com/l1ving/heartbeat/tree/master/tasker). Make sure each of them are enabled, and **edit the server address and Auth token inside `Ping.tsk.xml` before importing**.
+
+Make sure to allow running in background, as well as the other optimizations which Tasker recommends, in order to be sure that it runs.
+If there is any issue importing it, please [make an issue](https://github.com/technically-functional/heartbeat/issues/new) in this repo.
+
+You will also need to create your own profile that runs every 2 minutes, to run the "ping task", and make sure the Display Off and Display Unlocked profiles are enabled.
+
+### Running client on anything else
+
+Please see [`heartbeat-unix`](https://github.com/technically-functional/heartbeat-unix) for a (mostly universal) example that will run on almost any \*NIX system.
+
+## API
+
+Available endpoints:
+- `/api/beat` (POST)
+  - Requires the Auth and Device headers to be set
+- `/api/stats` (GET)
+- `/api/devices`
+
 ## Redis JSONPath structure example
 
 ```bash
