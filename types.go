@@ -8,7 +8,7 @@ import "fmt"
 
 var (
 	defaultHeartbeatStats   = &HeartbeatStats{0, 0, 0, 0}
-	defaultHeartbeatDevices = &[]HeartbeatDevice{{}}
+	defaultHeartbeatDevices = &[]HeartbeatDevice{}
 )
 
 // HeartbeatBeat is the current last beat
