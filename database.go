@@ -31,6 +31,18 @@ func SetupDatabase() (*redis.Client, *rejson.Handler) {
 	return client, rh
 }
 
+func SetupDatabaseSaving() {
+	ticker := time.NewTicker(5 * time.Minute)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				SaveLocalInDatabase()
+			}
+		}
+	}()
+}
+
 // SetupLocalValues will look for existing stats and devices in the database, and read them to local values
 func SetupLocalValues() {
 	if res, err := rjh.JSONGet("stats", "."); err != nil {
@@ -54,21 +66,21 @@ func SetupLocalValues() {
 	}
 }
 
-// appendOrCreateArr will append an obj to key in path, or create objArr in key in path if it doesn't exist
-func appendOrCreateArr(key string, path string, obj interface{}, objArr interface{}) error {
-	// Check if key exists
-	if _, err := rjh.JSONGet(key, path); err != nil {
-		// Key doesn't exist, insert a new array with objArr
-		if _, err := rjh.JSONSet(key, path, objArr); err != nil {
-			return err
-		}
-	} else {
-		// Key does exist, append obj to existing key
-		_, err := rjh.JSONArrAppend(key, path, obj)
-		return err
+// SaveLocalInDatabase will save local copies of small database stats and devices to the database every 5 minutes
+func SaveLocalInDatabase() {
+	// This is also called when viewing the stats page, but we want to run it here to avoid missing time
+	// if nobody looks at the stats page
+	UpdateUptime()
+
+	log.Printf("- Autosaving database, uptime is %v\n", heartbeatStats.TotalUptime)
+
+	if _, err := rjh.JSONSet("stats", ".", heartbeatStats); err != nil {
+		log.Fatalf("Error saving stats: %v", err)
 	}
 
-	return nil
+	if _, err := rjh.JSONSet("devices", ".", heartbeatDevices); err != nil {
+		log.Fatalf("Error saving devices: %v", err)
+	}
 }
 
 // LastSeen will return the formatted date of the last timestamp received from a beat
@@ -93,23 +105,6 @@ func LongestAbsence() string {
 		return FormattedTime(diff)
 	} else {
 		return FormattedTime(heartbeatStats.LongestMissingBeat)
-	}
-}
-
-// SaveLocalInDatabase will save local copies of small database stats and devices to the database every 5 minutes
-func SaveLocalInDatabase() {
-	// This is also called when viewing the stats page, but we want to run it here to avoid missing time
-	// if nobody looks at the stats page
-	UpdateUptime()
-
-	log.Printf("- Autosaving database, uptime is %v\n", heartbeatStats.TotalUptime)
-
-	if _, err := rjh.JSONSet("stats", ".", heartbeatStats); err != nil {
-		log.Fatalf("Error saving stats: %v", err)
-	}
-
-	if _, err := rjh.JSONSet("devices", ".", heartbeatDevices); err != nil {
-		log.Fatalf("Error saving devices: %v", err)
 	}
 }
 
@@ -185,4 +180,21 @@ func GetLastBeat() *HeartbeatBeat {
 		panic(err)
 	}
 	return &lastBeat
+}
+
+// appendOrCreateArr will append an obj to key in path, or create objArr in key in path if it doesn't exist
+func appendOrCreateArr(key string, path string, obj interface{}, objArr interface{}) error {
+	// Check if key exists
+	if _, err := rjh.JSONGet(key, path); err != nil {
+		// Key doesn't exist, insert a new array with objArr
+		if _, err := rjh.JSONSet(key, path, objArr); err != nil {
+			return err
+		}
+	} else {
+		// Key does exist, append obj to existing key
+		_, err := rjh.JSONArrAppend(key, path, obj)
+		return err
+	}
+
+	return nil
 }

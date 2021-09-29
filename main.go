@@ -27,7 +27,8 @@ func main() {
 	flag.Parse()
 	setupEnv()
 	rdb, rjh = SetupDatabase()
-	SetupLocalValues()
+	go SetupLocalValues()
+	go SetupDatabaseSaving()
 	log.Printf("- Running heartbeat on " + protocol + addr)
 
 	h := RequestHandler
