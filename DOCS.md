@@ -14,6 +14,18 @@ hb.l1v.in {
 }
 ```
 
+```
+# Nginx example
+server {
+    server_name hb.l1v.in;
+    location / {
+        proxy_pass localhost:6060;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    # Automatically managed certbot stuff goes here
+} 
+```
+
 There is also a docker image available with the following command, or checkout the
 [`update.sh`](https://github.com/technically-functional/heartbeat/blob/master/scripts/update.sh) script for automatically updating a live docker image.
 ```bash
