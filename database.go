@@ -15,10 +15,6 @@ var (
 	redisAddr = "localhost:6379" // set by .env
 	redisPass = ""               // set by .env
 
-	lastBeat         int64              = -1
-	missingBeat      int64              = -1
-	totalBeats       int64              = -1
-	totalVisits      int64              = -1
 	heartbeatStats   *HeartbeatStats    = nil
 	heartbeatDevices *[]HeartbeatDevice = nil
 )

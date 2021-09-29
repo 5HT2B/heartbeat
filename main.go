@@ -27,7 +27,6 @@ func main() {
 	flag.Parse()
 	setupEnv()
 	rdb, rjh = SetupDatabase()
-	setupDatabaseValues()
 	log.Printf("- Running heartbeat on " + protocol + addr)
 
 	h := RequestHandler
@@ -80,12 +79,4 @@ func setupEnv() {
 	if ev := os.Getenv("REDIS_PASS"); len(ev) > 0 {
 		redisPass = ev
 	}
-}
-
-// TODO: these should be reading from db
-func setupDatabaseValues() {
-	lastBeat = time.Now().Unix() //GetInt64Value("last_beat", time.Now().Unix())
-	missingBeat = 0              // GetInt64Value("missing_beat", 0)
-	totalBeats = 0               // GetInt64Value("total_beats", 0)
-	totalVisits = 0              // GetInt64Value("total_visits", 0)
 }

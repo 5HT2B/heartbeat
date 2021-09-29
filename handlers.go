@@ -36,7 +36,7 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 	case bytes.HasSuffix(path, icoSuffix), bytes.HasSuffix(path, pngSuffix):
 		imgHandler(ctx)
 	default:
-		totalVisits++
+		heartbeatStats.TotalVisits += 1
 		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
 
 		switch pathStr {
@@ -89,9 +89,9 @@ func PrivacyPolicyPageHandler(ctx *fasthttp.RequestCtx) {
 
 func StatsPageHandler(ctx *fasthttp.RequestCtx) {
 	p := &templates.StatsPage{
-		TotalBeats:   FormattedNum(totalBeats),
+		TotalBeats:   FormattedNum(heartbeatStats.TotalBeats),
 		TotalDevices: FormattedNum(2), // TODO: Add support for this
-		TotalVisits:  FormattedNum(totalVisits),
+		TotalVisits:  FormattedNum(heartbeatStats.TotalVisits),
 		TotalUptime:  FormattedTime(heartbeatStats.TotalUptime),
 		ServerName:   serverName,
 	}
@@ -110,26 +110,18 @@ func ErrorPageHandler(ctx *fasthttp.RequestCtx, code int, message string) {
 }
 
 func getMainPage() *templates.MainPage {
+	lastBeat := GetLastBeat()
 	currentTime := time.Now()
-	currentBeatDifference := currentTime.Unix() - lastBeat
 
-	// We also want to live update the current difference, instead of only when receiving a beat.
-	if currentBeatDifference > missingBeat {
-		missingBeat = currentBeatDifference
-	}
-
-	lastSeen := time.Unix(lastBeat, 0).Format(timeFormat)
-	timeDifference := TimeDifference(lastBeat, currentTime)
-	missingBeatFmt := FormattedTime(missingBeat)
-	totalBeatsFmt := FormattedNum(totalBeats)
-	currentTimeStr := currentTime.Format(timeFormat)
+	// I don't know why this is written this way and don't want to break it
+	lastSeen := time.Unix(lastBeat.Timestamp, 0).Format(timeFormat)
 
 	page := &templates.MainPage{
-		LastSeen:       lastSeen,
-		TimeDifference: timeDifference,
-		MissingBeat:    missingBeatFmt,
-		TotalBeats:     totalBeatsFmt,
-		CurrentTime:    currentTimeStr,
+		LastSeen:       lastSeen,                                         // date last seen
+		TimeDifference: TimeDifference(lastBeat.Timestamp, currentTime),  // relative time to last seen
+		MissingBeat:    FormattedTime(heartbeatStats.LongestMissingBeat), // longest absence
+		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
+		CurrentTime:    currentTime.Format(timeFormat),
 		GitHash:        gitCommitHash,
 		GitRepo:        gitRepo,
 		ServerName:     serverName,
@@ -139,7 +131,6 @@ func getMainPage() *templates.MainPage {
 }
 
 func handleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
-	heartbeatStats.TotalVisits += 1
 	timestamp := time.Now().Unix()
 	timestampStr := strconv.FormatInt(timestamp, 10)
 
