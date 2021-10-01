@@ -14,6 +14,18 @@ hb.l1v.in {
 }
 ```
 
+```
+# Nginx example
+server {
+    server_name hb.l1v.in;
+    location / {
+        proxy_pass localhost:6060;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    # Automatically managed certbot stuff goes here
+} 
+```
+
 There is also a docker image available with the following command, or checkout the
 [`update.sh`](https://github.com/technically-functional/heartbeat/blob/master/scripts/update.sh) script for automatically updating a live docker image.
 ```bash
@@ -61,8 +73,8 @@ Available endpoints:
 │   └── <HeartbeatBeat>        # {"device_name": "laptop", "timestamp": 1632748682}
 │
 ├── devices
-│   ├── <HeartbeatDevice>      # {"device_name": "laptop", "total_beats": 12903, "longest_missing_beat", 1201}
-│   └── <HeartbeatDevice>      # {"device_name": "phone", "total_beats": 1952, "longest_missing_beat", 3219}
+│   ├── <HeartbeatDevice>      # {"device_name": "laptop", "last_beat": <HeartbeatBeat>, "total_beats": 12903, "longest_missing_beat", 1201}
+│   └── <HeartbeatDevice>      # {"device_name": "phone", "last_beat": <HeartbeatBeat>, "total_beats": 1952, "longest_missing_beat", 3219}
 │
 ├── last_beat <HeartbeatBeat>  # {"device_name": "laptop", "timestamp": 1632748096}
 └── stats <HeartbeatStats>     # {"total_visits": 45012, "total_uptime": 892340, "total_beats": 14855, "longest_missing_beat", 3219}
