@@ -46,7 +46,7 @@ func main() {
 }
 
 func setupEnv() {
-	err := godotenv.Load("config/.env")
+	err := godotenv.Load("/heartbeat/config/.env")
 	if err != nil {
 		log.Fatalf("Fatal error: %v", err)
 		return

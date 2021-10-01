@@ -8,5 +8,4 @@ WORKDIR /heartbeat
 ENV PATH "${PATH}:${GOPATH}/bin"
 RUN make update build
 
-ENV ADDRESS "localhost:6060"
-CMD /heartbeat/heartbeat -addr ${ADDRESS}
+CMD /heartbeat/heartbeat
