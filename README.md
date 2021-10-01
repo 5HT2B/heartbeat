@@ -10,6 +10,16 @@ A service to see when a device was last active. Works by pinging the server ever
 
 Contributions to fix code are welcome, as are any improvements.
 
+## Usage
+
+```bash
+git clone git@github.com:technically-functional/heartbeat.git
+cd heartbeat
+echo "HB_TOKEN=authenticationTokenMakeThisSecure" >> config/.env
+HB_PATH=$(pwd)/config docker-compose up --build
+```
+
+<!-- OLD METHOD 
 To build:
 ```bash
 git clone git@github.com:technically-functional/heartbeat.git
@@ -31,7 +41,7 @@ edit config/.env
 # Run heartbeat now that your config/.env is setup
 ./heartbeat
 ```
-
+-->
 To test a ping locally:
 
 ```bash
