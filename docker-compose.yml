@@ -8,13 +8,13 @@ services:
       - "$HB_PATH:/heartbeat/config"
     ports:
       - "6060:6060"
-      - "80:80"
     build:
       context: .
-      network: "host"
 
   database:
     image: redislabs/rejson:latest
+    expose:
+      - 6379
     ports:
       - "6379:6379"
 
