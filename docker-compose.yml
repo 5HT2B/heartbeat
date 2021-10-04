@@ -2,8 +2,6 @@ version: "3.9"
 services:
   server:
     image: l1ving/heartbeat
-    environment:
-      - "ADDRESS=\"localhost:6011\""
     volumes:
       - "$HB_PATH:/heartbeat/config"
     ports:

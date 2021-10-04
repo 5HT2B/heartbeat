@@ -46,13 +46,13 @@ func main() {
 }
 
 func setupEnv() {
-	err := godotenv.Load("/heartbeat/config/.env")
+	err := godotenv.Load("config/.env")
 	if err != nil {
 		log.Fatalf("Fatal error: %v", err)
 		return
 	}
 
-	if !*debug && len(*authTokenFlag) > 0 {
+	if *debug && len(*authTokenFlag) > 0 {
 		authToken = *authTokenFlag
 	} else {
 		if ev := os.Getenv("HB_TOKEN"); len(ev) == 0 {
