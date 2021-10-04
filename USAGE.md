@@ -55,3 +55,5 @@ or open localhost:6060 in a browser to view the webpage.
   Try running `./heartbeat -debug -token some_token_here`, which will override the default token, to help debug the issue.
 - Heartbeat can't read the `config/.env` when using Docker?
   Make sure `export HB_PATH` is pointing to the config folder inside your Heartbeat folder.
+- `dial tcp: lookup database: no such host`
+  Heartbeat can't connect to the Redis database. If you're not using the Docker image, make sure that you ran `redis-server` before `./heartbeat`.
