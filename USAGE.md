@@ -48,7 +48,8 @@ or open localhost:6060 in a browser to view the webpage.
 
 - Can't connect using Docker?
 
-    The default port is `6060`, and you should be able to access `localhost:6060`. This is set in `config/.env` and `docker-compose.yml`
+    The default port is `6060`, and you should be able to access `localhost:6060`. This is set in `config/.env` and `docker-compose.yml`.
+
     If you are unable to connect from localhost, make sure these are set to your desired port, and check the `docker-compose` log for issues.
 
 - Can't connect without Docker?
