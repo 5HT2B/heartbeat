@@ -46,19 +46,23 @@ or open localhost:6060 in a browser to view the webpage.
 
 ## Debugging
 
-1. Can't connect using Docker?
+- Can't connect using Docker?
 
-  The default port is `6060`, and you should be able to access `localhost:6060`. This is set in `config/.env` and `docker-compose.yml`
-  If you are unable to connect from localhost, make sure these are set to your desired port, and check the `docker-compose` log for issues.
-2. Can't connect without Docker?
+    The default port is `6060`, and you should be able to access `localhost:6060`. This is set in `config/.env` and `docker-compose.yml`
+    If you are unable to connect from localhost, make sure these are set to your desired port, and check the `docker-compose` log for issues.
 
-  The default port is `6060`, set in `config/.env` with `HB_ADDR`. If `./heartbeat` isn't throwing any errors, please check that you have the right port.
-3. Can't `POST` to `/api/beat`?
+- Can't connect without Docker?
 
-  Try running `./heartbeat -debug -token some_token_here`, which will override the default token, to help debug the issue.
-4. Heartbeat can't read the `config/.env` when using Docker?
+    The default port is `6060`, set in `config/.env` with `HB_ADDR`. If `./heartbeat` isn't throwing any errors, please check that you have the right port.
 
-  Make sure `export HB_PATH` is pointing to the config folder inside your Heartbeat folder.
-5.`dial tcp: lookup database: no such host`
+- Can't `POST` to `/api/beat`?
 
-  Heartbeat can't connect to the Redis database. If you're not using the Docker image, make sure that you ran `redis-server` before `./heartbeat`.
+    Try running `./heartbeat -debug -token some_token_here`, which will override the default token, to help debug the issue.
+
+- Heartbeat can't read the `config/.env` when using Docker?
+
+    Make sure `export HB_PATH` is pointing to the config folder inside your Heartbeat folder.
+
+- `dial tcp: lookup database: no such host`
+
+    Heartbeat can't connect to the Redis database. If you're not using the Docker image, make sure that you ran `redis-server` before `./heartbeat`.
