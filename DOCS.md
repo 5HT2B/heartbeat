@@ -9,7 +9,6 @@ Using Caddy or Nginx + Certbot for automatic renewal and reverse proxying is rec
 ```
 # Caddyfile example
 hb.l1v.in {
-  header Server Caddy "Heartbeat"
   reverse_proxy localhost:6060
 }
 ```
