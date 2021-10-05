@@ -26,14 +26,7 @@ server {
 } 
 ```
 
-There is also a docker image available with the following command, or checkout the
-[`update.sh`](https://github.com/technically-functional/heartbeat/blob/master/scripts/update.sh) script for automatically updating a live docker image.
-```bash
-# Simply pull the image
-docker pull l1ving/heartbeat:latest
-# Run the service under docker. Do not use FIRST_RUN if you have run it before.
-./update.sh FIRST_RUN
-```
+See [`USAGE.md`](https://github.com/technically-functional/heartbeat/blob/master/USAGE.md) for instructions to run the server, which you would be putting behind a reverse proxy.
 
 ### Running client on Android (tasker)
 
