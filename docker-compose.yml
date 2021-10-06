@@ -1,11 +1,13 @@
 version: "3.9"
 services:
   server:
+    env_file:
+      - "config/.env"
     image: l1ving/heartbeat
     volumes:
       - "./config:/heartbeat/config"
     ports:
-      - "6060:6060"
+      - "${HB_PORT}:${HB_PORT}"
     build:
       context: .
 
