@@ -15,7 +15,7 @@ var (
 	debug         = flag.Bool("debug", false, "Whether to print debug output")
 	authTokenFlag = flag.String("token", "", "An alternative token to be used when debugging")
 	protocol      = "http://"             // set in .env
-	addr          = "localhost:6060"      // set in .env
+	addr          = "0.0.0.0:6060"        // set in .env
 	serverName    = "A Development Build" // set in .env
 	authToken     = ""                    // set in .env // TODO: Add support for multi tokens
 	gitCommitHash = "<unknown>"           // This is changed with compile flags in Makefile

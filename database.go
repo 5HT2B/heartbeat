@@ -12,8 +12,8 @@ var (
 	rdb *redis.Client   // set in main()
 	rjh *rejson.Handler // set in main()
 
-	redisAddr = "localhost:6379" // set by .env
-	redisPass = ""               // set by .env
+	redisAddr = "database:6379" // set in .env
+	redisPass = ""              // set in .env
 
 	heartbeatStats   *HeartbeatStats    = nil
 	heartbeatDevices *[]HeartbeatDevice = nil
