@@ -12,10 +12,13 @@ services:
   database:
     image: redislabs/rejson:latest
     volumes:
-      - "./config:/heartbeat/config"
-    command: "/heartbeat/config/redis.conf"
+      - "redis_data:/data"
+      - "./config/redis.conf:/heartbeat/config/redis.conf"
+    command: "/heartbeat/config/redis.conf --loadmodule /usr/lib/redis/modules/rejson.so"
     expose:
       - 6379
     ports:
       - "6379:6379"
 
+volumes:
+  redis_data:
