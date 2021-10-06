@@ -2,7 +2,7 @@ version: "3.9"
 services:
   server:
     env_file:
-      - "config/.env"
+      - "./config/.env"
     image: l1ving/heartbeat
     volumes:
       - "./config:/heartbeat/config"
