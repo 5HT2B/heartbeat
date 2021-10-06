@@ -17,6 +17,7 @@ docker-compose up
 This requires `go` (1.16 or newer), `redis-server` (6.2.5 or newer), [RedisJSON](https://github.com/RedisJSON/RedisJSON) and `git`.
 
 ```bash
+# Make sure to edit config/redis.conf and change dir to ./config
 # Run redis-server with the following command in the background, or in another window
 redis-server path/to/hb/config/redis.conf --loadmodule path/to/RedisJSON/target/release/librejson.so
 
