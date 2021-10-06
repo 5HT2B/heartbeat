@@ -4,7 +4,8 @@ go 1.16
 
 require (
 	github.com/Ferluci/fast-realip v1.0.0
-	github.com/go-redis/redis/v8 v8.11.3
+	github.com/go-redis/redis/v8 v8.11.4
+	github.com/gomodule/redigo v1.8.5 // indirect
 	github.com/joho/godotenv v1.4.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/nitishm/go-rejson/v4 v4.0.0
