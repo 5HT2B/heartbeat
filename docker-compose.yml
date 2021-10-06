@@ -3,7 +3,7 @@ services:
   server:
     image: l1ving/heartbeat
     volumes:
-      - "$HB_PATH:/heartbeat/config"
+      - "./config:/heartbeat/config"
     ports:
       - "6060:6060"
     build:
@@ -11,6 +11,9 @@ services:
 
   database:
     image: redislabs/rejson:latest
+    volumes:
+      - "./config:/heartbeat/config"
+    command: "/heartbeat/config/redis.conf"
     expose:
       - 6379
     ports:

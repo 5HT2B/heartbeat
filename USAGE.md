@@ -8,7 +8,6 @@ This requires `docker-compose` (1.29.2 or newer), `docker` and `git`.
 git clone git@github.com:technically-functional/heartbeat.git
 cd heartbeat
 echo "HB_TOKEN=authenticationTokenMakeThisSecure" >> config/.env
-export HB_PATH=$(pwd)/config
 # Add --build to build from your local files instead of using the pre-built image 
 docker-compose up
 ```
@@ -62,7 +61,7 @@ or open localhost:6060 in a browser to view the webpage.
 
 - Heartbeat can't read the `config/.env` when using Docker?
 
-    Make sure `export HB_PATH` is pointing to the config folder inside your Heartbeat folder.
+    Make sure you are editing the `config/.env` which is inside the same folder as your `docker-compose.yml`.
 
 - `dial tcp: lookup database: no such host`
 
