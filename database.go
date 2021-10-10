@@ -118,6 +118,22 @@ func UpdateUptime() {
 	heartbeatStats.TotalUptime += diff
 }
 
+// UpdateLastBeatFmt will update the formatted last beat statistic
+func UpdateLastBeatFmt() {
+	currentTime := time.Now()
+	lastBeat := GetLastBeat()
+	if lastBeat != nil {
+		heartbeatStats.LastBeatFormatted = TimeDifference(lastBeat.Timestamp, currentTime)
+	}
+}
+
+// UpdateLastBeatFmtV will update the formatted last beat statistic
+func UpdateLastBeatFmtV(lastBeat *HeartbeatBeat, currentTime time.Time) {
+	if lastBeat != nil {
+		heartbeatStats.LastBeatFormatted = TimeDifference(lastBeat.Timestamp, currentTime)
+	}
+}
+
 // UpdateDevice will update the LastBeat of a device
 func UpdateDevice(beat HeartbeatBeat) {
 	var device HeartbeatDevice

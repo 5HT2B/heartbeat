@@ -52,6 +52,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		handleUpdateDevices(ctx)
 	case apiStatsPath:
 		UpdateUptime()
+		UpdateLastBeatFmt()
 		handleJsonObject(ctx, heartbeatStats)
 	case apiDevicesPath:
 		handleJsonObject(ctx, heartbeatDevices)
