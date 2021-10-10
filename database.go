@@ -140,14 +140,14 @@ func UpdateLastBeatFmt() {
 	currentTime := time.Now()
 	lastBeat := GetLastBeat()
 	if lastBeat != nil {
-		heartbeatStats.LastBeatFormatted = TimeDifference(lastBeat.Timestamp, currentTime)
+		heartbeatStats.LastBeatFormatted = TimeDifference(lastBeat.Timestamp, currentTime) + " ago"
 	}
 }
 
 // UpdateLastBeatFmtV will update the formatted last beat statistic
 func UpdateLastBeatFmtV(lastBeat *HeartbeatBeat, currentTime time.Time) {
 	if lastBeat != nil {
-		heartbeatStats.LastBeatFormatted = TimeDifference(lastBeat.Timestamp, currentTime)
+		heartbeatStats.LastBeatFormatted = TimeDifference(lastBeat.Timestamp, currentTime) + " ago"
 	}
 }
 

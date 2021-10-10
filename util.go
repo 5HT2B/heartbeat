@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
+	"strings"
 	"time"
 )
 
@@ -22,11 +23,28 @@ func FormattedTime(secondsIn int64) string {
 	hours := secondsIn / 3600
 	minutes := (secondsIn / 60) - (60 * hours)
 	seconds := secondsIn % 60
-	str := fmt.Sprintf("%d hours, %d minutes, %d seconds", hours, minutes, seconds)
-	return str
+
+	units := make([]string, 0)
+	if hours != 0 {
+		units = append(units, joinIntAndStr(hours, "hour"))
+	}
+	if minutes != 0 {
+		units = append(units, joinIntAndStr(minutes, "minute"))
+	}
+	units = append(units, joinIntAndStr(seconds, "second"))
+
+	return strings.Join(units, ", ")
 }
 
 // FormattedNum will insert commas as necessary in large numbers
 func FormattedNum(num int64) string {
 	return printer.Sprintf("%d", num)
+}
+
+func joinIntAndStr(int int64, str string) string {
+	plural := "s"
+	if int == 1 {
+		plural = ""
+	}
+	return fmt.Sprintf("%s %s%s", FormattedNum(int), str, plural)
 }
