@@ -20,6 +20,7 @@ var (
 )
 
 func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
+
 	switch path {
 	case apiBeatPath, apiUpdateStatsPath, apiUpdateDevicesPath:
 		if !ctx.IsPost() {
@@ -100,6 +101,7 @@ func handleJsonObject(ctx *fasthttp.RequestCtx, v interface{}) {
 	_, _ = fmt.Fprintf(ctx, "%s\n", json)
 }
 
+// HandleSuccessfulBeat will update the db's Device with the new last beat, and print the last beat's unix timestamp
 func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	device := ctx.Request.Header.Peek("Device")
 	// Make sure a device is set
