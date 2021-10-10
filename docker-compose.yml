@@ -7,7 +7,7 @@ services:
     volumes:
       - "./config:/heartbeat/config"
     ports:
-      - "${HB_PORT}:${HB_PORT}"
+      - "6060:6060"
     build:
       context: .
 
