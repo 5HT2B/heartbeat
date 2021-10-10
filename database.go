@@ -96,7 +96,23 @@ func LastSeen() string {
 // LongestAbsence will return HeartbeatStats.LongestMissingBeat unless the current missing beat is longer
 func LongestAbsence() string {
 	lastBeat := GetLastBeat()
+	for _, device := range *heartbeatDevices {
+		// This technically shouldn't be possible, as UpdateDevice is called inside UpdateLastBeat.
+		// Nevertheless, we would rather avoid a random panic from accessing a nil reference.
+		if lastBeat == nil {
+			lastBeat = &device.LastBeat
+		}
+		// If this device has a more recent beat than the most recent beat's device, use it instead.
+		// The reasoning behind this is, if we suddenly get a new beat from a device that hasn't sent a beat in a while
+		// we don't want it to set the longest absence to the old device's oldest absence, as this new device
+		// has sent beats more recently, and you have not actually been absent as long as the original lastBeat here.
+		if device.LastBeat.Timestamp > lastBeat.Timestamp {
+			lastBeat = &device.LastBeat
+		}
+	}
+	// This will happen when GetLastBeat returned a nil, and heartbeatDevices is empty
 	if lastBeat == nil {
+		heartbeatStats.LastBeatFormatted = "Never"
 		return "Never"
 	}
 
@@ -154,9 +170,9 @@ func UpdateDevice(beat HeartbeatBeat) {
 	if diff > device.LongestMissingBeat {
 		device.LongestMissingBeat = diff
 	}
-	if device.LongestMissingBeat > heartbeatStats.LongestMissingBeat {
-		heartbeatStats.LongestMissingBeat = device.LongestMissingBeat
-	}
+	// We want to update the longest absence here (heartbeatStats.LongestMissingBeat) in case
+	// device.LongestMissingBeat > heartbeatStats.LongestMissingBeat *and* other devices haven't pinged recently
+	LongestAbsence()
 
 	device.LastBeat = beat
 	device.TotalBeats += 1
