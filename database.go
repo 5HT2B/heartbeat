@@ -151,6 +151,12 @@ func UpdateLastBeatFmtV(lastBeat *HeartbeatBeat, currentTime time.Time) {
 	}
 }
 
+// UpdateTotalBeats will update the formatted total beats statistic
+func UpdateTotalBeats() {
+	heartbeatStats.TotalBeats += 1
+	heartbeatStats.TotalBeatsFormatted = FormattedNum(heartbeatStats.TotalBeats)
+}
+
 // UpdateDevice will update the LastBeat of a device
 func UpdateDevice(beat HeartbeatBeat) {
 	var device HeartbeatDevice
@@ -177,7 +183,7 @@ func UpdateDevice(beat HeartbeatBeat) {
 
 	device.LastBeat = beat
 	device.TotalBeats += 1
-	heartbeatStats.TotalBeats += 1
+	UpdateTotalBeats()
 
 	if n == -1 { // if device doesn't exist, append it, else replace it
 		*heartbeatDevices = append(*heartbeatDevices, device)
