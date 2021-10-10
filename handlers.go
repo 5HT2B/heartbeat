@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/technically-functional/heartbeat/templates"
 	"github.com/valyala/fasthttp"
+	"strings"
 	"time"
 )
 
@@ -23,6 +24,9 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 
 	path := ctx.Path()
 	pathStr := string(path)
+	if pathStr != "/" {
+		pathStr = strings.TrimSuffix(pathStr, "/")
+	}
 
 	switch {
 	case bytes.HasPrefix(path, apiPrefix):
