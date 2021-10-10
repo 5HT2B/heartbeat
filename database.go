@@ -119,6 +119,7 @@ func LongestAbsence() string {
 	diff := time.Now().Unix() - lastBeat.Timestamp
 	// If current absence is bigger than record absence, return current absence
 	if diff > heartbeatStats.LongestMissingBeat {
+		heartbeatStats.LongestMissingBeat = diff
 		return FormattedTime(diff)
 	} else {
 		return FormattedTime(heartbeatStats.LongestMissingBeat)
