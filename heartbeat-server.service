@@ -1,0 +1,8 @@
+[Unit]
+Description=Heartbeat Server
+
+[Service]
+ExecStart=/home/pi/.local/bin/heartbeat
+
+[Install]
+WantedBy=multi-user.target
