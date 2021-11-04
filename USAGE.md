@@ -1,9 +1,10 @@
 # Usage
 
-Before following either of the following run examples, rename `config/.env.example` to `config/.env` and 
+**Before following either of the following run examples**, rename `config/.env.example` to `config/.env` and 
 `config/redis.conf.example` to `config/redis.conf`.
 
-To change the port Heartbeat is running on, regardless of running method, edit `config/.env` and change `HB_PORT` and `HB_ADDR`.
+To change the port Heartbeat is running on, regardless of running method, edit `config/.env` and change `HB_PORT` and `HB_ADDR`
+(as well as `docker-compose.yml` if using Docker).
 
 ## With Docker
 
@@ -22,11 +23,11 @@ docker-compose up
 This requires `go` (1.16 or newer), `redis-server` (6.2.5 or newer), [RedisJSON](https://github.com/RedisJSON/RedisJSON) and `git`.
 
 ```bash
-# Make sure to edit dir inside config/redis.con to ./config
+# Make sure to edit dir inside config/redis.conf to ./config
 # Make sure to edit REDIS_ADDR inside config/.env to localhost:6379
 
 # Run redis-server with the following command in the background, or in another window
-redis-server path/to/hb/config/redis.conf --loadmodule path/to/RedisJSON/target/release/librejson.so
+redis-server config/redis.conf --loadmodule /path/to/RedisJSON/target/release/librejson.so
 
 # Run the following in a new terminal
 git clone git@github.com:technically-functional/heartbeat.git
