@@ -6,6 +6,8 @@ services:
     image: l1ving/heartbeat
     volumes:
       - "./config:/heartbeat/config"
+    networks:
+      - heartbeat-net
     ports:
       - "6060:6060"
     build:
@@ -17,10 +19,14 @@ services:
       - "redis_data:/data"
       - "./config/redis.conf:/heartbeat/config/redis.conf"
     command: "/heartbeat/config/redis.conf --loadmodule /usr/lib/redis/modules/rejson.so"
+    networks:
+      - heartbeat-net
     expose:
       - 6379
-    ports:
-      - "6379:6379"
 
 volumes:
   redis_data:
+
+networks:
+  heartbeat-net:
+    driver: bridge
