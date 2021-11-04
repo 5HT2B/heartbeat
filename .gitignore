@@ -4,5 +4,5 @@ heartbeat
 
 # Ignore everything inside config except redis.conf and .env
 config/*
-!config/redis.conf
-!config/.env
+!config/redis.conf.example
+!config/.env.example
