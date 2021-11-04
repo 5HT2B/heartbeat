@@ -14,6 +14,7 @@ var (
 	apiBeatPath          = "/api/beat"
 	apiUpdateStatsPath   = "/api/update/stats"
 	apiUpdateDevicesPath = "/api/update/devices"
+	apiInfoPath          = "/api/info"
 	apiStatsPath         = "/api/stats"
 	apiDevicesPath       = "/api/devices"
 	jsonMime             = "application/json"
@@ -36,7 +37,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 			ErrorForbidden(ctx, true)
 			return
 		}
-	case apiStatsPath, apiDevicesPath:
+	case apiInfoPath, apiStatsPath, apiDevicesPath:
 		heartbeatStats.TotalVisits += 1
 		if !ctx.IsGet() {
 			ErrorBadRequest(ctx, true)
@@ -51,6 +52,8 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		handleUpdateStats(ctx)
 	case apiUpdateDevicesPath:
 		handleUpdateDevices(ctx)
+	case apiInfoPath:
+		handleJsonObject(ctx, FormattedInfo())
 	case apiStatsPath:
 		UpdateUptime()
 		UpdateLastBeatFmt()

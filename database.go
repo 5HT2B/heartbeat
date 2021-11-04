@@ -84,6 +84,16 @@ func SaveLocalInDatabase() {
 	}
 }
 
+// FormattedInfo will return the formatted info, displayed on the main page
+func FormattedInfo() HeartbeatInfo {
+	return HeartbeatInfo{
+		LastSeen:       LastSeen(),
+		TimeDifference: heartbeatStats.LastBeatFormatted,
+		MissingBeat:    LongestAbsence(),
+		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
+	}
+}
+
 // LastSeen will return the formatted date of the last timestamp received from a beat
 func LastSeen() string {
 	lastBeat := GetLastBeat()

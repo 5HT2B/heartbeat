@@ -11,6 +11,14 @@ var (
 	defaultHeartbeatDevices = &[]HeartbeatDevice{}
 )
 
+// HeartbeatInfo is the human-readable info presented on the main page
+type HeartbeatInfo struct {
+	LastSeen       string `json:"last_seen"`
+	TimeDifference string `json:"time_difference"`
+	MissingBeat    string `json:"missing_beat"`
+	TotalBeats     string `json:"total_beats"`
+}
+
 // HeartbeatBeat is the current last beat
 type HeartbeatBeat struct {
 	DeviceName string `json:"device_name"`
