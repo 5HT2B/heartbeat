@@ -86,6 +86,9 @@ func SaveLocalInDatabase() {
 
 // FormattedInfo will return the formatted info, displayed on the main page
 func FormattedInfo() HeartbeatInfo {
+	currentTime := time.Now()
+	lastBeat := GetLastBeat()
+	UpdateLastBeatFmtV(lastBeat, currentTime)
 	return HeartbeatInfo{
 		LastSeen:       LastSeen(),
 		TimeDifference: heartbeatStats.LastBeatFormatted,
