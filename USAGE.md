@@ -1,5 +1,8 @@
 # Usage
 
+Before following either of the following run examples, rename `config/.env.example` to `config/.env` and 
+`config/redis.conf.example` to `config/redis.conf`.
+
 To change the port Heartbeat is running on, regardless of running method, edit `config/.env` and change `HB_PORT` and `HB_ADDR`.
 
 ## With Docker
