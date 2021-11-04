@@ -29,7 +29,6 @@ Due to caching, you will have to check the website if the embed generation time 
     async function updateInfo() {
         let response = await fetch("/api/info");
         let data = await response.json();
-        console.log(data)
 
         await setInfo("LastSeen", data.last_seen, "Last response time")
         await setInfo("TimeDifference", data.time_difference, "Time since last response")
