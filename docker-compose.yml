@@ -9,7 +9,7 @@ services:
     networks:
       - heartbeat-net
     ports:
-      - "6060:6060"
+      - "127.0.0.1:6060:6060"
     build:
       context: .
 
