@@ -52,6 +52,7 @@ Available endpoints:
 - `/api/update/devices` (POST)
   - Requires the Auth header to be set
   - `curl -X POST -H "Auth: $AUTH" localhost:6060/api/update/devices -d '$DEVICES_JSON'`
+- `/api/info` (GET)
 - `/api/stats` (GET)
 - `/api/devices` (GET)
 
