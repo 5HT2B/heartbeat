@@ -21,6 +21,26 @@ type MainPage struct {
 This embed was generated at {%s p.CurrentTime %}.
 Due to caching, you will have to check the website if the embed generation time is old."/>
 <meta name="theme-color" content="#6495ED">
+<script>
+    window.onload = function () {
+        setInterval(updateInfo, 1000)
+    };
+
+    async function updateInfo() {
+        let response = await fetch("/api/info");
+        let data = await response.json();
+        console.log(data)
+
+        await setInfo("LastSeen", data.last_seen, "Last response time")
+        await setInfo("TimeDifference", data.time_difference, "Time since last response")
+        await setInfo("MissingBeat", data.missing_beat, "Longest recorded absence")
+        await setInfo("TotalBeats", data.total_beats, "Total beats received")
+    }
+
+    async function setInfo(id, json, prefix) {
+        document.getElementById(id).innerHTML = `${prefix}:<br>${json}`
+    }
+</script>
 {% endfunc %}
 
 {% func (p *MainPage) Body() %}
@@ -40,16 +60,16 @@ Due to caching, you will have to check the website if the embed generation time 
     <div class="pure-g times">
         <div class="pure-u-0 pure-u-lg-1-6"></div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Last response time:<br>{%s p.LastSeen %}</p>
+            <p class="center" id="LastSeen">Last response time:<br>{%s p.LastSeen %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Time since last response:<br>{%s p.TimeDifference %}</p>
+            <p class="center" id="TimeDifference">Time since last response:<br>{%s p.TimeDifference %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Longest recorded absence:<br>{%s p.MissingBeat %}</p>
+            <p class="center" id="MissingBeat">Longest recorded absence:<br>{%s p.MissingBeat %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total beats received:<br>{%s p.TotalBeats %}</p>
+            <p class="center" id="TotalBeats">Total beats received:<br>{%s p.TotalBeats %}</p>
         </div>
         <div class="pure-u-0 pure-u-lg-1-6"></div>
     </div>
