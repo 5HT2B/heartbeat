@@ -38,11 +38,11 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 			return
 		}
 	case apiInfoPath, apiStatsPath, apiDevicesPath:
-		heartbeatStats.TotalVisits += 1
 		if !ctx.IsGet() {
 			ErrorBadRequest(ctx, true)
 			return
 		}
+		heartbeatStats.TotalVisits += 1
 	}
 
 	switch path {
