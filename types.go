@@ -17,12 +17,14 @@ type HeartbeatInfo struct {
 	TimeDifference string `json:"time_difference"`
 	MissingBeat    string `json:"missing_beat"`
 	TotalBeats     string `json:"total_beats"`
+	LastBody       string `json:"last_body"`
 }
 
 // HeartbeatBeat is the current last beat
 type HeartbeatBeat struct {
 	DeviceName string `json:"device_name"`
 	Timestamp  int64  `json:"timestamp"`
+	BeatBody   string `json:"body"`
 }
 
 // HeartbeatDevice is used in an array of recognized devices
@@ -31,6 +33,7 @@ type HeartbeatDevice struct {
 	LastBeat           HeartbeatBeat `json:"last_beat"`
 	TotalBeats         int64         `json:"total_beats"`
 	LongestMissingBeat int64         `json:"longest_missing_beat"`
+	//DevSecInfo         string        `json:"dev_sec_info`
 }
 
 // HeartbeatStats are the global stats for a heartbeat server

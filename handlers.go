@@ -2,10 +2,11 @@ package main
 
 import (
 	"bytes"
-	"github.com/technically-functional/heartbeat/templates"
-	"github.com/valyala/fasthttp"
 	"strings"
 	"time"
+
+	"github.com/technically-functional/heartbeat/templates"
+	"github.com/valyala/fasthttp"
 )
 
 var (
@@ -90,6 +91,7 @@ func getMainPage() *templates.MainPage {
 		GitHash:        gitCommitHash,
 		GitRepo:        gitRepo,
 		ServerName:     serverName,
+		LastBody:       lastBeat.BeatBody,
 	}
 
 	return page

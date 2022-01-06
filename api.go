@@ -3,11 +3,12 @@ package main
 import (
 	json2 "encoding/json"
 	"fmt"
-	"github.com/Ferluci/fast-realip"
-	"github.com/valyala/fasthttp"
 	"log"
 	"strconv"
 	"time"
+
+	realip "github.com/Ferluci/fast-realip"
+	"github.com/valyala/fasthttp"
 )
 
 var (
@@ -116,7 +117,7 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 	timestamp := time.Now().Unix()
 	timestampStr := strconv.FormatInt(timestamp, 10)
 
-	err := UpdateLastBeat(string(device), timestamp)
+	err := UpdateLastBeat(string(device), timestamp, string(ctx.Request.Body()))
 	if err != nil {
 		HandleInternalErr(ctx, "Error updating last beat", err)
 		return

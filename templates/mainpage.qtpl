@@ -8,6 +8,7 @@ type MainPage struct {
     GitHash        string
     GitRepo        string
     ServerName     string
+    LastBody       string
 }
 %}
 
@@ -20,11 +21,20 @@ type MainPage struct {
 <meta property="og:description" content="Last seen at: {%s p.LastSeen %}.
 This embed was generated at {%s p.CurrentTime %}.
 Due to caching, you will have to check the website if the embed generation time is old."/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <meta name="theme-color" content="#6495ED">
 <script>
+    var map
     window.onload = function () {
+        map = L.map('map')
         setInterval(updateInfo, 1000)
     };
+
+    var viewSet = false;
+    var scaleAdded = false;
+    var tilesAdded = false;
+    var marker = null;
 
     async function updateInfo() {
         let response = await fetch("/api/info");
@@ -34,6 +44,40 @@ Due to caching, you will have to check the website if the embed generation time 
         await setInfo("TimeDifference", data.time_difference, "Time since last response")
         await setInfo("MissingBeat", data.missing_beat, "Longest recorded absence")
         await setInfo("TotalBeats", data.total_beats, "Total beats received")
+        await setInfo("LastBody", data.last_body, "Last beat body received")
+        var lastBody = JSON.parse(data.last_body)
+        if (lastBody.latitude != null && lastBody.longitude != null)
+        {
+            if(!viewSet){
+                map.setView({lon: lastBody.longitude, lat: lastBody.latitude}, 5);
+                viewSet = true;
+            }
+            
+
+      // add the OpenStreetMap tiles
+      if (!tilesAdded)
+      {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        }).addTo(map);
+        tilesAdded = true;
+      }
+
+      // show the scale bar on the lower left corner
+      if(!scaleAdded){
+        L.control.scale({imperial: true, metric: true}).addTo(map);
+        scaleAdded = true
+      }
+
+      // show a marker on the map
+      if (marker == null)
+      {
+          marker = L.marker({lon: lastBody.longitude, lat: lastBody.latitude})
+          marker.bindPopup('Last Location').addTo(map)
+      }
+      marker.setLatLng([lastBody.latitude, lastBody.longitude])
+        }
     }
 
     async function setInfo(id, json, prefix) {
@@ -57,20 +101,24 @@ Due to caching, you will have to check the website if the embed generation time 
         <div class="pure-g-u-0 pure-u-lg-1-6"></div>
     </div>
     <div class="pure-g times">
-        <div class="pure-u-0 pure-u-lg-1-6"></div>
-        <div class="pure-u-1 pure-u-lg-1-6">
+        <div class="pure-u-0 pure-u-lg-1-8"></div>
+        <div class="pure-u-1 pure-u-lg-1-8">
             <p class="center" id="LastSeen">Last response time:<br>{%s p.LastSeen %}</p>
         </div>
-        <div class="pure-u-1 pure-u-lg-1-6">
+        <div class="pure-u-1 pure-u-lg-1-8">
             <p class="center" id="TimeDifference">Time since last response:<br>{%s p.TimeDifference %}</p>
         </div>
-        <div class="pure-u-1 pure-u-lg-1-6">
+        <div class="pure-u-1 pure-u-lg-1-8">
             <p class="center" id="MissingBeat">Longest recorded absence:<br>{%s p.MissingBeat %}</p>
         </div>
-        <div class="pure-u-1 pure-u-lg-1-6">
+        <div class="pure-u-1 pure-u-lg-1-8">
             <p class="center" id="TotalBeats">Total beats received:<br>{%s p.TotalBeats %}</p>
         </div>
-        <div class="pure-u-0 pure-u-lg-1-6"></div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <p class="center" id="LastBody">Last beat body received:<br>{%s p.LastBody %}</p>
+            <div id="map"></div>
+        </div>
+        <div class="pure-u-0 pure-u-lg-1-8"></div>
     </div>
     <div class="spacer"></div>
     <div class="pure-g links">

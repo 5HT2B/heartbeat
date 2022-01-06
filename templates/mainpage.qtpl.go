@@ -27,65 +27,66 @@ type MainPage struct {
 	GitHash        string
 	GitRepo        string
 	ServerName     string
+	LastBody       string
 }
 
-//line templates/mainpage.qtpl:14
+//line templates/mainpage.qtpl:15
 func (p *MainPage) StreamTitle(qw422016 *qt422016.Writer) {
-//line templates/mainpage.qtpl:14
+//line templates/mainpage.qtpl:15
 	qw422016.N().S(`
     `)
-//line templates/mainpage.qtpl:15
+//line templates/mainpage.qtpl:16
 	qw422016.E().S(p.ServerName)
-//line templates/mainpage.qtpl:15
+//line templates/mainpage.qtpl:16
 	qw422016.N().S(`
 `)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 }
 
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 func (p *MainPage) WriteTitle(qq422016 qtio422016.Writer) {
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	p.StreamTitle(qw422016)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	qt422016.ReleaseWriter(qw422016)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 }
 
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 func (p *MainPage) Title() string {
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	p.WriteTitle(qb422016)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	qs422016 := string(qb422016.B)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 	return qs422016
-//line templates/mainpage.qtpl:16
+//line templates/mainpage.qtpl:17
 }
 
-//line templates/mainpage.qtpl:18
+//line templates/mainpage.qtpl:19
 func (p *MainPage) StreamHead(qw422016 *qt422016.Writer) {
-//line templates/mainpage.qtpl:18
+//line templates/mainpage.qtpl:19
 	qw422016.N().S(`
 <meta property="og:site_name" content="`)
-//line templates/mainpage.qtpl:19
+//line templates/mainpage.qtpl:20
 	qw422016.E().S(p.ServerName)
-//line templates/mainpage.qtpl:19
+//line templates/mainpage.qtpl:20
 	qw422016.N().S(`">
 <meta property="og:description" content="Last seen at: `)
-//line templates/mainpage.qtpl:20
+//line templates/mainpage.qtpl:21
 	qw422016.E().S(p.LastSeen)
-//line templates/mainpage.qtpl:20
+//line templates/mainpage.qtpl:21
 	qw422016.N().S(`.
 This embed was generated at `)
-//line templates/mainpage.qtpl:21
+//line templates/mainpage.qtpl:22
 	qw422016.E().S(p.CurrentTime)
-//line templates/mainpage.qtpl:21
+//line templates/mainpage.qtpl:22
 	qw422016.N().S(`.
 Due to caching, you will have to check the website if the embed generation time is old."/>
 <meta name="theme-color" content="#6495ED">
@@ -102,53 +103,54 @@ Due to caching, you will have to check the website if the embed generation time 
         await setInfo("TimeDifference", data.time_difference, "Time since last response")
         await setInfo("MissingBeat", data.missing_beat, "Longest recorded absence")
         await setInfo("TotalBeats", data.total_beats, "Total beats received")
+        await setInfo("LastBody", data.last_body, "Last beat body received")
     }
 
     async function setInfo(id, json, prefix) {
         document.getElementById(id).innerHTML = `)
-//line templates/mainpage.qtpl:21
+//line templates/mainpage.qtpl:22
 	qw422016.N().S("`")
-//line templates/mainpage.qtpl:21
+//line templates/mainpage.qtpl:22
 	qw422016.N().S(`${prefix}:<br>${json}`)
-//line templates/mainpage.qtpl:21
+//line templates/mainpage.qtpl:22
 	qw422016.N().S("`")
-//line templates/mainpage.qtpl:21
+//line templates/mainpage.qtpl:22
 	qw422016.N().S(`
     }
 </script>
 `)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 }
 
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 func (p *MainPage) WriteHead(qq422016 qtio422016.Writer) {
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	p.StreamHead(qw422016)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	qt422016.ReleaseWriter(qw422016)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 }
 
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 func (p *MainPage) Head() string {
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	p.WriteHead(qb422016)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	qs422016 := string(qb422016.B)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 	return qs422016
-//line templates/mainpage.qtpl:43
+//line templates/mainpage.qtpl:45
 }
 
-//line templates/mainpage.qtpl:45
+//line templates/mainpage.qtpl:47
 func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
-//line templates/mainpage.qtpl:45
+//line templates/mainpage.qtpl:47
 	qw422016.N().S(`
     <div class="spacer"></div>
     <div class="pure-g preamble">
@@ -156,28 +158,28 @@ func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-u-1 pure-u-lg-4-6">
             <p class="center">
                 Welcome to `)
-//line templates/mainpage.qtpl:51
+//line templates/mainpage.qtpl:53
 	qw422016.E().S(p.ServerName)
-//line templates/mainpage.qtpl:51
+//line templates/mainpage.qtpl:53
 	qw422016.N().S(`. <br>
                 This page displays the last timestamp that I have unlocked and used any of my devices. <br>
                 If they have been absent for more than 48 hours, something is probably wrong. <br>
                 This website is running on version <a href="`)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.E().S(p.GitRepo)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.N().S(`/tree/`)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.E().S(p.GitHash)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.N().S(`"><code>`)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.E().S(p.GitHash)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.N().S(`</code></a> of <a href="`)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.E().S(p.GitRepo)
-//line templates/mainpage.qtpl:54
+//line templates/mainpage.qtpl:56
 	qw422016.N().S(`">Heartbeat</a>.
             </p>
         </div>
@@ -187,30 +189,37 @@ func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-u-0 pure-u-lg-1-6"></div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center" id="LastSeen">Last response time:<br>`)
-//line templates/mainpage.qtpl:62
+//line templates/mainpage.qtpl:64
 	qw422016.E().S(p.LastSeen)
-//line templates/mainpage.qtpl:62
+//line templates/mainpage.qtpl:64
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center" id="TimeDifference">Time since last response:<br>`)
-//line templates/mainpage.qtpl:65
+//line templates/mainpage.qtpl:67
 	qw422016.E().S(p.TimeDifference)
-//line templates/mainpage.qtpl:65
+//line templates/mainpage.qtpl:67
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center" id="MissingBeat">Longest recorded absence:<br>`)
-//line templates/mainpage.qtpl:68
+//line templates/mainpage.qtpl:70
 	qw422016.E().S(p.MissingBeat)
-//line templates/mainpage.qtpl:68
+//line templates/mainpage.qtpl:70
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
             <p class="center" id="TotalBeats">Total beats received:<br>`)
-//line templates/mainpage.qtpl:71
+//line templates/mainpage.qtpl:73
 	qw422016.E().S(p.TotalBeats)
-//line templates/mainpage.qtpl:71
+//line templates/mainpage.qtpl:73
+	qw422016.N().S(`</p>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-6">
+            <p class="center" id="LastBody">Last beat body:<br>`)
+//line templates/mainpage.qtpl:76
+	qw422016.E().S(p.LastBody)
+//line templates/mainpage.qtpl:76
 	qw422016.N().S(`</p>
         </div>
         <div class="pure-u-0 pure-u-lg-1-6"></div>
@@ -226,31 +235,31 @@ func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
         <div class="pure-g-u-0 pure-u-lg-1-6"></div>
     </div>
 `)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 }
 
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 func (p *MainPage) WriteBody(qq422016 qtio422016.Writer) {
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	p.StreamBody(qw422016)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	qt422016.ReleaseWriter(qw422016)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 }
 
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 func (p *MainPage) Body() string {
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	p.WriteBody(qb422016)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	qs422016 := string(qb422016.B)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 	return qs422016
-//line templates/mainpage.qtpl:85
+//line templates/mainpage.qtpl:90
 }

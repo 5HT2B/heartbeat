@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/go-redis/redis/v8"
-	"github.com/nitishm/go-rejson/v4"
 	"log"
 	"time"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/nitishm/go-rejson/v4"
 )
 
 var (
@@ -94,6 +95,7 @@ func FormattedInfo() HeartbeatInfo {
 		TimeDifference: heartbeatStats.LastBeatFormatted,
 		MissingBeat:    LongestAbsence(),
 		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
+		LastBody:       lastBeat.BeatBody,
 	}
 }
 
@@ -206,8 +208,8 @@ func UpdateDevice(beat HeartbeatBeat) {
 }
 
 // UpdateLastBeat will save the last beat and insert a new HeartbeatBeat into beats
-func UpdateLastBeat(deviceName string, timestamp int64) error {
-	lastBeat := HeartbeatBeat{deviceName, timestamp}
+func UpdateLastBeat(deviceName string, timestamp int64, body string) error {
+	lastBeat := HeartbeatBeat{deviceName, timestamp, body}
 	UpdateDevice(lastBeat)
 
 	if _, err := rjh.JSONSet("last_beat", ".", lastBeat); err != nil {
