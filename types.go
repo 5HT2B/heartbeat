@@ -38,7 +38,7 @@ type HeartbeatStats struct {
 	LastBeatFormatted   string `json:"last_beat_formatted,omitempty"`   // handled by UpdateLastBeatFmt, UpdateLastBeatFmtV and LongestAbsence
 	TotalBeatsFormatted string `json:"total_beats_formatted,omitempty"` // handled by UpdateTotalBeats
 	TotalVisits         int64  `json:"total_visits"`                    // handled by HandleSuccessfulBeat
-	TotalUptime         int64  `json:"total_uptime"`                    // handled by UpdateUptime
+	TotalUptime         int64  `json:"total_uptime_milli"`              // handled by UpdateUptime
 	TotalBeats          int64  `json:"total_beats"`                     // handled by UpdateDevice
 	LongestMissingBeat  int64  `json:"longest_missing_beat"`            // handled by LongestAbsence
 }

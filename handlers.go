@@ -70,7 +70,7 @@ func StatsPageHandler(ctx *fasthttp.RequestCtx) {
 		TotalBeats:   FormattedNum(heartbeatStats.TotalBeats),
 		TotalDevices: FormattedNum(int64(len(*heartbeatDevices))),
 		TotalVisits:  FormattedNum(heartbeatStats.TotalVisits),
-		TotalUptime:  FormattedTime(heartbeatStats.TotalUptime),
+		TotalUptime:  FormattedTime(heartbeatStats.TotalUptime / 1000),
 		ServerName:   serverName,
 	}
 	templates.WritePageTemplate(ctx, p)

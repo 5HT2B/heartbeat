@@ -141,10 +141,9 @@ func LongestAbsence() string {
 
 // UpdateUptime will update the uptime statistics
 func UpdateUptime() {
-	now := time.Now().Unix()
+	now := time.Now().UnixMilli()
 	diff := now - uptimeTimer
-
-	uptimeTimer = now - 1
+	uptimeTimer = now
 	heartbeatStats.TotalUptime += diff
 }
 
