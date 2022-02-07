@@ -42,7 +42,9 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 			ErrorBadRequest(ctx, true)
 			return
 		}
-		heartbeatStats.TotalVisits += 1
+		if string(ctx.QueryArgs().Peek("ref")) != "hb_main_page" {
+			heartbeatStats.TotalVisits += 1
+		}
 	}
 
 	switch path {
