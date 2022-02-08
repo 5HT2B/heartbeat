@@ -3,7 +3,7 @@ package main
 import (
 	json2 "encoding/json"
 	"fmt"
-	"github.com/Ferluci/fast-realip"
+	realip "github.com/Ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 	"log"
 	"strconv"
@@ -42,7 +42,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 			ErrorBadRequest(ctx, true)
 			return
 		}
-		if string(ctx.QueryArgs().Peek("count")) != "hb_main_page" {
+		if string(ctx.QueryArgs().Peek("count")) == "hb_main_page" {
 			heartbeatStats.TotalVisits += 1
 		}
 	}
