@@ -95,7 +95,7 @@ Due to caching, you will have to check the website if the embed generation time 
     };
 
     async function updateInfo() {
-        let response = await fetch("/api/info?count=hb_main_page");
+        let response = await fetch("/api/info?countVisit=false");
         let data = await response.json();
 
         await setInfo("LastSeen", data.last_seen, "Last response time")

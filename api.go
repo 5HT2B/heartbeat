@@ -42,7 +42,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 			ErrorBadRequest(ctx, true)
 			return
 		}
-		if string(ctx.QueryArgs().Peek("count")) != "hb_main_page" {
+		if string(ctx.QueryArgs().Peek("countVisit")) != "false" {
 			heartbeatStats.TotalVisits += 1
 		}
 	}
