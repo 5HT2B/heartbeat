@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"github.com/technically-functional/heartbeat/templates"
+	"github.com/5HT2B/heartbeat/templates"
 	"github.com/valyala/fasthttp"
 	"strings"
 	"time"
@@ -13,7 +13,7 @@ var (
 	cssPrefix = []byte("/css/")
 	icoSuffix = []byte(".ico")
 	pngSuffix = []byte(".png")
-	gitRepo   = "https://github.com/technically-functional/heartbeat" // set in .env
+	gitRepo   = "https://github.com/5HT2B/heartbeat" // set in .env
 
 	cssHandler = fasthttp.FSHandler("www", 1)
 	imgHandler = fasthttp.FSHandler("www", 0)

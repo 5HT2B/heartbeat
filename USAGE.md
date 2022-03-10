@@ -11,7 +11,7 @@ To change the port Heartbeat is running on, regardless of running method, edit `
 This requires `docker-compose` (1.29.2 or newer), `docker` and `git`.
 
 ```bash
-git clone git@github.com:technically-functional/heartbeat.git
+git clone git@github.com:5HT2B/heartbeat.git
 cd heartbeat
 echo "HB_TOKEN=authenticationTokenMakeThisSecure" >> config/.env
 # Add --build to build from your local files instead of using the pre-built image 
@@ -30,7 +30,7 @@ This requires `go` (1.16 or newer), `redis-server` (6.2.5 or newer), [RedisJSON]
 redis-server config/redis.conf --loadmodule /path/to/RedisJSON/target/release/librejson.so
 
 # Run the following in a new terminal
-git clone git@github.com:technically-functional/heartbeat.git
+git clone git@github.com:5HT2B/heartbeat.git
 cd heartbeat
 echo "HB_TOKEN=authenticationTokenMakeThisSecure" >> config/.env
 make # Build the binary

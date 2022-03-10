@@ -1,4 +1,4 @@
-module github.com/technically-functional/heartbeat
+module github.com/5HT2B/heartbeat
 
 go 1.16
 

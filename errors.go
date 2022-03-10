@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/5HT2B/heartbeat/templates"
 	"github.com/Ferluci/fast-realip"
-	"github.com/technically-functional/heartbeat/templates"
 	"github.com/valyala/fasthttp"
 	"log"
 )
