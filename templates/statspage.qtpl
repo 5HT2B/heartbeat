@@ -13,6 +13,28 @@ type StatsPage struct {
 {% endfunc %}
 
 {% func (p *StatsPage) Head() %}
+<meta property="og:site_name" content="Stats - {%s p.ServerName %}">
+<meta property="og:description" content="Stats for {%s p.ServerName %}"/>
+<meta name="theme-color" content="#6495ED">
+<script>
+    window.onload = function () {
+        setInterval(updateInfo, 1000)
+    };
+
+    async function updateInfo() {
+        let response = await fetch("/api/stats?countVisit=false");
+        let data = await response.json();
+
+        await setInfo("TotalVisits", data.total_visits_formatted, "Total visits")
+        await setInfo("TotalDevices", data.total_devices_formatted, "Total devices sending beats")
+        await setInfo("TotalBeats", data.total_beats_formatted, "Total beats received")
+        await setInfo("TotalUptime", data.total_uptime_formatted, "Total uptime")
+    }
+
+    async function setInfo(id, json, prefix) {
+        document.getElementById(id).innerHTML = `${prefix}:<br>${json}`
+    }
+</script>
 {% endfunc %}
 
 {% func (p *StatsPage) Body() %}
@@ -29,16 +51,16 @@ type StatsPage struct {
     <div class="pure-g times">
         <div class="pure-u-0 pure-u-lg-1-6"></div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total visits:<br>{%s p.TotalVisits %}</p>
+            <p class="center" id="TotalVisits">Total visits:<br>{%s p.TotalVisits %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total devices sending beats:<br>{%s p.TotalDevices %}</p>
+            <p class="center" id="TotalDevices">Total devices sending beats:<br>{%s p.TotalDevices %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total beats received:<br>{%s p.TotalBeats %}</p>
+            <p class="center" id="TotalBeats">Total beats received:<br>{%s p.TotalBeats %}</p>
         </div>
         <div class="pure-u-1 pure-u-lg-1-6">
-            <p class="center">Total uptime:<br>{%s p.TotalUptime %}</p>
+            <p class="center" id="TotalUptime">Total uptime:<br>{%s p.TotalUptime %}</p>
         </div>
         <div class="pure-u-0 pure-u-lg-1-6"></div>
     </div>
