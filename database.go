@@ -93,7 +93,7 @@ func FormattedInfo() HeartbeatInfo {
 		LastSeen:       LastSeen(),
 		TimeDifference: heartbeatStats.LastBeatFormatted,
 		MissingBeat:    LongestAbsence(),
-		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
+		TotalBeats:     heartbeatStats.TotalBeatsFormatted,
 	}
 }
 
@@ -139,12 +139,17 @@ func LongestAbsence() string {
 	}
 }
 
+func UpdateNumDevices() {
+	heartbeatStats.TotalDevicesFormatted = FormattedNum(int64(len(*heartbeatDevices)))
+}
+
 // UpdateUptime will update the uptime statistics
 func UpdateUptime() {
 	now := time.Now().UnixMilli()
 	diff := now - uptimeTimer
 	uptimeTimer = now
 	heartbeatStats.TotalUptime += diff
+	heartbeatStats.TotalUptimeFormatted = FormattedTime(heartbeatStats.TotalUptime / 1000)
 }
 
 // UpdateLastBeatFmt will update the formatted last beat statistic

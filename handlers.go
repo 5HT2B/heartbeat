@@ -37,6 +37,7 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 		imgHandler(ctx)
 	default:
 		heartbeatStats.TotalVisits += 1
+		heartbeatStats.TotalVisitsFormatted = FormattedNum(heartbeatStats.TotalVisits)
 		ctx.Response.Header.Set(fasthttp.HeaderContentType, "text/html; charset=utf-8")
 
 		switch pathStr {
@@ -66,11 +67,12 @@ func PrivacyPolicyPageHandler(ctx *fasthttp.RequestCtx) {
 
 func StatsPageHandler(ctx *fasthttp.RequestCtx) {
 	UpdateUptime()
+	UpdateNumDevices()
 	p := &templates.StatsPage{
-		TotalBeats:   FormattedNum(heartbeatStats.TotalBeats),
-		TotalDevices: FormattedNum(int64(len(*heartbeatDevices))),
-		TotalVisits:  FormattedNum(heartbeatStats.TotalVisits),
-		TotalUptime:  FormattedTime(heartbeatStats.TotalUptime / 1000),
+		TotalBeats:   heartbeatStats.TotalBeatsFormatted,
+		TotalDevices: heartbeatStats.TotalDevicesFormatted,
+		TotalVisits:  heartbeatStats.TotalVisitsFormatted,
+		TotalUptime:  heartbeatStats.TotalUptimeFormatted,
 		ServerName:   serverName,
 	}
 	templates.WritePageTemplate(ctx, p)
@@ -85,7 +87,7 @@ func getMainPage() *templates.MainPage {
 		LastSeen:       LastSeen(),                       // date last seen
 		TimeDifference: heartbeatStats.LastBeatFormatted, // relative time to last seen
 		MissingBeat:    LongestAbsence(),                 // longest absence
-		TotalBeats:     FormattedNum(heartbeatStats.TotalBeats),
+		TotalBeats:     heartbeatStats.TotalBeatsFormatted,
 		CurrentTime:    currentTime.Format(timeFormat),
 		GitHash:        gitCommitHash,
 		GitRepo:        gitRepo,

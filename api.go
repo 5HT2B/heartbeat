@@ -21,7 +21,6 @@ var (
 )
 
 func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
-
 	switch path {
 	case apiBeatPath, apiUpdateStatsPath, apiUpdateDevicesPath:
 		if !ctx.IsPost() {
@@ -44,6 +43,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		}
 		if string(ctx.QueryArgs().Peek("countVisit")) != "false" {
 			heartbeatStats.TotalVisits += 1
+			heartbeatStats.TotalVisitsFormatted = FormattedNum(heartbeatStats.TotalVisits)
 		}
 	}
 
@@ -58,6 +58,7 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		handleJsonObject(ctx, FormattedInfo())
 	case apiStatsPath:
 		UpdateUptime()
+		UpdateNumDevices()
 		UpdateLastBeatFmt()
 		handleJsonObject(ctx, heartbeatStats)
 	case apiDevicesPath:
