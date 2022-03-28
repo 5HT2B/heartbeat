@@ -49,7 +49,7 @@ Due to caching, you will have to check the website if the embed generation time 
         <div class="pure-u-1 pure-u-lg-4-6">
             <p class="center">
                 Welcome to {%s p.ServerName %}. <br>
-                This page displays the last timestamp that I have unlocked and used any of my devices. <br>
+                This page displays the last timestamp that they have unlocked and used any of their devices. <br>
                 If they have been absent for more than 48 hours, something is probably wrong. <br>
                 This website is running on version <a href="{%s p.GitRepo %}/tree/{%s p.GitHash %}"><code>{%s p.GitHash %}</code></a> of <a href="{%s p.GitRepo %}">Heartbeat</a>.
             </p>
