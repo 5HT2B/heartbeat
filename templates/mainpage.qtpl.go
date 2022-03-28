@@ -160,7 +160,7 @@ func (p *MainPage) StreamBody(qw422016 *qt422016.Writer) {
 	qw422016.E().S(p.ServerName)
 //line templates/mainpage.qtpl:51
 	qw422016.N().S(`. <br>
-                This page displays the last timestamp that I have unlocked and used any of my devices. <br>
+                This page displays the last timestamp that they have unlocked and used any of their devices. <br>
                 If they have been absent for more than 48 hours, something is probably wrong. <br>
                 This website is running on version <a href="`)
 //line templates/mainpage.qtpl:54
