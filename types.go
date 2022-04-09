@@ -46,12 +46,12 @@ type HeartbeatStats struct {
 	LongestMissingBeat    int64  `json:"longest_missing_beat"`              // handled by LongestAbsence
 }
 
-func (lb HeartbeatBeat) String() string {
-	return fmt.Sprintf("HeartbeatBeat<%s, %v>", lb.DeviceName, lb.Timestamp)
+func (s HeartbeatBeat) String() string {
+	return fmt.Sprintf("HeartbeatBeat<%s, %v>", s.DeviceName, s.Timestamp)
 }
 
 func (s HeartbeatDevice) String() string {
-	return fmt.Sprintf("HeartbeatDevice<%s, %v, %v>", s.DeviceName, s.TotalBeats, s.LongestMissingBeat)
+	return fmt.Sprintf("HeartbeatDevice<%s, %v, %v, %v>", s.DeviceName, s.LastBeat, s.TotalBeats, s.LongestMissingBeat)
 }
 
 func (s HeartbeatStats) String() string {
