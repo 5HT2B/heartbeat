@@ -8,7 +8,7 @@ For the most part, functions will be commented.
 Using Caddy or Nginx + Certbot for automatic renewal and reverse proxying is recommended.
 ```
 # Caddyfile example
-hb.l1v.in {
+frog.icu {
   reverse_proxy localhost:6060
 }
 ```
@@ -16,7 +16,7 @@ hb.l1v.in {
 ```
 # Nginx example
 server {
-    server_name hb.l1v.in;
+    server_name frog.icu;
     location / {
         proxy_pass localhost:6060;
         proxy_set_header X-Real-IP $remote_addr;
