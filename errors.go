@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/5HT2B/heartbeat/templates"
-	"github.com/Ferluci/fast-realip"
+	"github.com/ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 	"log"
 )

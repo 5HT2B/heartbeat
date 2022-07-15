@@ -17,7 +17,7 @@ build: generate
 update:
 	go install github.com/valyala/quicktemplate/qtc
 	go get -u github.com/valyala/fasthttp
-	go get -u github.com/Ferluci/fast-realip
+	go get -u github.com/ferluci/fast-realip
 	go get -u golang.org/x/text/language
 	go get -u golang.org/x/text/message
 	go get -u github.com/joho/godotenv

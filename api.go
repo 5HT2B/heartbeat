@@ -3,7 +3,7 @@ package main
 import (
 	json2 "encoding/json"
 	"fmt"
-	"github.com/Ferluci/fast-realip"
+	"github.com/ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 	"log"
 	"strconv"
