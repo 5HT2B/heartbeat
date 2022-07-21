@@ -31,7 +31,9 @@ func FormattedTime(secondsIn int64) string {
 	if minutes != 0 {
 		units = append(units, joinIntAndStr(minutes, "minute"))
 	}
-	units = append(units, joinIntAndStr(seconds, "second"))
+	if seconds != 0 || (hours == 0 && minutes == 0) {
+		units = append(units, joinIntAndStr(seconds, "second"))
+	}
 
 	return strings.Join(units, ", ")
 }
