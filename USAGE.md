@@ -51,6 +51,12 @@ curl -X POST -H "Auth: $AUTH" -H "Device: laptop" localhost:6060/api/beat
 
 or open localhost:6060 in a browser to view the webpage.
 
+## Webhooks
+
+Set `HB_WEBHOOK_URL`, `HB_WEBHOOK_LEVEL` and `HB_LIVE_URL` in `config/.env` to enable webhooks, see `config/.env.example` for more info.
+
+For `HB_WEBHOOK_LEVEL`, see `WebhookLevel` in `webhook.go` for an explanation.
+
 ## Debugging
 
 - Can't connect using Docker?
