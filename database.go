@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/nitishm/go-rejson/v4"
 	"log"
@@ -108,21 +109,8 @@ func LastSeen() string {
 
 // LongestAbsence will return HeartbeatStats.LongestMissingBeat unless the current missing beat is longer
 func LongestAbsence() string {
-	lastBeat := GetLastBeat()
-	for _, device := range *heartbeatDevices {
-		// This technically shouldn't be possible, as UpdateDevice is called inside UpdateLastBeat.
-		// Nevertheless, we would rather avoid a random panic from accessing a nil reference.
-		if lastBeat == nil {
-			lastBeat = &device.LastBeat
-		}
-		// If this device has a more recent beat than the most recent beat's device, use it instead.
-		// The reasoning behind this is, if we suddenly get a new beat from a device that hasn't sent a beat in a while
-		// we don't want it to set the longest absence to the old device's oldest absence, as this new device
-		// has sent beats more recently, and you have not actually been absent as long as the original lastBeat here.
-		if device.LastBeat.Timestamp > lastBeat.Timestamp {
-			lastBeat = &device.LastBeat
-		}
-	}
+	lastBeat := GetMostRecentBeat()
+
 	// This will happen when GetLastBeat returned a nil, and heartbeatDevices is empty
 	if lastBeat == nil {
 		heartbeatStats.LastBeatFormatted = "Never"
@@ -204,6 +192,7 @@ func UpdateDevice(beat HeartbeatBeat) {
 
 	if n == -1 { // if device doesn't exist, append it, else replace it
 		*heartbeatDevices = append(*heartbeatDevices, device)
+		PostMessage("New device added", fmt.Sprintf("A new device called `%s` was added on <t:%v:d> at <t:%v:T>", beat.DeviceName, beat.Timestamp, beat.Timestamp), EmbedColorGreen, WebhookLevelSimple)
 	} else {
 		(*heartbeatDevices)[n] = device
 	}
@@ -211,6 +200,7 @@ func UpdateDevice(beat HeartbeatBeat) {
 
 // UpdateLastBeat will save the last beat and insert a new HeartbeatBeat into beats
 func UpdateLastBeat(deviceName string, timestamp int64) error {
+	oldLastBeat := GetMostRecentBeat()
 	lastBeat := HeartbeatBeat{deviceName, timestamp}
 	UpdateDevice(lastBeat)
 
@@ -221,7 +211,35 @@ func UpdateLastBeat(deviceName string, timestamp int64) error {
 	lastBeatArr := []HeartbeatBeat{lastBeat}
 	err := appendOrCreateArr("beats", ".", lastBeat, lastBeatArr)
 
+	if err == nil {
+		PostMessage("Successful beat", fmt.Sprintf("From `%s` on <t:%v:d> at <t:%v:T>", deviceName, timestamp, timestamp), EmbedColorBlue, WebhookLevelAll)
+
+		if oldLastBeat != nil && time.Duration(timestamp-oldLastBeat.Timestamp)*time.Second > 1*time.Hour {
+			PostMessage("Absence longer than 1 hour", fmt.Sprintf("From <t:%v> to <t:%v>", oldLastBeat.Timestamp, timestamp), EmbedColorOrange, WebhookLevelLongAbsence)
+		}
+	}
 	return err
+}
+
+// GetMostRecentBeat will return the most recent beat regardless of device, not just last-inserted beat
+func GetMostRecentBeat() *HeartbeatBeat {
+	lastBeat := GetLastBeat()
+	for _, device := range *heartbeatDevices {
+		// This technically shouldn't be possible, as UpdateDevice is called inside UpdateLastBeat.
+		// Nevertheless, we would rather avoid a random panic from accessing a nil reference.
+		if lastBeat == nil {
+			lastBeat = &device.LastBeat
+		}
+		// If this device has a more recent beat than the most recent beat's device, use it instead.
+		// The reasoning behind this is, if we suddenly get a new beat from a device that hasn't sent a beat in a while
+		// we don't want it to set the longest absence to the old device's oldest absence, as this new device
+		// has sent beats more recently, and you have not actually been absent as long as the original lastBeat here.
+		if device.LastBeat.Timestamp > lastBeat.Timestamp {
+			lastBeat = &device.LastBeat
+		}
+	}
+
+	return lastBeat
 }
 
 // GetLastBeat will get the last beat, and return nilLastBeat if there was an error retrieving it (likely no beat)
