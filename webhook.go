@@ -52,7 +52,6 @@ func PostMessage(title, description string, color EmbedColor, level WebhookLevel
 
 	// Log level too low
 	if webhookLevel > level {
-		log.Printf("Returning %s / %s\n", webhookLevel, level)
 		return
 	}
 
