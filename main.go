@@ -75,6 +75,24 @@ func setupEnv() {
 	if ev := os.Getenv("HB_GITHUB_LINK"); len(ev) > 0 {
 		gitRepo = ev
 	}
+	if ev := os.Getenv("HB_WEBHOOK_URL"); len(ev) > 0 {
+		webhookUrl = ev
+	}
+	if ev := os.Getenv("HB_WEBHOOK_LEVEL"); len(ev) > 0 {
+		switch ev {
+		case "ALL":
+			webhookLevel = WebhookLevelAll
+		case "SIMPLE":
+			webhookLevel = WebhookLevelSimple
+		case "LONG_ABSENCE":
+			webhookLevel = WebhookLevelLongAbsence
+		default:
+			webhookLevel = WebhookLevelNone
+		}
+	}
+	if ev := os.Getenv("HB_LIVE_URL"); len(ev) > 0 {
+		liveUrl = ev
+	}
 	if ev := os.Getenv("REDIS_ADDR"); len(ev) > 0 {
 		redisAddr = ev
 	}
