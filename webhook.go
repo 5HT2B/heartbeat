@@ -13,6 +13,14 @@ var (
 	webhookLevel = WebhookLevelSimple // Set in main.go after env is parsed
 )
 
+type EmbedColor int
+
+const (
+	EmbedColorGreen  EmbedColor = 4388248
+	EmbedColorOrange EmbedColor = 14587196
+	EmbedColorBlue   EmbedColor = 6591981
+)
+
 type WebhookLevel int64
 
 const (
@@ -37,7 +45,7 @@ func (wl WebhookLevel) String() string {
 	}
 }
 
-func PostMessage(title, description string, color int, level WebhookLevel) {
+func PostMessage(title, description string, color EmbedColor, level WebhookLevel) {
 	if len(webhookUrl) == 0 || len(liveUrl) == 0 {
 		return // hasn't been set in config/.env
 	}
@@ -63,7 +71,7 @@ func PostMessage(title, description string, color int, level WebhookLevel) {
 	type discordEmbed struct {
 		Title       string           `json:"title,omitempty"`
 		Description string           `json:"description,omitempty"`
-		Color       int              `json:"color,omitempty"`
+		Color       EmbedColor       `json:"color,omitempty"`
 		Author      discordAuthor    `json:"author,omitempty"`
 		Thumbnail   discordThumbnail `json:"thumbnail,omitempty"`
 		Fields      []discordField   `json:"fields,omitempty"`
