@@ -1,5 +1,5 @@
 
-Copyright (c) 2020-2022, Liv <liv@frogg.ie>
+Copyright (c) 2020-2023, Liv <liv@frogg.ie>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
