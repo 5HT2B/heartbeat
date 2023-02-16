@@ -29,9 +29,12 @@ func main() {
 	// Setup flags and config
 	flag.Parse()
 	setupEnv()
+
+	// Setup DB and load values
 	rdb, rjh = SetupDatabase()
-	go SetupLocalValues()
+	SetupLocalValues()
 	go SetupDatabaseSaving()
+
 	log.Printf("- Running heartbeat on " + protocol + addr)
 
 	h := RequestHandler
