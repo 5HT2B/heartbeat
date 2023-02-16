@@ -6,6 +6,6 @@ ADD . /heartbeat
 WORKDIR /heartbeat
 
 ENV PATH "${PATH}:${GOPATH}/bin"
-RUN make update build
+RUN make deps build
 
 CMD /heartbeat/heartbeat
