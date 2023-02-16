@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
@@ -27,6 +28,14 @@ func SetupDatabase() (*redis.Client, *rejson.Handler) {
 		Addr:     redisAddr,
 		Password: redisPass,
 	})
+
+	// If connection doesn't work, panic
+	if _, err := client.Ping(context.Background()).Result(); err != nil {
+		log.Fatalf("- Failed to ping Redis server: %v\n", err)
+	}
+
+	// We have a working connection
+	log.Printf("- Connected to Redis at %s", redisAddr)
 
 	rh.SetGoRedisClient(client)
 	return client, rh
