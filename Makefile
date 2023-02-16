@@ -3,7 +3,7 @@ TAG    := $(shell git rev-parse --short HEAD)
 IMG    := ${NAME}:${TAG}
 LATEST := ${NAME}:latest
 
-heartbeat: clean update build
+heartbeat: clean deps build
 
 clean:
 	rm -f heartbeat
@@ -14,7 +14,7 @@ generate:
 build: generate
 	go build -ldflags "-X main.gitCommitHash=$(TAG)" -o heartbeat .
 
-update:
+deps:
 	go install github.com/valyala/quicktemplate/qtc
 	go get -u github.com/valyala/fasthttp
 	go get -u github.com/ferluci/fast-realip
