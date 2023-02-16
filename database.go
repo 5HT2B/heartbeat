@@ -57,22 +57,26 @@ func SetupDatabaseSaving() {
 // SetupLocalValues will look for existing stats and devices in the database, and read them to local values
 func SetupLocalValues() {
 	if res, err := rjh.JSONGet("stats", "."); err != nil {
+		log.Printf("- Error loading stats (using default): %v\n", err)
 		heartbeatStats = defaultHeartbeatStats
 	} else {
 		var stats HeartbeatStats
 		if err = json.Unmarshal(res.([]byte), &stats); err != nil {
 			panic(err)
 		}
+		log.Printf("- Loaded stats: %v\n", stats)
 		heartbeatStats = &stats
 	}
 
 	if res, err := rjh.JSONGet("devices", "."); err != nil {
+		log.Printf("- Error loading devices (using default): %v\n", err)
 		heartbeatDevices = defaultHeartbeatDevices
 	} else {
 		var devices []HeartbeatDevice
 		if err = json.Unmarshal(res.([]byte), &devices); err != nil {
 			panic(err)
 		}
+		log.Printf("- Loaded devices: %v\n", devices)
 		heartbeatDevices = &devices
 	}
 }
