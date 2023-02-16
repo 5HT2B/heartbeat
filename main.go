@@ -24,6 +24,9 @@ var (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+
+	// Setup flags and config
 	flag.Parse()
 	setupEnv()
 	rdb, rjh = SetupDatabase()
