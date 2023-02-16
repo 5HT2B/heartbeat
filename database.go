@@ -32,9 +32,9 @@ func SetupDatabase() (*redis.Client, *rejson.Handler) {
 	return client, rh
 }
 
-// SetupDatabaseSaving will run SaveLocalInDatabase every 5 minutes with a ticket
+// SetupDatabaseSaving will run SaveLocalInDatabase every minute with a ticket
 func SetupDatabaseSaving() {
-	ticker := time.NewTicker(5 * time.Minute)
+	ticker := time.NewTicker(1 * time.Minute)
 	go func() {
 		for {
 			select {
