@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-redis/redis/v8"
-	"github.com/nitishm/go-rejson/v4"
 	"log"
 	"time"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/nitishm/go-rejson/v4"
 )
 
 var (
@@ -228,7 +229,9 @@ func UpdateLastBeat(deviceName string, timestamp int64) error {
 		PostMessage("Successful beat", fmt.Sprintf("From `%s` on <t:%v:d> at <t:%v:T>", deviceName, timestamp, timestamp), EmbedColorBlue, WebhookLevelAll)
 
 		if oldLastBeat != nil && time.Duration(timestamp-oldLastBeat.Timestamp)*time.Second > 1*time.Hour {
-			PostMessage("Absence longer than 1 hour", fmt.Sprintf("From <t:%v> to <t:%v>", oldLastBeat.Timestamp, timestamp), EmbedColorOrange, WebhookLevelLongAbsence)
+			oldUTC := time.Unix(oldLastBeat.Timestamp, 0).In(time.UTC).Format("2006/01/02 15:05")
+			newUTC := time.Unix(timestamp, 0).In(time.UTC).Format("2006/01/02 15:05")
+			PostMessage("Absence longer than 1 hour", fmt.Sprintf("From <t:%v> to <t:%v>\nUTC Data: `%s,%s`", oldLastBeat.Timestamp, timestamp, oldUTC, newUTC), EmbedColorOrange, WebhookLevelLongAbsence)
 		}
 	}
 	return err
