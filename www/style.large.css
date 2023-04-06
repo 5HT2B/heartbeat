@@ -2,24 +2,29 @@
     .center {
         text-align: center
     }
+
     .spacer {
         height: 6vh
     }
+
     .preamble {
         height: 33vh;
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
     .times {
         height: 33vh;
     }
+
     .privacy {
         height: 66vh;
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
     .links {
         height: 0;
         display: flex;

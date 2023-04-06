@@ -3,11 +3,12 @@ package main
 import (
 	json2 "encoding/json"
 	"fmt"
-	"github.com/ferluci/fast-realip"
-	"github.com/valyala/fasthttp"
 	"log"
 	"strconv"
 	"time"
+
+	"github.com/ferluci/fast-realip"
+	"github.com/valyala/fasthttp"
 )
 
 var (

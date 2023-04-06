@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/valyala/fasthttp"
 	"log"
 	"net/url"
+
+	"github.com/valyala/fasthttp"
 )
 
 var (

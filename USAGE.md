@@ -1,6 +1,6 @@
 # Usage
 
-**Before following either of the following run examples**, rename `config/.env.example` to `config/.env` and 
+**Before following either of the following run examples**, rename `config/.env.example` to `config/.env` and
 `config/redis.conf.example` to `config/redis.conf`.
 
 To change the port Heartbeat is running on, regardless of running method, edit `config/.env` and change `HB_PORT` and `HB_ADDR`
@@ -61,22 +61,24 @@ For `HB_WEBHOOK_LEVEL`, see `WebhookLevel` in `webhook.go` for an explanation.
 
 - Can't connect using Docker?
 
-    The default port is `6060`, and you should be able to access `localhost:6060`. This is set in `config/.env`.
+  The default port is `6060`, and you should be able to access `localhost:6060`. This is set in `config/.env`.
 
-    If you are unable to connect from localhost, make sure these are set to your desired port, and check the `docker-compose logs` for issues.
+  If you are unable to connect from localhost, make sure these are set to your desired port, and check the `docker-compose logs` for issues.
 
 - Can't connect without Docker?
 
-    The default port is `6060`, set in `config/.env` with `HB_ADDR` and `HB_PORT`. If `./heartbeat` isn't throwing any errors, please check that you have the right port.
+  The default port is `6060`, set in `config/.env` with `HB_ADDR` and `HB_PORT`. If `./heartbeat` isn't throwing any errors, please check
+  that you have the right port.
 
 - Can't `POST` to `/api/beat`?
 
-    Try running `./heartbeat -debug -token some_token_here`, which will override the default token, to help debug the issue.
+  Try running `./heartbeat -debug -token some_token_here`, which will override the default token, to help debug the issue.
 
 - Heartbeat can't read the `config/.env` when using Docker?
 
-    Make sure you are editing the `config/.env` which is inside the same folder as your `docker-compose.yml`.
+  Make sure you are editing the `config/.env` which is inside the same folder as your `docker-compose.yml`.
 
 - `dial tcp: lookup database: no such host`
 
-    Heartbeat can't connect to the Redis database. If you're not using the Docker image, make sure that you ran `redis-server` before `./heartbeat`.
+  Heartbeat can't connect to the Redis database. If you're not using the Docker image, make sure that you ran `redis-server`
+  before `./heartbeat`.

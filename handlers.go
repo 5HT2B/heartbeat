@@ -2,10 +2,11 @@ package main
 
 import (
 	"bytes"
-	"github.com/5HT2B/heartbeat/templates"
-	"github.com/valyala/fasthttp"
 	"strings"
 	"time"
+
+	"github.com/5HT2B/heartbeat/templates"
+	"github.com/valyala/fasthttp"
 )
 
 var (

@@ -1,16 +1,16 @@
 body {
-	font-family: sans-serif;
-	padding: 2.5em;
-	background-color: #f6f6f6;
+    font-family: sans-serif;
+    padding: 2.5em;
+    background-color: #f6f6f6;
 }
 
 a {
-	color: cornflowerblue;
-	transition: all 0.1s ease-in-out;
-	text-decoration: none;
+    color: cornflowerblue;
+    transition: all 0.1s ease-in-out;
+    text-decoration: none;
 }
 
 a:hover {
-	color: lightslategray;
-	text-decoration: underline;
+    color: lightslategray;
+    text-decoration: underline;
 }

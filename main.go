@@ -3,11 +3,12 @@ package main
 
 import (
 	"flag"
-	"github.com/joho/godotenv"
-	"github.com/valyala/fasthttp"
 	"log"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
+	"github.com/valyala/fasthttp"
 )
 
 //goland:noinspection HttpUrlsUsage

@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/5HT2B/heartbeat/templates"
 	"github.com/ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
-	"log"
 )
 
 func errorPageHandler(ctx *fasthttp.RequestCtx, code int, message string, plaintext bool) {
