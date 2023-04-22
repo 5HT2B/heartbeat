@@ -44,6 +44,11 @@ func FormattedNum(num int64) string {
 	return printer.Sprintf("%d", num)
 }
 
+// FormattedUTCData will return the Unix time as a spreadsheet data string
+func FormattedUTCData(unix int64) string {
+	return time.Unix(unix, 0).In(time.UTC).Format("2006/01/02 15:04")
+}
+
 func joinIntAndStr(int int64, str string) string {
 	plural := "s"
 	if int == 1 {
