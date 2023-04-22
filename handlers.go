@@ -82,14 +82,20 @@ func StatsPageHandler(ctx *fasthttp.RequestCtx) {
 func getMainPage() *templates.MainPage {
 	currentTime := time.Now()
 	lastBeat := GetLastBeat()
+	lastTimestamp := int64(0)
 	UpdateLastBeatFmtV(lastBeat, currentTime)
 
+	if lastBeat != nil {
+		lastTimestamp = lastBeat.Timestamp
+	}
+
 	page := &templates.MainPage{
+		TimestampNow:   currentTime.Unix(),
+		TimestampLast:  lastTimestamp,
 		LastSeen:       LastSeen(),                       // date last seen
 		TimeDifference: heartbeatStats.LastBeatFormatted, // relative time to last seen
 		MissingBeat:    LongestAbsence(),                 // longest absence
 		TotalBeats:     heartbeatStats.TotalBeatsFormatted,
-		CurrentTime:    currentTime.Format(timeFormat),
 		GitHash:        gitCommitHash,
 		GitRepo:        gitRepo,
 		ServerName:     serverName,

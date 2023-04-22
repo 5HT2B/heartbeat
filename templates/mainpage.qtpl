@@ -1,10 +1,11 @@
 {% code
 type MainPage struct {
+    TimestampNow   int64
+    TimestampLast  int64
     LastSeen       string
     TimeDifference string
     MissingBeat    string
     TotalBeats     string
-    CurrentTime    string
     GitHash        string
     GitRepo        string
     ServerName     string
@@ -17,9 +18,9 @@ type MainPage struct {
 
 {% func (p *MainPage) Head() %}
 <meta property="og:site_name" content="{%s p.ServerName %}">
-<meta property="og:description" content="Last seen at: {%s p.LastSeen %}.
-This embed was generated at {%s p.CurrentTime %}.
-Due to caching, you will have to check the website if the embed generation time is old."/>
+<meta property="og:description" content="Last seen{% if p.TimestampLast != 0 %} <t:{%dl p.TimestampLast %}:R>{% else %}: Never{% endif %}.
+This embed was generated <t:{%dl p.TimestampNow %}:R>.
+Check website if this is cached."/>
 <meta name="theme-color" content="#6495ED">
 <script>
     window.onload = function () {
