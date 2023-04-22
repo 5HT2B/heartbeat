@@ -229,9 +229,15 @@ func UpdateLastBeat(deviceName string, timestamp int64) error {
 		PostMessage("Successful beat", fmt.Sprintf("From `%s` on <t:%v:d> at <t:%v:T>", deviceName, timestamp, timestamp), EmbedColorBlue, WebhookLevelAll)
 
 		if oldLastBeat != nil && time.Duration(timestamp-oldLastBeat.Timestamp)*time.Second > 1*time.Hour {
-			oldUTC := time.Unix(oldLastBeat.Timestamp, 0).In(time.UTC).Format("2006/01/02 15:04")
-			newUTC := time.Unix(timestamp, 0).In(time.UTC).Format("2006/01/02 15:04")
-			PostMessage("Absence longer than 1 hour", fmt.Sprintf("From <t:%v> to <t:%v>\nUTC Data: `%s,%s`", oldLastBeat.Timestamp, timestamp, oldUTC, newUTC), EmbedColorOrange, WebhookLevelLongAbsence)
+			PostMessage(
+				"Absence longer than 1 hour",
+				fmt.Sprintf(
+					"From <t:%v> to <t:%v>\nUTC Data: `%s,%s`",
+					oldLastBeat.Timestamp, timestamp,
+					FormattedUTCData(oldLastBeat.Timestamp), FormattedUTCData(timestamp),
+				),
+				EmbedColorOrange, WebhookLevelLongAbsence,
+			)
 		}
 	}
 	return err
