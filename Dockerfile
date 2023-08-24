@@ -1,11 +1,14 @@
-FROM golang:1.17.6
+FROM golang:1.17.6 as build
 ARG COMMIT="latest"
-
-RUN mkdir -p /heartbeat/config
-ADD . /heartbeat
 WORKDIR /heartbeat
+RUN mkdir -p /heartbeat/config
+COPY . .
 
 ENV PATH "${PATH}:${GOPATH}/bin"
 RUN make deps build
 
-CMD /heartbeat/heartbeat
+FROM gcr.io/distroless/base-debian11
+COPY --from=build /heartbeat/heartbeat /heartbeat/heartbeat
+COPY --from=build /heartbeat/www /heartbeat/www
+WORKDIR /heartbeat
+ENTRYPOINT [ "/heartbeat/heartbeat" ]
