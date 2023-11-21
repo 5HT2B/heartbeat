@@ -9,7 +9,7 @@ require (
 	github.com/nitishm/go-rejson/v4 v4.1.0
 	github.com/valyala/fasthttp v1.46.0
 	github.com/valyala/quicktemplate v1.7.0
-	golang.org/x/text v0.9.0
+	golang.org/x/text v0.13.0
 )
 
 require (
@@ -19,5 +19,6 @@ require (
 	github.com/gomodule/redigo v1.8.8 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 )
