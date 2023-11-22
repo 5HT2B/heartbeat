@@ -7,7 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ferluci/fast-realip"
+	"github.com/fasthttp/websocket"
+	realip "github.com/ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 )
 
@@ -18,8 +19,11 @@ var (
 	apiInfoPath          = "/api/info"
 	apiStatsPath         = "/api/stats"
 	apiDevicesPath       = "/api/devices"
+	apiRealtimeStatsPath = "/api/realtime/stats"
 	jsonMime             = "application/json"
 )
+
+var upgrader = websocket.FastHTTPUpgrader{}
 
 func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 	switch path {
@@ -46,6 +50,11 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 			heartbeatStats.TotalVisits += 1
 			heartbeatStats.TotalVisitsFormatted = FormattedNum(heartbeatStats.TotalVisits)
 		}
+	case apiRealtimeStatsPath:
+		if !ctx.IsGet() {
+			ErrorBadRequest(ctx, true)
+			return
+		}
 	}
 
 	switch path {
@@ -62,6 +71,8 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		UpdateNumDevices()
 		UpdateLastBeatFmt()
 		handleJsonObject(ctx, heartbeatStats)
+	case apiRealtimeStatsPath:
+		handleWs(ctx, heartbeatStats)
 	case apiDevicesPath:
 		handleJsonObject(ctx, heartbeatDevices)
 	default:
@@ -128,4 +139,30 @@ func HandleSuccessfulBeat(ctx *fasthttp.RequestCtx) {
 
 	_, _ = fmt.Fprintf(ctx, "%v\n", timestampStr)
 	log.Printf("- Successful beat from %s", realip.FromRequest(ctx))
+}
+
+func handleWs(ctx *fasthttp.RequestCtx, stats *HeartbeatStats) {
+	err := upgrader.Upgrade(ctx, func(conn *websocket.Conn) {
+		defer conn.Close()
+		for {
+			UpdateUptime()
+			UpdateNumDevices()
+			UpdateLastBeatFmt()
+			json, err := json2.Marshal(stats)
+			if err != nil {
+				HandleInternalErr(ctx, "Error formatting json", err)
+				return
+			}
+			err = conn.WriteMessage(websocket.TextMessage, json)
+			if err != nil {
+				log.Printf("writing to websocket: %v", err)
+				break
+			}
+			time.Sleep(time.Second)
+		}
+	})
+	if err != nil {
+		// FIXME: handle this
+		return
+	}
 }

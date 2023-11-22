@@ -23,20 +23,20 @@ Due to caching, you will have to check the website if the embed generation time 
 <meta name="theme-color" content="#6495ED">
 <script>
     window.onload = function () {
-        setInterval(updateInfo, 1000)
+        const url = new URL('/api/realtime/stats', window.location.href);
+        url.protocol = url.protocol.replace('http', 'ws');
+        const ws = new WebSocket(url.href);
+        ws.onmessage = (ev) => updateInfo(JSON.parse(ev.data));
     };
 
-    async function updateInfo() {
-        let response = await fetch("/api/info?countVisit=false");
-        let data = await response.json();
-
-        await setInfo("LastSeen", data.last_seen, "Last response time")
-        await setInfo("TimeDifference", data.time_difference, "Time since last response")
-        await setInfo("MissingBeat", data.missing_beat, "Longest recorded absence")
-        await setInfo("TotalBeats", data.total_beats, "Total beats received")
+    function updateInfo(data) {
+        setInfo("LastSeen", data.last_seen, "Last response time")
+        setInfo("TimeDifference", data.time_difference, "Time since last response")
+        setInfo("MissingBeat", data.missing_beat, "Longest recorded absence")
+        setInfo("TotalBeats", data.total_beats, "Total beats received")
     }
 
-    async function setInfo(id, json, prefix) {
+    function setInfo(id, json, prefix) {
         document.getElementById(id).innerHTML = `${prefix}:<br>${json}`
     }
 </script>
