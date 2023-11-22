@@ -24,6 +24,7 @@ deps:
 	go get -u github.com/valyala/quicktemplate
 	go get -u golang.org/x/text/language
 	go get -u golang.org/x/text/message
+	go get -u github.com/fasthttp/websocket
 
 docker-build:
 	@docker build --build-arg COMMIT=${TAG} -t ${IMG} .

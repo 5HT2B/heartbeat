@@ -82,20 +82,20 @@ func (p *StatsPage) StreamHead(qw422016 *qt422016.Writer) {
 <meta name="theme-color" content="#6495ED">
 <script>
     window.onload = function () {
-        setInterval(updateInfo, 1000)
+        const url = new URL('/api/realtime/stats', window.location.href);
+        url.protocol = url.protocol.replace('http', 'ws');
+        const ws = new WebSocket(url.href);
+        ws.onmessage = (ev) => updateInfo(JSON.parse(ev.data));
     };
 
-    async function updateInfo() {
-        let response = await fetch("/api/stats?countVisit=false");
-        let data = await response.json();
-
-        await setInfo("TotalVisits", data.total_visits_formatted, "Total visits")
-        await setInfo("TotalDevices", data.total_devices_formatted, "Total devices sending beats")
-        await setInfo("TotalBeats", data.total_beats_formatted, "Total beats received")
-        await setInfo("TotalUptime", data.total_uptime_formatted, "Total uptime")
+    function updateInfo() {
+        setInfo("TotalVisits", data.total_visits_formatted, "Total visits")
+        setInfo("TotalDevices", data.total_devices_formatted, "Total devices sending beats")
+        setInfo("TotalBeats", data.total_beats_formatted, "Total beats received")
+        setInfo("TotalUptime", data.total_uptime_formatted, "Total uptime")
     }
 
-    async function setInfo(id, json, prefix) {
+    function setInfo(id, json, prefix) {
         document.getElementById(id).innerHTML = `)
 //line templates/statspage.qtpl:17
 	qw422016.N().S("`")
