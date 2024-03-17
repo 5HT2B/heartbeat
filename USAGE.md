@@ -20,7 +20,7 @@ docker-compose up
 
 ## Without Docker
 
-This requires `go` (1.17 or newer), `redis-server` (6.2.5 or newer), [RedisJSON](https://github.com/RedisJSON/RedisJSON) and `git`.
+This requires `go` (1.20 or newer), `redis-server` (6.2.5 or newer), [RedisJSON](https://github.com/RedisJSON/RedisJSON) and `git`.
 
 ```bash
 # Make sure to edit dir inside config/redis.conf to ./config
