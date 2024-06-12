@@ -46,11 +46,8 @@ func SetupDatabase() (*redis.Client, *rejson.Handler) {
 func SetupDatabaseSaving() {
 	ticker := time.NewTicker(1 * time.Minute)
 	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				SaveLocalInDatabase()
-			}
+		for range ticker.C {
+			SaveLocalInDatabase()
 		}
 	}()
 }
