@@ -31,3 +31,12 @@ docker-build:
 
 docker-push:
 	@docker push ${NAME}
+
+lint:
+	@echo "Running pre-commit hooks..."
+	@if command -v pre-commit >/dev/null 2>&1; then \
+		pre-commit run --all-files; \
+	else \
+		echo "pre-commit not found. Install with: pip install pre-commit"; \
+		exit 1; \
+	fi

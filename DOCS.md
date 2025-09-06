@@ -23,7 +23,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
     # Automatically managed certbot stuff goes here
-} 
+}
 ```
 
 See [`USAGE.md`](https://github.com/5HT2B/heartbeat/blob/master/USAGE.md) for instructions to run the server, which you would be putting

@@ -1,0 +1,61 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+        exclude: ^templates/.*\.qtpl\.go$
+      - id: trailing-whitespace
+        exclude: ^templates/.*\.qtpl\.go$
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-json
+        files: \.(json)$
+      - id: check-yaml
+        files: \.(yaml|yml)$
+      - id: mixed-line-ending
+        args: [--fix=lf]
+  - repo: local
+    hooks:
+      - id: go-fmt
+        name: go fmt
+        entry: gofmt -l -w .
+        language: system
+        types: [go]
+        exclude: ^templates/.*\.qtpl\.go$
+      - id: go-imports
+        name: go imports
+        entry: bash -c 'if command -v goimports >/dev/null 2>&1; then goimports -l -w .; else echo "goimports not found, skipping import formatting"; fi'
+        language: system
+        types: [go]
+        exclude: ^templates/.*\.qtpl\.go$
+        pass_filenames: false
+      - id: go-vet
+        name: go vet
+        entry: go vet ./...
+        language: system
+        types: [go]
+        pass_filenames: false
+      - id: go-test
+        name: go test
+        entry: go test ./...
+        language: system
+        types: [go]
+        pass_filenames: false
+      - id: go-mod-tidy
+        name: go mod tidy
+        entry: go mod tidy
+        language: system
+        files: go\.(mod|sum)$
+        pass_filenames: false
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.45.0
+    hooks:
+      - id: markdownlint
+        args: [--disable, MD013, MD002, MD041]
+        files: \.md$
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: shellcheck
+        files: \.sh$

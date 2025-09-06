@@ -14,7 +14,7 @@ This requires `docker-compose` (1.29.2 or newer), `docker` and `git`.
 git clone git@github.com:5HT2B/heartbeat.git
 cd heartbeat
 echo "HB_TOKEN=authenticationTokenMakeThisSecure" >> config/.env
-# Add --build to build from your local files instead of using the pre-built image 
+# Add --build to build from your local files instead of using the pre-built image
 docker-compose up
 ```
 

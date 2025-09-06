@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/5HT2B/heartbeat/templates"
-	"github.com/ferluci/fast-realip"
+	realip "github.com/ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 )
 

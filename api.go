@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ferluci/fast-realip"
+	realip "github.com/ferluci/fast-realip"
 	"github.com/valyala/fasthttp"
 )
 
