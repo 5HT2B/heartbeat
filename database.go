@@ -121,24 +121,16 @@ func LastSeen() string {
 	return time.Unix(lastBeat.Timestamp, 0).Format(timeFormat)
 }
 
-// LongestAbsence will return HeartbeatStats.LongestMissingBeat unless the current missing beat is longer
+// LongestAbsence returns the longest recorded absence between heartbeats
 func LongestAbsence() string {
 	lastBeat := GetMostRecentBeat()
 
-	// This will happen when GetLastBeat returned a nil, and heartbeatDevices is empty
 	if lastBeat == nil {
 		heartbeatStats.LastBeatFormatted = "Never"
 		return "Never"
 	}
 
-	diff := time.Now().Unix() - lastBeat.Timestamp
-	// If current absence is bigger than record absence, return current absence
-	if diff > heartbeatStats.LongestMissingBeat {
-		heartbeatStats.LongestMissingBeat = diff
-		return FormattedTime(diff)
-	} else {
-		return FormattedTime(heartbeatStats.LongestMissingBeat)
-	}
+	return FormattedTime(heartbeatStats.LongestMissingBeat)
 }
 
 func UpdateNumDevices() {
@@ -189,27 +181,40 @@ func UpdateDevice(beat HeartbeatBeat) {
 	}
 
 	if n == -1 { // couldn't find an existing device with the name
-		device = HeartbeatDevice{beat.DeviceName, beat, 0, 0}
+		device = HeartbeatDevice{beat.DeviceName, beat, 1, 0}
+		// Don't calculate absence for new devices - append and return
+		*heartbeatDevices = append(*heartbeatDevices, device)
+		PostMessage("New device added", fmt.Sprintf("A new device called `%s` was added on <t:%v:d> at <t:%v:T>", beat.DeviceName, beat.Timestamp, beat.Timestamp), EmbedColorGreen, WebhookLevelSimple)
+		UpdateNumDevices()
+		return
 	}
 
-	diff := time.Now().Unix() - device.LastBeat.Timestamp
+	// Validate timestamp to handle clock skew or duplicate beats
+	if beat.Timestamp <= device.LastBeat.Timestamp {
+		// Update device but don't calculate absence for non-advancing timestamps
+		device.LastBeat = beat
+		device.TotalBeats += 1
+		(*heartbeatDevices)[n] = device
+		UpdateTotalBeats()
+		return
+	}
+
+	// Calculate the absence period that just ended (from old beat to new beat)
+	diff := beat.Timestamp - device.LastBeat.Timestamp
 	if diff > device.LongestMissingBeat {
 		device.LongestMissingBeat = diff
 	}
-	// We want to update the longest absence here (heartbeatStats.LongestMissingBeat) in case
-	// device.LongestMissingBeat > heartbeatStats.LongestMissingBeat *and* other devices haven't pinged recently
-	LongestAbsence()
+	// Update global longest absence if this device's absence is longer
+	if diff > heartbeatStats.LongestMissingBeat {
+		heartbeatStats.LongestMissingBeat = diff
+	}
 
 	device.LastBeat = beat
 	device.TotalBeats += 1
 	UpdateTotalBeats()
 
-	if n == -1 { // if device doesn't exist, append it, else replace it
-		*heartbeatDevices = append(*heartbeatDevices, device)
-		PostMessage("New device added", fmt.Sprintf("A new device called `%s` was added on <t:%v:d> at <t:%v:T>", beat.DeviceName, beat.Timestamp, beat.Timestamp), EmbedColorGreen, WebhookLevelSimple)
-	} else {
-		(*heartbeatDevices)[n] = device
-	}
+	// Update existing device in slice
+	(*heartbeatDevices)[n] = device
 }
 
 // UpdateLastBeat will save the last beat and insert a new HeartbeatBeat into beats
