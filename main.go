@@ -34,6 +34,13 @@ func main() {
 	// Setup DB and load values
 	rdb, rjh = SetupDatabase()
 	SetupLocalValues()
+
+	// Initialize push configuration
+	InitPushConfiguration()
+
+	// Start push monitoring if configured
+	go StartPushMonitoring()
+
 	go SetupDatabaseSaving()
 
 	log.Printf("- Running heartbeat on " + protocol + addr)

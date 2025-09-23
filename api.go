@@ -18,13 +18,41 @@ var (
 	apiInfoPath          = "/api/info"
 	apiStatsPath         = "/api/stats"
 	apiDevicesPath       = "/api/devices"
+	apiPushSubscribePath = "/api/push-subscribe"
+	apiPushUnsubscribePath = "/api/push-unsubscribe"
+	apiPushTestPath      = "/api/push-test"
 	jsonMime             = "application/json"
 )
 
 func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
+	// Add CORS headers to all responses
+	ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
+	ctx.Response.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	ctx.Response.Header.Set("Access-Control-Allow-Headers", "Content-Type, Auth, Device")
+
+	// Handle CORS preflight requests first, before any other checks
+	if ctx.IsOptions() {
+		ctx.SetStatusCode(200)
+		return
+	}
+
 	switch path {
-	case apiBeatPath, apiUpdateStatsPath, apiUpdateDevicesPath:
+	case apiBeatPath, apiUpdateStatsPath, apiUpdateDevicesPath, apiPushSubscribePath, apiPushUnsubscribePath:
 		if !ctx.IsPost() {
+			ErrorBadRequest(ctx, true)
+			return
+		}
+
+		// The authentication key provided with said Auth header
+		header := ctx.Request.Header.Peek("Auth")
+
+		// Make sure Auth key is correct
+		if string(header) != authToken {
+			ErrorForbidden(ctx, true)
+			return
+		}
+	case apiPushTestPath:
+		if !ctx.IsGet() {
 			ErrorBadRequest(ctx, true)
 			return
 		}
@@ -55,6 +83,12 @@ func ApiHandler(ctx *fasthttp.RequestCtx, path string) {
 		handleUpdateStats(ctx)
 	case apiUpdateDevicesPath:
 		handleUpdateDevices(ctx)
+	case apiPushSubscribePath:
+		HandlePushSubscribe(ctx)
+	case apiPushUnsubscribePath:
+		HandlePushUnsubscribe(ctx)
+	case apiPushTestPath:
+		HandlePushTest(ctx)
 	case apiInfoPath:
 		handleJsonObject(ctx, FormattedInfo())
 	case apiStatsPath:
