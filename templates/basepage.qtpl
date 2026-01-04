@@ -15,6 +15,8 @@ Page prints a page implementing Page interface.
         <title>{%= p.Title() %}</title>
         {%= p.Head() %}
         <meta property="og:image" content="/favicon.png">
+        <meta name="theme-color" content="#f6f6f6" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
         <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
 

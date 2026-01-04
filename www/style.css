@@ -1,16 +1,36 @@
+:root {
+    --bg-primary: #f6f6f6;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --link-color: cornflowerblue;
+    --link-hover: lightslategray;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #1a1a1a;
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --link-color: #87ceeb;
+        --link-hover: #b0c4de;
+    }
+}
+
 body {
     font-family: sans-serif;
     padding: 2.5em;
-    background-color: #f6f6f6;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 a {
-    color: cornflowerblue;
+    color: var(--link-color);
     transition: all 0.1s ease-in-out;
     text-decoration: none;
 }
 
 a:hover {
-    color: lightslategray;
+    color: var(--link-hover);
     text-decoration: underline;
 }

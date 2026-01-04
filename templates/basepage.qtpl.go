@@ -62,6 +62,8 @@ func StreamPageTemplate(qw422016 *qt422016.Writer, p Page) {
 //line templates/basepage.qtpl:16
 	qw422016.N().S(`
         <meta property="og:image" content="/favicon.png">
+        <meta name="theme-color" content="#f6f6f6" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
         <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
 
@@ -71,139 +73,139 @@ func StreamPageTemplate(qw422016 *qt422016.Writer, p Page) {
     </head>
     <body>
         `)
-//line templates/basepage.qtpl:26
+//line templates/basepage.qtpl:28
 	p.StreamBody(qw422016)
-//line templates/basepage.qtpl:26
+//line templates/basepage.qtpl:28
 	qw422016.N().S(`
     </body>
 </html>
 `)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 }
 
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 func WritePageTemplate(qq422016 qtio422016.Writer, p Page) {
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	StreamPageTemplate(qw422016, p)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	qt422016.ReleaseWriter(qw422016)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 }
 
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 func PageTemplate(p Page) string {
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	WritePageTemplate(qb422016, p)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	qs422016 := string(qb422016.B)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 	return qs422016
-//line templates/basepage.qtpl:29
+//line templates/basepage.qtpl:31
 }
 
 // Base page implementation. Other pages may inherit from it if they need
 // overriding only certain Page methods
 
-//line templates/basepage.qtpl:33
+//line templates/basepage.qtpl:35
 type BasePage struct{}
 
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 func (p *BasePage) StreamTitle(qw422016 *qt422016.Writer) {
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	qw422016.N().S(`Default title`)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 }
 
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 func (p *BasePage) WriteTitle(qq422016 qtio422016.Writer) {
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	p.StreamTitle(qw422016)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	qt422016.ReleaseWriter(qw422016)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 }
 
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 func (p *BasePage) Title() string {
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	p.WriteTitle(qb422016)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	qs422016 := string(qb422016.B)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 	return qs422016
-//line templates/basepage.qtpl:34
+//line templates/basepage.qtpl:36
 }
 
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 func (p *BasePage) StreamHead(qw422016 *qt422016.Writer) {
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 }
 
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 func (p *BasePage) WriteHead(qq422016 qtio422016.Writer) {
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	p.StreamHead(qw422016)
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	qt422016.ReleaseWriter(qw422016)
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 }
 
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 func (p *BasePage) Head() string {
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	p.WriteHead(qb422016)
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	qs422016 := string(qb422016.B)
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 	return qs422016
-//line templates/basepage.qtpl:35
+//line templates/basepage.qtpl:37
 }
 
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 func (p *BasePage) StreamBody(qw422016 *qt422016.Writer) {
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 }
 
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 func (p *BasePage) WriteBody(qq422016 qtio422016.Writer) {
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	p.StreamBody(qw422016)
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	qt422016.ReleaseWriter(qw422016)
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 }
 
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 func (p *BasePage) Body() string {
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	qb422016 := qt422016.AcquireByteBuffer()
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	p.WriteBody(qb422016)
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	qs422016 := string(qb422016.B)
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	qt422016.ReleaseByteBuffer(qb422016)
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 	return qs422016
-//line templates/basepage.qtpl:36
+//line templates/basepage.qtpl:38
 }
